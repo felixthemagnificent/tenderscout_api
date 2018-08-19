@@ -1,0 +1,2 @@
+class GsinCode < ApplicationRecord
+end

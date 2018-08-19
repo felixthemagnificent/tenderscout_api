@@ -1,0 +1,2 @@
+class AfricanCode < ApplicationRecord
+end

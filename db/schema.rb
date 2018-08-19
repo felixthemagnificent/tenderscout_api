@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180816153925) do
+ActiveRecord::Schema.define(version: 20180817143748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "african_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_african_codes_on_code"
+  end
+
+  create_table "classification_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_classification_codes_on_code"
+  end
 
   create_table "contacts", force: :cascade do |t|
     t.string "contact_type"
@@ -22,6 +34,63 @@ ActiveRecord::Schema.define(version: 20180816153925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["profile_id"], name: "index_contacts_on_profile_id"
+  end
+
+  create_table "countries", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "number", default: "", null: false
+    t.string "alpha2code", default: "", null: false
+    t.string "alpha3code", default: "", null: false
+    t.string "name", default: "", null: false
+    t.string "world_region", default: "", null: false
+    t.string "world_subregion", default: "", null: false
+    t.jsonb "other_names", default: {}, null: false
+    t.bigint "currencies_id"
+    t.bigint "world_regions_id"
+    t.index ["alpha2code"], name: "index_countries_on_alpha2code", unique: true
+    t.index ["alpha3code"], name: "index_countries_on_alpha3code", unique: true
+    t.index ["code"], name: "index_countries_on_code", unique: true
+    t.index ["currencies_id"], name: "index_countries_on_currencies_id"
+    t.index ["name"], name: "index_countries_on_name"
+    t.index ["number"], name: "index_countries_on_number"
+    t.index ["world_regions_id"], name: "index_countries_on_world_regions_id"
+  end
+
+  create_table "currencies", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "code", default: "", null: false
+    t.string "unit"
+    t.index ["code"], name: "index_currencies_on_code"
+    t.index ["name"], name: "index_currencies_on_name"
+  end
+
+  create_table "gsin_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_gsin_codes_on_code"
+  end
+
+  create_table "industries", force: :cascade do |t|
+    t.string "name", default: "", null: false
+  end
+
+  create_table "industry_codes", force: :cascade do |t|
+    t.string "entity_code_name", default: "", null: false
+    t.integer "entity_code_id", default: 0, null: false
+    t.bigint "industry_id"
+    t.index ["industry_id"], name: "index_industry_codes_on_industry_id"
+  end
+
+  create_table "ngip_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_ngip_codes_on_code"
+  end
+
+  create_table "nigp_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_nigp_codes_on_code"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -76,6 +145,15 @@ ActiveRecord::Schema.define(version: 20180816153925) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "description", default: "", null: false
+    t.integer "number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_roles_on_name"
+  end
+
   create_table "search_monitors", force: :cascade do |t|
     t.string "title"
     t.string "tenderTitle"
@@ -90,6 +168,12 @@ ActiveRecord::Schema.define(version: 20180816153925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
+  end
+
+  create_table "sfgov_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_sfgov_codes_on_code"
   end
 
   create_table "users", force: :cascade do |t|
@@ -114,7 +198,15 @@ ActiveRecord::Schema.define(version: 20180816153925) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "world_regions", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "name", default: "", null: false
+  end
+
   add_foreign_key "contacts", "profiles"
+  add_foreign_key "countries", "currencies", column: "currencies_id"
+  add_foreign_key "countries", "world_regions", column: "world_regions_id"
+  add_foreign_key "industry_codes", "industries"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "users"
