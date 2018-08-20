@@ -27,6 +27,10 @@ class V1::IndustriesController < ApplicationController
     end
   end
 
+  def destroy
+    @industry.destroy
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_industry
     @industry = Industry.find(params[:id])

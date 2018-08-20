@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resources :countries
     resources :roles
     resources :industries
+    resources :industry_codes
     resources :african_codes
     resources :classification_codes
     resources :gsin_codes
