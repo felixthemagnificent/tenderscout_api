@@ -1,0 +1,2 @@
+class SfgovCode < ApplicationRecord
+end

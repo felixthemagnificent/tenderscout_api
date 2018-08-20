@@ -1,0 +1,2 @@
+class ClassificationCode < ApplicationRecord
+end
