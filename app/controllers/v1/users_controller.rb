@@ -19,10 +19,10 @@ class V1::UsersController < ApplicationController
     @user = User.new(user_params)
     @user.profiles.new(profile_params)
 
-    if @user.save
+    if @user.save && @user.profiles.save
       render json: @user, status: :created, location: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @user.errors.merge(@user.profiles.errors), status: :unprocessable_entity
     end
   end
 
