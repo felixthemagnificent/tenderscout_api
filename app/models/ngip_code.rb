@@ -1,0 +1,2 @@
+class NgipCode < ApplicationRecord
+end

@@ -15,6 +15,18 @@ ActiveRecord::Schema.define(version: 20180817123458) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "african_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_african_codes_on_code"
+  end
+
+  create_table "classification_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_classification_codes_on_code"
+  end
+
   create_table "contacts", force: :cascade do |t|
     t.string "contact_type"
     t.string "value"
@@ -492,6 +504,15 @@ ActiveRecord::Schema.define(version: 20180817123458) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "description", default: "", null: false
+    t.integer "number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_roles_on_name"
+  end
+
   create_table "search_monitors", force: :cascade do |t|
     t.string "title"
     t.string "tenderTitle"
@@ -506,6 +527,12 @@ ActiveRecord::Schema.define(version: 20180817123458) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
+  end
+
+  create_table "sfgov_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_sfgov_codes_on_code"
   end
 
   create_table "users", force: :cascade do |t|
@@ -528,6 +555,11 @@ ActiveRecord::Schema.define(version: 20180817123458) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "world_regions", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "name", default: "", null: false
   end
 
   add_foreign_key "contacts", "profiles"
