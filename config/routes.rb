@@ -2,15 +2,22 @@ Rails.application.routes.draw do
 
   resources :contacts
   # use_doorkeeper
-  devise_for :users
+  devise_for :users, defaults: { format: :json }
   namespace :v1 do
+    use_doorkeeper scope: 'auth' do
+      controllers tokens: 'api_auth'
+      skip_controllers :authorizations, :applications, :authorized_applications, :tokens
+    end
     scope :auth do
-      post 'login', to: 'doorkeeper/tokens#create'
+      post 'login' => 'auth#create'
+      post 'logoff' => 'auth#logoff'
+      post 'forget_password' => 'auth#forget_password'
+      post 'reset_password' => 'auth#reset_password'
     end
     resources :users do
       resources :profiles
     end
-    resources :search_monitors
+    resources :search_monitors, path: 'bidder/monitor'
     resources :countries
     resources :roles
     resources :industries

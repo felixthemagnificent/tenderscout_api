@@ -42,7 +42,6 @@ class V1::SearchMonitorsController < ApplicationController
     @search_monitor.destroy
   end
 
-  def 
 
   private
     # Use callbacks to share common setup or constraints between actions.
