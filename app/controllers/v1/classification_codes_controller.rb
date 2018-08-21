@@ -2,12 +2,12 @@ class V1::ClassificationCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index
-    render json: ClassificationCode.all
+    render json: Core::ClassificationCode.all
 
   end
 
   def create
-    @code = ClassificationCode.new(code_params)
+    @code = Core::ClassificationCode.new(code_params)
 
     if @code.save
       render json: @code, status: :created
@@ -30,7 +30,7 @@ class V1::ClassificationCodesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_code
-    @code = ClassificationCode.find(params[:id])
+    @code = Core::ClassificationCode.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

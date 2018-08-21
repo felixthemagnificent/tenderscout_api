@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
 
   resources :contacts
-  use_doorkeeper
+  # use_doorkeeper
   devise_for :users
   namespace :v1 do
+    scope :auth do
+      post 'login', to: 'doorkeeper/tokens#create'
+    end
     resources :users do
       resources :profiles
     end

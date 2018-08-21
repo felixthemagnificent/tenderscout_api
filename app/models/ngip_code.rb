@@ -1,2 +1,0 @@
-class NgipCode < ApplicationRecord
-end

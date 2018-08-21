@@ -1,2 +1,0 @@
-class WorldRegion < ApplicationRecord
-end

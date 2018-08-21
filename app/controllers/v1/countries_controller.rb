@@ -2,11 +2,11 @@ class V1::CountriesController < ApplicationController
   before_action :set_country, only: [:show, :update]
 
   def index
-    render json: Country.all
+    render json: Core::Country.all
   end
 
   def create
-    @country = Country.new(country_params)
+    @country = Core::Country.new(country_params)
 
     if @country.save
       render json: nil, status: :created
@@ -29,7 +29,7 @@ class V1::CountriesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_country
-    @country = Country.find(params[:id])
+    @country = Core::Country.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

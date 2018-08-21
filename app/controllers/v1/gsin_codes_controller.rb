@@ -2,12 +2,12 @@ class V1::GsinCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index
-    render json: GsinCode.all
+    render json: Core::Gsin.all
 
   end
 
   def create
-    @code = GsinCode.new(code_params)
+    @code = Core::Gsin.new(code_params)
 
     if @code.save
       render json: @code, status: :created
@@ -30,7 +30,7 @@ class V1::GsinCodesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_code
-    @code = GsinCode.find(params[:id])
+    @code = Core::Gsin.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

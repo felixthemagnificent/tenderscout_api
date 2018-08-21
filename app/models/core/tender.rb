@@ -40,6 +40,59 @@ class Core::Tender < ApplicationRecord
     includes(relations).references(*relations)
   end
 
+  def self.search(params)
+    tenderTitle = params[:tenderTitle]
+    keywordList = params[:keywordList]
+    valueFrom = params[:valueFrom]
+    valueTo = params[:valueTo]
+
+    matches = []
+    # matches <<  {
+    #               range:
+    #               {
+    #                 value_max:
+    #                 {
+    #                  lte: valueTo
+    #                 }
+    #               }
+    #             } if valueTo
+
+    # matches << {
+    #               range:
+    #               {
+    #                 value_max:
+    #                 {
+    #                   gte: valueFrom
+    #                 }
+    #               }
+    #             } if valueFrom
+
+    matches << {
+                  match:
+                  {
+                    title: tenderTitle
+                  }
+                } unless tenderTitle.blank?
+
+    if keywordList 
+      match_keywords = []
+      keywordList.each do |e| 
+        match_keywords << {
+          match:
+          {
+            description: e
+          }
+        }
+      end
+      matches << {
+        bool: { 
+            should: match_keywords
+          }
+      }
+    end
+
+  end
+
   ####################################################################################################
   # accessors for fields only accessible when the tender is loaded with_relations
   def additional_information_list

@@ -13,6 +13,10 @@ class V1::SearchMonitorsController < ApplicationController
     render json: @search_monitor
   end
 
+  def preview
+    Core::Tender.search(search_monitor_params)
+  end
+
   # POST /search_monitors
   def create
     @search_monitor = current_user.search_monitors.new(search_monitor_params)
@@ -37,6 +41,8 @@ class V1::SearchMonitorsController < ApplicationController
   def destroy
     @search_monitor.destroy
   end
+
+  def 
 
   private
     # Use callbacks to share common setup or constraints between actions.

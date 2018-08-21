@@ -43,6 +43,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise'
 gem 'devise-doorkeeper'
 gem 'active_model_serializers'
+gem 'chewy'
+gem 'kaminari'
 
 group :development do
   gem 'capistrano'
