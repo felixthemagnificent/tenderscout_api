@@ -1,5 +1,7 @@
-class V1::RegirstrationRequestsController < ApplicationController
+class V1::RegistrationRequestsController < ApplicationController
   before_action :set_request, only: [:show, :update]
+  before_action :set_industry, only: [:create]
+  before_action :set_country, only: [:create]
 
   def index
     render json: RegistrationRequest.all
@@ -8,6 +10,8 @@ class V1::RegirstrationRequestsController < ApplicationController
   def create
     @request = RegistrationRequest.new(request_params)
     @request.do_processed = false
+    @request.industry = @industry
+    @request.country = @country
 
     if @request.save
       # TODO send email
@@ -32,11 +36,21 @@ class V1::RegirstrationRequestsController < ApplicationController
     @request = RegistrationRequest.find(params[:id])
   end
 
+  def set_industry
+    @industry = Industry.find(request_params[:industry_id])
+  end
+
+  def set_country
+    @country = Country.find(request_params[:country_id])
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def request_params
-    params.permit(:fullname, :company, :company_size, :state, :country, :city, :sector,
-      :turnover, :markets, :tender_level, :win_rate, :number_public_contracts, :do_use,
-      :do_collaborate, :tender_complete_time, :organisation_count, :do_processed
+    params.permit(:fullname, :company, :company_size, :state, :country,
+      :industry, :city, :sector, :turnover, :markets, :tender_level, :win_rate,
+      :number_public_contracts, :do_use_automation, :do_use_collaboration,
+      :do_use_bid_no_bid, :do_use_bid_library, :do_use_feedback, :do_collaborate,
+      :tender_complete_time, :organisation_count, :do_processed, :industry_id, :country_id
     )
   end
 end

@@ -12,8 +12,12 @@ class CreateRegistrationRequests < ActiveRecord::Migration[5.1]
       t.json :markets, null: false, default: {}
       t.integer :tender_level, null: false, default: 0
       t.float :win_rate, null: false, default: 0.00
-      t.integer :number_public_contracts, null: false, default: ''
-      t.json :do_use, null: false, default: false
+      t.integer :number_public_contracts, null: false, default: 0
+      t.boolean :do_use_automation, null: false, default: false
+      t.boolean :do_use_collaboration, null: false, default: false
+      t.boolean :do_use_bid_no_bid, null: false, default: false
+      t.boolean :do_use_bid_library, null: false, default: false
+      t.boolean :do_use_feedback, null: false, default: false
       t.boolean :do_collaborate, null: false, default: false
       t.float :tender_complete_time, null: false, default: 0.00
       t.integer :organisation_count, null: false, default: 0
