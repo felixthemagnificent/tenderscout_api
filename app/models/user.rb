@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_many :profiles
   has_many :search_monitors
+  has_many :favourite_monitors
 
   enum role: [:admin, :user]
 

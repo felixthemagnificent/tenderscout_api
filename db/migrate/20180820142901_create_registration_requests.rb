@@ -24,8 +24,9 @@ class CreateRegistrationRequests < ActiveRecord::Migration[5.1]
       t.boolean :do_processed, null: false, default: false
       t.timestamps
 
-      t.references :country, foreign_key: true
+      t.references :country#, foreign_key: true
       t.references :industry, foreign_key: true
     end
+    add_foreign_key :registration_requests, :core_countries, column: :country_id
   end
 end
