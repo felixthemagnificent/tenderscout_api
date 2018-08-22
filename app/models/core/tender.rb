@@ -40,11 +40,7 @@ class Core::Tender < ApplicationRecord
     includes(relations).references(*relations)
   end
 
-  def self.search(params)
-    tenderTitle = params[:tenderTitle]
-    keywordList = params[:keywordList]
-    valueFrom = params[:valueFrom]
-    valueTo = params[:valueTo]
+  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil)
 
     matches = []
     # matches <<  {
@@ -70,13 +66,13 @@ class Core::Tender < ApplicationRecord
     matches << {
                   match:
                   {
-                    title: tenderTitle
+                    title: tender_title
                   }
-                } unless tenderTitle.blank?
+                } unless tender_title.blank?
 
-    if keywordList 
+    if tender_keywords 
       match_keywords = []
-      keywordList.each do |e| 
+      tender_keywords.each do |e| 
         match_keywords << {
           match:
           {
@@ -90,7 +86,7 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
-
+    TendersIndex.query(matches).order(created_at: { order: :desc })
   end
 
   ####################################################################################################

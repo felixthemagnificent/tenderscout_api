@@ -17,7 +17,21 @@ Rails.application.routes.draw do
     resources :users do
       resources :profiles
     end
-    resources :search_monitors, path: 'bidder/monitor'
+    resources :search_monitors, path: 'bidder/monitor' do
+      member do
+        put :archive
+        post :share
+        put :favourite, to: 'search_monitors#add_favourite'
+        delete :favourite, to: 'search_monitors#delete_favourite'
+        get :result
+      end
+      collection do
+        get :all_result, to: 'search_monitors#all_results'
+        post :preview
+        get :search
+      end
+    end
+    post 'bidder/monitor/preview' => 'search_monitors#preview'
     resources :countries
     resources :roles
     resources :industries

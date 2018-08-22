@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180817143748) do
+ActiveRecord::Schema.define(version: 20180822044804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -497,6 +497,24 @@ ActiveRecord::Schema.define(version: 20180817143748) do
     t.index ["name"], name: "index_currencies_on_name"
   end
 
+  create_table "favourite_monitors", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "search_monitor_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["search_monitor_id"], name: "index_favourite_monitors_on_search_monitor_id"
+    t.index ["user_id"], name: "index_favourite_monitors_on_user_id"
+  end
+
+  create_table "favourite_tenders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_favourite_tenders_on_tender_id"
+    t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
+  end
+
   create_table "gsin_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
@@ -600,6 +618,7 @@ ActiveRecord::Schema.define(version: 20180817143748) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_archived"
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 
@@ -669,6 +688,10 @@ ActiveRecord::Schema.define(version: 20180817143748) do
   add_foreign_key "core_tenders_unspsces", "core_unspsces", column: "unspsc_id", name: "core_tenders_unspsces_unspsc_id_fk", on_delete: :cascade
   add_foreign_key "countries", "currencies", column: "currencies_id"
   add_foreign_key "countries", "world_regions", column: "world_regions_id"
+  add_foreign_key "favourite_monitors", "search_monitors"
+  add_foreign_key "favourite_monitors", "users"
+  add_foreign_key "favourite_tenders", "core_tenders", column: "tender_id"
+  add_foreign_key "favourite_tenders", "users"
   add_foreign_key "industry_codes", "industries"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
