@@ -562,11 +562,21 @@ ActiveRecord::Schema.define(version: 20180822044804) do
   create_table "profiles", force: :cascade do |t|
     t.string "fullname"
     t.string "display_name"
-    t.string "company"
     t.string "timezone"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "profile_type", default: 0, null: false
+    t.string "avatar_url"
+    t.string "cover_img_url"
+    t.string "city", default: "", null: false
+    t.boolean "do_marketplace_available", default: false, null: false
+    t.integer "company_size"
+    t.integer "turnover"
+    t.bigint "country_id"
+    t.bigint "industry_id"
+    t.index ["country_id"], name: "index_profiles_on_country_id"
+    t.index ["industry_id"], name: "index_profiles_on_industry_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
@@ -673,6 +683,8 @@ ActiveRecord::Schema.define(version: 20180822044804) do
   add_foreign_key "industry_codes", "industries"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "profiles", "core_countries", column: "country_id"
+  add_foreign_key "profiles", "industries"
   add_foreign_key "profiles", "users"
   add_foreign_key "registration_requests", "countries"
   add_foreign_key "registration_requests", "industries"
