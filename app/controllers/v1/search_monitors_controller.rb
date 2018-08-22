@@ -21,6 +21,14 @@ class V1::SearchMonitorsController < ApplicationController
     }
   end
 
+  def all_results
+    data, count = process_search({})
+    render json: {
+      data: data,
+      count: count
+    }
+  end
+
   def share
     render json: nil
   end

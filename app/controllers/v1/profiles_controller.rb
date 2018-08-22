@@ -1,11 +1,11 @@
 class V1::ProfilesController < ApplicationController
   include ActionController::Serialization
   before_action :set_profile, only: [:show, :update, :destroy]
+  before_action :set_user
 
   # GET /profiles
   def index
-    @profiles = Profile.all
-
+    @profiles = @user.profiles
     render json: @profiles
   end
 
@@ -16,7 +16,7 @@ class V1::ProfilesController < ApplicationController
 
   # POST /profiles
   def create
-    @profile = current_user.profiles.new(profile_params)
+    @profile = @user.profiles.new(profile_params)
     if @profile.save
       if contact_params
         @profile.contacts.destroy_all
@@ -51,6 +51,11 @@ class V1::ProfilesController < ApplicationController
     def set_profile
       @profile = Profile.find(params[:id])
     end
+
+    def set_user
+      @user = User.find(params[:user_id]) rescue current_user
+    end
+
     def contact_params
       params[:contacts]
     end

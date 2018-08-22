@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     resources :users do
       resources :profiles
     end
+    resources :profiles, path: 'my/profiles'
     resources :search_monitors, path: 'bidder/monitor' do
       member do
         put :archive
