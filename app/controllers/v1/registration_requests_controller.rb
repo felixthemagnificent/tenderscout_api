@@ -1,4 +1,5 @@
 class V1::RegistrationRequestsController < ApplicationController
+  skip_before_action :authenticate_user!
   before_action :set_request, only: [:show, :update]
   before_action :set_industry, only: [:create]
   before_action :set_country, only: [:create]
