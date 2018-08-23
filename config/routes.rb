@@ -33,20 +33,23 @@ Rails.application.routes.draw do
       end
     end
     post 'bidder/monitor/preview' => 'search_monitors#preview'
-    resources :countries
-    resources :roles
-    resources :industries
-    resources :industry_codes
-    resources :african_codes
-    resources :classification_codes
-    resources :gsin_codes
-    resources :ngip_codes
-    resources :nigp_codes
-    resources :sfgov_codes
     resources :registration_requests, path: 'user/registration_request' do
       member do
         put 'process', to: 'registration_requests#update'
       end
+    end
+
+    namespace :dictionaries do
+      resources :countries
+      resources :roles
+      resources :industries
+      resources :industry_codes
+      resources :african_codes
+      resources :classification_codes
+      resources :gsin_codes
+      resources :ngip_codes
+      resources :nigp_codes
+      resources :sfgov_codes
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
