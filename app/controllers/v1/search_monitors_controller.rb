@@ -42,15 +42,15 @@ class V1::SearchMonitorsController < ApplicationController
   end
 
   def delete_favourite
-    api_current_user.favourite_monitors.where(search_monitor: @search_monitor).delete_all
+    current_user.favourite_monitors.where(search_monitor: @search_monitor).delete_all
     
-    render json: nil, status: ok
+    render json: @search_monitor, status: ok
   end
 
   def add_favourite
-    api_current_user.favourite_monitors.find_or_create_by search_monitor: @search_monitor
+    current_user.favourite_monitors.find_or_create_by search_monitor: @search_monitor
     
-    render json: nil, status: :ok
+    render json: @search_monitor, status: :ok
   end
 
   def result
