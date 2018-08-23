@@ -3,7 +3,7 @@ Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (needs plugins)
   orm :active_record
 
-  base_controller 'ApplicationController'
+  # base_controller 'ApplicationController'
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     fail "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
