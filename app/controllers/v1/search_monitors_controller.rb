@@ -44,7 +44,7 @@ class V1::SearchMonitorsController < ApplicationController
   def delete_favourite
     current_user.favourite_monitors.where(search_monitor: @search_monitor).delete_all
     
-    render json: @search_monitor, status: ok
+    render json: @search_monitor, status: :ok
   end
 
   def add_favourite
