@@ -99,8 +99,8 @@ class V1::SearchMonitorsController < ApplicationController
       page_size = params[:page_size]
 
       results = Core::Tender.search(tender_title: tender_title, tender_keywords: tender_keywords, tender_value_from: tender_value_from, tender_value_to: tender_value_to)
-      
-      return results.page(cur_page).per(page_size).objects, results.count
+      tenders = results.page(cur_page).per(page_size).objects.map { |tender| TenderSerializer.new(tender).attributes }
+      return tenders, results.count
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_search_monitor
