@@ -1,13 +1,13 @@
-class V1::GsinCodesController < ApplicationController
+class V1::Dictionaries::AfricanCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index
-    render json: Core::Gsin.all
+    render json: AfricanCode.all
 
   end
 
   def create
-    @code = Core::Gsin.new(code_params)
+    @code = AfricanCode.new(code_params)
 
     if @code.save
       render json: @code, status: :created
@@ -30,7 +30,7 @@ class V1::GsinCodesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_code
-    @code = Core::Gsin.find(params[:id])
+    @code = AfricanCode.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

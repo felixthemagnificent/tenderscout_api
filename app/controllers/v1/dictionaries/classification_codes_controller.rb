@@ -1,4 +1,4 @@
-class V1::ClassificationCodesController < ApplicationController
+class V1::Dictionaries::ClassificationCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index

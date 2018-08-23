@@ -1,13 +1,13 @@
-class V1::SfgovCodesController < ApplicationController
+class V1::Dictionaries::GsinCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index
-    render json: SfgovCode.all
+    render json: Core::Gsin.all
 
   end
 
   def create
-    @code = SfgovCode.new(code_params)
+    @code = Core::Gsin.new(code_params)
 
     if @code.save
       render json: @code, status: :created
@@ -30,7 +30,7 @@ class V1::SfgovCodesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_code
-    @code = SfgovCode.find(params[:id])
+    @code = Core::Gsin.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

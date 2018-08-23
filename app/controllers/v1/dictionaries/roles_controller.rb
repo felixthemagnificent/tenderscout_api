@@ -1,4 +1,4 @@
-class V1::RolesController < ApplicationController
+class V1::Dictionaries::RolesController < ApplicationController
   before_action :set_role, only: [:show, :update]
 
   def index

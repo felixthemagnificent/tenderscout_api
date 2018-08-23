@@ -1,13 +1,13 @@
-class V1::NgipCodesController < ApplicationController
+class V1::Dictionaries::NigpCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index
-    render json: Core::Ngip.all
+    render json: NigpCode.all
 
   end
 
   def create
-    @code = Core::Ngip.new(code_params)
+    @code = NigpCode.new(code_params)
 
     if @code.save
       render json: @code, status: :created
@@ -30,7 +30,7 @@ class V1::NgipCodesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_code
-    @code = Core::Ngip.find(params[:id])
+    @code = NigpCode.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

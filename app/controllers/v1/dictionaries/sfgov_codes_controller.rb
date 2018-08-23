@@ -1,13 +1,13 @@
-class V1::AfricanCodesController < ApplicationController
+class V1::Dictionaries::SfgovCodesController < ApplicationController
   before_action :set_code, only: [:show, :update]
 
   def index
-    render json: AfricanCode.all
+    render json: SfgovCode.all
 
   end
 
   def create
-    @code = AfricanCode.new(code_params)
+    @code = SfgovCode.new(code_params)
 
     if @code.save
       render json: @code, status: :created
@@ -30,7 +30,7 @@ class V1::AfricanCodesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_code
-    @code = AfricanCode.find(params[:id])
+    @code = SfgovCode.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
