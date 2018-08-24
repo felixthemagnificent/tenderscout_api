@@ -40,7 +40,8 @@ class Core::Tender < ApplicationRecord
     includes(relations).references(*relations)
   end
 
-  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil)
+  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
+                  tender_countries: nil)
 
     matches = []
     # matches <<  {
@@ -83,6 +84,22 @@ class Core::Tender < ApplicationRecord
       matches << {
         bool: { 
             should: match_keywords
+          }
+      }
+    end
+    if tender_countries 
+      match_countries = []
+      tender_countries.each do |e| 
+        match_countries << {
+          match:
+          {
+            country_id: e
+          }
+        }
+      end
+      matches << {
+        bool: { 
+            should: match_countries
           }
       }
     end

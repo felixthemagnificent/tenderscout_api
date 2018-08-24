@@ -1,6 +1,6 @@
 class V1::SearchMonitorsController < ApplicationController
   before_action :set_search_monitor, only: [:show, :update, :destroy, :result, :archive, :share, :add_favourite, :delete_favourite]
-
+  respond_to :json
   # GET /search_monitors
   def index
     @search_monitors = current_user.search_monitors
@@ -94,11 +94,18 @@ class V1::SearchMonitorsController < ApplicationController
       tender_keywords = search_monitor_params[:keywordList]
       tender_value_from = search_monitor_params[:valueFrom]
       tender_value_to = search_monitor_params[:valueTo]
+      tender_countries = search_monitor_params[:countryList]
 
       cur_page = params[:page]
       page_size = params[:page_size]
 
-      results = Core::Tender.search(tender_title: tender_title, tender_keywords: tender_keywords, tender_value_from: tender_value_from, tender_value_to: tender_value_to)
+      results = Core::Tender.search(
+        tender_title: tender_title, 
+        tender_keywords: tender_keywords, 
+        tender_value_from: tender_value_from, 
+        tender_value_to: tender_value_to,
+        tender_countries: tender_countries
+        )
       tenders = results.page(cur_page).per(page_size).objects.map { |tender| TenderSerializer.new(tender).attributes }
       return tenders, results.count
     end
@@ -109,6 +116,6 @@ class V1::SearchMonitorsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def search_monitor_params
-      params.permit(:title, :tenderTitle, :countryList, :keywordList, :valueFrom, :valueTo, :codeList, :buyerList, :statusList)
+      params.permit(:title, :tenderTitle, :valueFrom, :valueTo, codeList:[], countryList:[], buyerList:[], statusList:[], keywordList:[])
     end
 end

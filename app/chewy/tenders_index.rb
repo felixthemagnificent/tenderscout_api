@@ -4,5 +4,6 @@ class TendersIndex < Chewy::Index
     field :title, value: -> (tender) { tender.title }
     field :description, value: -> (tender) { tender.description.gsub(/[^0-9A-Za-z \t]/i, '').gsub(/\t/,' ') }
     field :created_at, type: 'date', value: ->{ created_at } 
+    field :country_id, value: ->(tender) { tender&.country&.id }
   end
 end
