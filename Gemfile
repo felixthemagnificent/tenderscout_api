@@ -45,6 +45,7 @@ gem 'devise-doorkeeper'
 gem 'active_model_serializers'
 gem 'chewy'
 gem 'kaminari'
+gem 'interactor'
 gem 'postmark-rails'
 
 group :development do
