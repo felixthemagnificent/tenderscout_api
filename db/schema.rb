@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180822044804) do
+ActiveRecord::Schema.define(version: 20180823072904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,6 +143,13 @@ ActiveRecord::Schema.define(version: 20180822044804) do
     t.index ["number"], name: "index_core_countries_on_number"
     t.index ["other_names"], name: "index_core_countries_on_other_names", using: :gin
     t.index ["world_region_id"], name: "index_core_countries_on_world_region_id"
+  end
+
+  create_table "core_countries_profiles", id: false, force: :cascade do |t|
+    t.bigint "country_id"
+    t.bigint "profile_id"
+    t.index ["country_id"], name: "index_core_countries_profiles_on_country_id"
+    t.index ["profile_id"], name: "index_core_countries_profiles_on_profile_id"
   end
 
   create_table "core_cpvs", force: :cascade do |t|
@@ -499,11 +506,30 @@ ActiveRecord::Schema.define(version: 20180822044804) do
     t.string "name", default: "", null: false
   end
 
+  create_table "industries_profiles", id: false, force: :cascade do |t|
+    t.bigint "industry_id"
+    t.bigint "profile_id"
+    t.index ["industry_id"], name: "index_industries_profiles_on_industry_id"
+    t.index ["profile_id"], name: "index_industries_profiles_on_profile_id"
+  end
+
   create_table "industry_codes", force: :cascade do |t|
     t.string "entity_code_name", default: "", null: false
     t.integer "entity_code_id", default: 0, null: false
     t.bigint "industry_id"
     t.index ["industry_id"], name: "index_industry_codes_on_industry_id"
+  end
+
+  create_table "keywords", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.index ["name"], name: "index_keywords_on_name"
+  end
+
+  create_table "keywords_profiles", id: false, force: :cascade do |t|
+    t.bigint "keyword_id"
+    t.bigint "profile_id"
+    t.index ["keyword_id"], name: "index_keywords_profiles_on_keyword_id"
+    t.index ["profile_id"], name: "index_keywords_profiles_on_profile_id"
   end
 
   create_table "ngip_codes", force: :cascade do |t|
@@ -575,6 +601,10 @@ ActiveRecord::Schema.define(version: 20180822044804) do
     t.integer "turnover"
     t.bigint "country_id"
     t.bigint "industry_id"
+    t.integer "valueFrom", default: 0, null: false
+    t.integer "valueTo", default: 0, null: false
+    t.integer "tender_level", default: 0, null: false
+    t.integer "number_public_contracts", default: 0, null: false
     t.index ["country_id"], name: "index_profiles_on_country_id"
     t.index ["industry_id"], name: "index_profiles_on_industry_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -670,6 +700,8 @@ ActiveRecord::Schema.define(version: 20180822044804) do
   end
 
   add_foreign_key "contacts", "profiles"
+  add_foreign_key "core_countries_profiles", "core_countries", column: "country_id"
+  add_foreign_key "core_countries_profiles", "profiles"
   add_foreign_key "core_tenders_categories", "core_categories", column: "category_id", name: "core_tenders_categories_category_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_tenders", column: "tender_id", name: "core_tenders_categories_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_ngip_codes", "core_ngip_codes", column: "ngip_code_id", name: "core_tenders_ngip_codes_ngip_code_id_fk", on_delete: :cascade
@@ -680,7 +712,11 @@ ActiveRecord::Schema.define(version: 20180822044804) do
   add_foreign_key "countries", "world_regions", column: "world_regions_id"
   add_foreign_key "favourite_monitors", "search_monitors"
   add_foreign_key "favourite_monitors", "users"
+  add_foreign_key "industries_profiles", "industries"
+  add_foreign_key "industries_profiles", "profiles"
   add_foreign_key "industry_codes", "industries"
+  add_foreign_key "keywords_profiles", "keywords"
+  add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"

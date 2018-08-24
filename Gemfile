@@ -45,6 +45,7 @@ gem 'devise-doorkeeper'
 gem 'active_model_serializers'
 gem 'chewy'
 gem 'kaminari'
+gem 'interactor'
 
 group :development do
   gem 'capistrano'
