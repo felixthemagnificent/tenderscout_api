@@ -3,11 +3,11 @@ class V1::ProfilesController < ApplicationController
   before_action :set_profile, only: [:show, :update, :destroy]
   before_action :set_industry, except: [:index, :destroy]
   before_action :set_country, except: [:index, :destroy]
+  before_action :set_user
 
   # GET /profiles
   def index
-    @profiles = Profile.all
-
+    @profiles = @user.profiles
     render json: @profiles
   end
 
@@ -56,6 +56,10 @@ class V1::ProfilesController < ApplicationController
     @country = Core::Country.find(params[:country_id])
   end
 
+  def set_user
+    @user = User.find(params[:user_id]) rescue current_user
+  end
+  
   # Only allow a trusted parameter "white list" through.
   def profile_params
     params.permit(

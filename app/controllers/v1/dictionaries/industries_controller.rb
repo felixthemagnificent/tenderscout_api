@@ -1,4 +1,4 @@
-class V1::IndustriesController < ApplicationController
+class V1::Dictionaries::IndustriesController < ApplicationController
   before_action :set_industry, only: [:show, :update]
 
   def index

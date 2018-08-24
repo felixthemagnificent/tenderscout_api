@@ -40,7 +40,8 @@ class Core::Tender < ApplicationRecord
     includes(relations).references(*relations)
   end
 
-  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil)
+  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
+                  tender_countries: nil)
 
     matches = []
     # matches <<  {
@@ -86,105 +87,73 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
+    if tender_countries 
+      match_countries = []
+      tender_countries.each do |e| 
+        match_countries << {
+          match:
+          {
+            country_id: e
+          }
+        }
+      end
+      matches << {
+        bool: { 
+            should: match_countries
+          }
+      }
+    end
     TendersIndex.query(matches).order(created_at: { order: :desc })
   end
 
   ####################################################################################################
   # accessors for fields only accessible when the tender is loaded with_relations
   def additional_information_list
-    if self.association(:additional_information).loaded?
-      self.additional_information.map{ |ai| { title: ai.title, url: ai.url } }
-    else
-      []
-    end
+    self.additional_information.map{ |ai| { title: ai.title, url: ai.url } } rescue []
   end
 
   def documents_list
-    if self.association(:documents).loaded?
-      self.documents.map { |d| { title: d.title, url: d.url } }
-    else
-      []
-    end
+    self.documents.map { |d| { title: d.title, url: d.url } } rescue []
   end
 
   def procedure_name
-    if self.association(:procedure).loaded?
-      self.procedure.name
-    else
-      nil
-    end
+    self.procedure.name rescue nil
   end
 
   def currency_name
-    if self.association(:currency).loaded?
-      self.currency.name
-    else
-      nil
-    end
+      self.currency.name rescue nil
   end
 
   def currency_code
-    if self.association(:currency).loaded?
-      self.currency.code
-    else
-      nil
-    end
+      self.currency.code rescue nil
   end
 
   def organization_name
-    if self.association(:organization).loaded?
-     self.organization.name
-    else
-      nil
-    end
+     self.organization.name rescue nil
   end
 
   def organization_phone
-    if self.association(:organization).loaded?
-      self.organization.phone
-    else
-      nil
-    end
+      self.organization.phone rescue nil
   end
 
   def country_name
-    if self.association(:organization).loaded? && self.organization.association(:country).loaded?
-      self.organization.country.name
-    else
-      nil
-    end
+      self.organization.country.name rescue nil
   end
 
   def world_region
-    if self.association(:organization).loaded? && self.organization.association(:country).loaded?
-      self.organization.country.world_region
-    else
-      nil
-    end
+      self.organization.country.world_region rescue nil
   end
   
   def world_subregion
-    if self.association(:organization).loaded? && self.organization.association(:country).loaded?
-      self.organization.country.world_subregion
-    else
-      nil
-    end
+      self.organization.country.world_subregion rescue nil
   end
 
   def classification_code
-    if self.association(:classification).loaded? && !self.classification.nil?
-      self.classification.code
-    else
-      nil
-    end
+      self.classification.code rescue nil
   end
 
   def classification_description
-    if self.association(:classification).loaded? && !self.classification.nil?
-      self.classification.description
-    else
-      nil
-    end
+      self.classification.description rescue nil
   end
 
   def format_fields

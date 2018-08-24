@@ -1,4 +1,4 @@
-class V1::CountriesController < ApplicationController
+class V1::Dictionaries::CountriesController < ApplicationController
   before_action :set_country, only: [:show, :update]
 
   def index

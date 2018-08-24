@@ -2,6 +2,7 @@ class V1::RegistrationRequestsController < ApplicationController
   before_action :set_request, only: [:show, :update]
   before_action :set_industry, only: [:create]
   before_action :set_country, only: [:create]
+  skip_before_action :authenticate_user!
 
   def index
     render json: RegistrationRequest.all
@@ -26,7 +27,7 @@ class V1::RegistrationRequestsController < ApplicationController
   end
 
   def update
-    @request.update(do_processed: !@request.do_processed)
+    @request.update(do_processed: true)
     # TODO send email
     render json: @request
   end
@@ -41,7 +42,7 @@ class V1::RegistrationRequestsController < ApplicationController
   end
 
   def set_country
-    @country = Country.find(request_params[:country_id])
+    @country = Core::Country.find(request_params[:country_id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

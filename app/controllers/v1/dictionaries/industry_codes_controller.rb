@@ -1,4 +1,4 @@
-class V1::IndustryCodesController < ApplicationController
+class V1::Dictionaries::IndustryCodesController < ApplicationController
   before_action :set_industry, only: [:create, :show, :update]
   before_action :set_industry_code, only: [:show, :update]
 
