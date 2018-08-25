@@ -1,8 +1,8 @@
 class V1::ProfilesController < ApplicationController
   include ActionController::Serialization
-  before_action :set_profile, only: [:show, :update, :destroy]
-  before_action :set_industry, except: [:index, :destroy]
-  before_action :set_country, except: [:index, :destroy]
+  before_action :set_profile, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
+  before_action :set_industry, except: [:index, :show, :destroy]
+  before_action :set_country, except: [:index, :show, :destroy]
   before_action :set_user
 
   # GET /profiles
@@ -41,6 +41,38 @@ class V1::ProfilesController < ApplicationController
     # @profile.destroy
   end
 
+  def create_avatar
+    @profile.remove_avatar!
+    @profile.save
+
+    if @profie.update(avatar_params)
+      render json: @profile
+    else
+      render json: @profile.errors, status: result.code
+    end
+  end
+
+  def destroy_avatar
+    @profile.remove_avatar!
+    @profile.save
+  end
+
+  def create_cover_img
+    @profile.remove_cover_img!
+    @profile.save
+
+    if @profie.update(cover_img_params)
+      render json: @profile
+    else
+      render json: @profile.errors, status: result.code
+    end
+  end
+
+  def destroy_cover_img
+    @profile.remove_cover_img!
+    @profile.save
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -59,15 +91,23 @@ class V1::ProfilesController < ApplicationController
   def set_user
     @user = User.find(params[:user_id]) rescue current_user
   end
-  
+
   # Only allow a trusted parameter "white list" through.
   def profile_params
     params.permit(
       :fullname, :display_name, :profile_type, :city, :timezone,
-      :avatar_url, :cover_img_url, :do_marketplace_available, :company_size,
-      :turnover, :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
+      :do_marketplace_available, :company_size, :turnover, :cover_img,
+      :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
       :tender_level, :number_public_contracts, keywords: [], countries: [],
       industries: []
     )
+  end
+
+  def avatar_params
+    params.permit(:avatar)
+  end
+
+  def cover_img_params
+    params.permit(:cover_img)
   end
 end
