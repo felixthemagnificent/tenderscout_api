@@ -4,7 +4,7 @@ class ProfileSerializer < ActiveModel::Serializer
   belongs_to :country, class_name: 'Core::Country', serializer: CountrySerializer
   belongs_to :industry, serializer: IndustrySerializer
 
-  attributes :id, :fullname, :display_name, :avatar_url, :cover_img_url, :city,
+  attributes :id, :fullname, :display_name, :avatar, :cover_img, :city,
              :do_marketplace_available, :profile_type, :company_size,
              :turnover, :timezone, :contacts, :keywords
 end

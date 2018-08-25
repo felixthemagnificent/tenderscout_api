@@ -11,6 +11,9 @@ class Profile < ApplicationRecord
 
   enum profile_type: [:consultant, :company]
 
+  mount_uploader :avatar, AvatarUploader
+  mount_uploader :cover_img, CoverImgUploader
+
   validates_presence_of :fullname, :display_name, :timezone, :profile_type, :user_id
   validates_presence_of :company_size, :turnover unless :profile_type != :consultant
 
