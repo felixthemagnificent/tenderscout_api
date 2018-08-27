@@ -15,7 +15,14 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     resources :users do
-      resources :profiles
+      resources :profiles do
+        member do
+          post :avatar, to: 'profiles#create_avatar'
+          delete :avatar, to: 'profiles#destroy_avatar'
+          post :cover_img, to: 'profiles#create_cover_img'
+          delete :cover_img, to: 'profiles#destroy_cover_img'
+        end
+      end
     end
     resources :profiles, path: 'my/profiles'
     resources :search_monitors, path: 'bidder/monitor' do
