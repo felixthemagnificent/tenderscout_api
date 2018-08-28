@@ -23,6 +23,12 @@ Rails.application.routes.draw do
       post 'forget_password' => 'auth#forget_password'
       post 'reset_password' => 'auth#reset_password'
     end
+    namespace :marketplace do
+      resources :tenders
+      resources :tender_committees
+      resources :tender_criteria
+      resources :tender_tasks
+    end
     resources :users do
       resources :profiles do
         member do

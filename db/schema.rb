@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828063308) do
+ActiveRecord::Schema.define(version: 20180828082728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -582,6 +582,30 @@ ActiveRecord::Schema.define(version: 20180828063308) do
     t.index ["profile_id"], name: "index_keywords_profiles_on_profile_id"
   end
 
+  create_table "marketplace_tender_committees", force: :cascade do |t|
+    t.bigint "tender_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_committees_on_tender_id"
+    t.index ["user_id"], name: "index_marketplace_tender_committees_on_user_id"
+  end
+
+  create_table "marketplace_tender_criteria", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "marketplace_tender_tasks", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.float "weight"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ngip_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
@@ -794,6 +818,7 @@ ActiveRecord::Schema.define(version: 20180828063308) do
   add_foreign_key "industry_codes", "industries"
   add_foreign_key "keywords_profiles", "keywords"
   add_foreign_key "keywords_profiles", "profiles"
+  add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"
