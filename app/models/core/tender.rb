@@ -52,7 +52,7 @@ class Core::Tender < ApplicationRecord
     matches <<  {
                   range:
                   {
-                    value_max:
+                    low_value:
                     {
                      lte: tender_value_to
                     }
@@ -62,7 +62,7 @@ class Core::Tender < ApplicationRecord
     matches << {
                   range:
                   {
-                    value_min:
+                    high_value:
                     {
                       gte: tender_value_from
                     }
