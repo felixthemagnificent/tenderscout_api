@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828082728) do
+ActiveRecord::Schema.define(version: 20180828102207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,7 +232,7 @@ ActiveRecord::Schema.define(version: 20180828082728) do
   end
 
   create_table "core_organizations", force: :cascade do |t|
-    t.string "name", limit: 4096, null: false
+    t.string "name"
     t.text "description"
     t.string "profile_url", limit: 4096
     t.string "web_url", limit: 4096
@@ -293,21 +293,21 @@ ActiveRecord::Schema.define(version: 20180828082728) do
   create_table "core_tenders", force: :cascade do |t|
     t.string "title", limit: 4096, null: false
     t.text "description"
-    t.date "published_on", null: false
+    t.datetime "published_on"
     t.date "awarded_on"
-    t.datetime "submission_datetime", null: false
+    t.datetime "submission_datetime"
     t.date "deadline_date"
     t.date "cancelled_on"
-    t.integer "procedure_id", null: false
-    t.integer "currency_id", null: false
-    t.integer "organization_id", null: false
-    t.integer "status_cd", null: false
+    t.integer "procedure_id"
+    t.integer "currency_id"
+    t.integer "organization_id"
+    t.integer "status_cd"
     t.string "contract_authority_type", limit: 255
     t.string "main_activity", limit: 255
     t.string "contract_category", limit: 255
     t.string "location", limit: 255
-    t.boolean "flagged_as_sme_friendly", default: false, null: false
-    t.boolean "flagged_as_vcs_friendly", default: false, null: false
+    t.boolean "flagged_as_sme_friendly", default: false
+    t.boolean "flagged_as_vcs_friendly", default: false
     t.string "nuts_codes", limit: 255, default: [], array: true
     t.string "supplementary_codes", limit: 255, default: [], array: true
     t.integer "contract_duration_in_days"
@@ -333,10 +333,10 @@ ActiveRecord::Schema.define(version: 20180828082728) do
     t.datetime "updated_at"
     t.date "award_published_on"
     t.date "potential_retender_date"
-    t.string "tender_urls", limit: 255, default: [], null: false, array: true
+    t.string "tender_urls", default: [], array: true
     t.string "award_urls", limit: 255, default: [], null: false, array: true
     t.integer "spider_id"
-    t.boolean "delta", default: true, null: false
+    t.boolean "delta", default: true
     t.string "file_reference_number", limit: 255
     t.integer "creator_id"
     t.integer "naics_code_id"

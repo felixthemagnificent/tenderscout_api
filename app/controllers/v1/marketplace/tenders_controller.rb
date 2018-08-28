@@ -4,7 +4,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # GET /profiles
   def index
-    @tenders = Core::Tender.all.paginate(paginate_params)
+    @tenders = Core::Tender.all.paginate(paginate_params[:page], paginate_params[:page_size])
     render json: @tenders
   end
 

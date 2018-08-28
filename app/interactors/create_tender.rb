@@ -2,13 +2,13 @@ class CreateTender
   include Interactor
 
   def call
-    Tender.transaction do
+    Core::Tender.transaction do
       context.fail! errors: { error: :unauthorized, error_description: 'Action is not allowed'},
                       code: :unauthorized unless context.user.admin?
 
       context.tender = Core::Tender.new(tender_params)
-      context.tender.industry = Industry.find(industry_params) if industry_params
-      context.tender.country = Core::Country.find(geography_params) if geography_params
+      context.tender.industry = Industry.find(industry_params[:industry]) if industry_params
+      context.tender.country = Core::Country.find(geography_params[:geography]) if geography_params
       context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.save
 
       if contact_params
