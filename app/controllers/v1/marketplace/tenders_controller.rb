@@ -1,4 +1,4 @@
-class Marketplace::TendersController < ApplicationController
+class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
 

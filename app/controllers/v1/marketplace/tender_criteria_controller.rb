@@ -1,4 +1,4 @@
-class Marketplace::TenderCriteriaController < ApplicationController
+class V1::Marketplace::TenderCriteriaController < ApplicationController
   before_action :set_marketplace_tender_criterium, only: [:show, :update, :destroy]
 
   # GET /marketplace/tender_criteria

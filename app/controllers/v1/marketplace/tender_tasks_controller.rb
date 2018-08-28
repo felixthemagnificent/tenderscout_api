@@ -1,4 +1,4 @@
-class Marketplace::TenderTasksController < ApplicationController
+class V1::Marketplace::TenderTasksController < ApplicationController
   before_action :set_marketplace_tender_task, only: [:show, :update, :destroy]
 
   # GET /marketplace/tender_tasks

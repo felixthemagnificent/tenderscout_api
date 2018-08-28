@@ -1,4 +1,4 @@
-class Marketplace::TenderCommitteesController < ApplicationController
+class V1::Marketplace::TenderCommitteesController < ApplicationController
   before_action :set_marketplace_tender_committee, only: [:show, :update, :destroy]
 
   # GET /marketplace/tender_committees
