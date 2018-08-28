@@ -54,20 +54,20 @@ class Core::Tender < ApplicationRecord
                   {
                     value_max:
                     {
-                     lte: valueTo
+                     lte: tender_value_to
                     }
                   }
-                } if valueTo
+                } if tender_value_to
 
     matches << {
                   range:
                   {
                     value_min:
                     {
-                      gte: valueFrom
+                      gte: tender_value_from
                     }
                   }
-                } if valueFrom
+                } if tender_value_from
 
     matches << {
                   match:
