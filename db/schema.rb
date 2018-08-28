@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828033024) do
+ActiveRecord::Schema.define(version: 20180828063308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -368,9 +368,11 @@ ActiveRecord::Schema.define(version: 20180828033024) do
     t.boolean "request_awards", default: false
     t.boolean "retender_status", default: false
     t.datetime "dispatch_date"
+    t.bigint "industry_id"
     t.index ["awarded_on"], name: "index_core_awarded_on"
     t.index ["created_at"], name: "index_core_created_at"
     t.index ["flagged_as_sme_friendly"], name: "index_core_flagged_as_sme_friendly"
+    t.index ["industry_id"], name: "index_core_tenders_on_industry_id"
     t.index ["offers_count"], name: "index_core_offers_count"
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"
@@ -760,6 +762,7 @@ ActiveRecord::Schema.define(version: 20180828033024) do
   add_foreign_key "core_tenders", "core_currencies", column: "currency_id", name: "core_tenders_currency_id_fk"
   add_foreign_key "core_tenders", "core_organizations", column: "organization_id", name: "core_tenders_organization_id_fk"
   add_foreign_key "core_tenders", "core_procedures", column: "procedure_id", name: "core_tenders_procedure_id_fk"
+  add_foreign_key "core_tenders", "industries"
   add_foreign_key "core_tenders_categories", "core_categories", column: "category_id", name: "core_tenders_categories_category_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_tenders", column: "tender_id", name: "core_tenders_categories_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_contacts", "core_contacts", column: "contact_id", name: "core_tenders_contacts_contact_id_fk", on_delete: :cascade
