@@ -7,4 +7,6 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :id, :fullname, :display_name, :avatar, :cover_img, :city,
              :do_marketplace_available, :profile_type, :company_size,
              :turnover, :timezone, :contacts, :keywords
+
+  attribute(:role) { object.try(:role) }
 end

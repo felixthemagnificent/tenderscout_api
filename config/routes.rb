@@ -1,5 +1,14 @@
 Rails.application.routes.draw do
 
+  namespace :marketplace do
+    resources :tender_committees
+  end
+  namespace :marketplace do
+    resources :tender_criteria
+  end
+  namespace :marketplace do
+    resources :tender_tasks
+  end
   resources :contacts
   # use_doorkeeper
   devise_for :users, defaults: { format: :json }
@@ -13,6 +22,12 @@ Rails.application.routes.draw do
       post 'logoff' => 'auth#logoff'
       post 'forget_password' => 'auth#forget_password'
       post 'reset_password' => 'auth#reset_password'
+    end
+    namespace :marketplace do
+      resources :tenders
+      resources :tender_committees
+      resources :tender_criteria
+      resources :tender_tasks
     end
     resources :users do
       resources :profiles do
