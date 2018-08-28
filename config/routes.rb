@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       resources :roles
       resources :industries
       resources :industry_codes
+      get :all_codes, path: 'all_codes', to: 'industry_codes#all_codes'
       resources :african_codes
       resources :classification_codes
       resources :gsin_codes
