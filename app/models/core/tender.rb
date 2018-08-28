@@ -2,10 +2,10 @@
 class Core::Tender < ApplicationRecord
   self.table_name = "core_tenders"
 
-  belongs_to :currency
-  belongs_to :organization
-  belongs_to :procedure
-  belongs_to :classification, class_name: 'Core::ClassificationCode', foreign_key: :classification_code_id
+  belongs_to :currency, optional: true
+  belongs_to :organization, optional: true
+  belongs_to :procedure, optional: true
+  belongs_to :classification, class_name: 'Core::ClassificationCode', foreign_key: :classification_code_id, optional: true
   has_one :country, through: :organization
   has_many :documents
   has_many :additional_information
