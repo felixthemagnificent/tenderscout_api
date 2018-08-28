@@ -1,4 +1,4 @@
-class PostmarkMailer < PostmarkMailer::Base
+class PostmarkMailer < ActionMailer::Base
 
   def send_template(send_to, subject, template, params)
     mail(
