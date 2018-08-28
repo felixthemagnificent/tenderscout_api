@@ -2,10 +2,10 @@
 class Core::Tender < ApplicationRecord
   self.table_name = "core_tenders"
 
-  belongs_to :currency
-  belongs_to :organization
-  belongs_to :procedure
-  belongs_to :classification, class_name: Core::ClassificationCode, foreign_key: :classification_code_id
+  belongs_to :currency, optional: true
+  belongs_to :organization, optional: true
+  belongs_to :procedure, optional: true
+  belongs_to :classification, class_name: 'Core::ClassificationCode', foreign_key: :classification_code_id, optional: true
   has_one :country, through: :organization
   has_many :documents
   has_many :additional_information
@@ -29,11 +29,16 @@ class Core::Tender < ApplicationRecord
   has_many :nhs_e_classes, through: :tender_nhs_e_classes
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
+  has_many :tender_committees, class_name: 'Marketplace::TenderCommittee'
+  has_many :committees, through: :tender_committees, source: :user, class_name: 'Marketplace::TenderCommittee'
+  belongs_to :industry
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
   scope :inactive, -> { inactive_on(DateTime.now) }
   scope :inactive_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].lt(date)) }
+  
+  scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
@@ -44,25 +49,25 @@ class Core::Tender < ApplicationRecord
                   tender_countries: nil)
 
     matches = []
-    # matches <<  {
-    #               range:
-    #               {
-    #                 value_max:
-    #                 {
-    #                  lte: valueTo
-    #                 }
-    #               }
-    #             } if valueTo
+    matches <<  {
+                  range:
+                  {
+                    high_value:
+                    {
+                     lte: tender_value_to
+                    }
+                  }
+                } if tender_value_to
 
-    # matches << {
-    #               range:
-    #               {
-    #                 value_max:
-    #                 {
-    #                   gte: valueFrom
-    #                 }
-    #               }
-    #             } if valueFrom
+    matches << {
+                  range:
+                  {
+                    low_value:
+                    {
+                      gte: tender_value_from
+                    }
+                  }
+                } if tender_value_from
 
     matches << {
                   match:
