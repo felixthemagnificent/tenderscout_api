@@ -4,7 +4,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # GET /profiles
   def index
-    @tenders = Tender.all
+    @tenders = Core::Tender.all.paginate(paginate_params)
     render json: @tenders
   end
 
@@ -15,7 +15,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # POST /profiles
   def create
-    result = CreateProfile.call(params: tender_params, user: current_user)
+    result = CreateTender.call(params: tender_params, user: current_user)
     if result.success?
       render json: result.tender, status: :created
     else
@@ -25,9 +25,9 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
-    result = UpdateProfile.call(profile: @tender, params: tender_params, user: current_user)
+    result = UpdateTender.call(tender: @tender, params: tender_params, user: current_user)
     if result.success?
-      render json: result.profile
+      render json: result.tender
     else
       render json: result.errors, status: result.code
     end
@@ -35,56 +35,31 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # DELETE /profiles/1
   def destroy
-    # @profile.destroy
-  end
-
-  def create_avatar
-    @profile.remove_avatar!
-    @profile.save
-
-    if @profie.update(avatar_params)
-      render json: @profile
+    result = DestroyTender.call(tender: @tender, params: tender_params, user: current_user)
+    if result.success?
+      render json: nil, status: :ok
     else
-      render json: @profile.errors, status: result.code
+      render json: result.errors, status: result.code
     end
-  end
-
-  def destroy_avatar
-    @profile.remove_avatar!
-    @profile.save
-  end
-
-  def create_cover_img
-    @profile.remove_cover_img!
-    @profile.save
-
-    if @profie.update(cover_img_params)
-      render json: @profile
-    else
-      render json: @profile.errors, status: result.code
-    end
-  end
-
-  def destroy_cover_img
-    @profile.remove_cover_img!
-    @profile.save
   end
 
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_tender
-    @profile = Profile.find(params[:id])
+    @tender = Core::Tender.find(params[:id])
+  end
+
+  def paginate_params
+    params.permit(:page, :page_size)
   end
 
   # Only allow a trusted parameter "white list" through.
   def tender_params
     params.permit(
-      :fullname, :display_name, :profile_type, :city, :timezone,
-      :do_marketplace_available, :company_size, :turnover, :cover_img,
-      :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
-      :tender_level, :number_public_contracts, keywords: [], countries: [],
-      industries: []
+      :title, :description, :industry, :geography, :value_from,
+      :value_to, :keywords, :submission_date, :dispatch_date,
+      contact_info: []
     )
   end
 end

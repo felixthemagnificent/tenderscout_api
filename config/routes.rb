@@ -1,5 +1,14 @@
 Rails.application.routes.draw do
 
+  namespace :marketplace do
+    resources :tender_committees
+  end
+  namespace :marketplace do
+    resources :tender_criteria
+  end
+  namespace :marketplace do
+    resources :tender_tasks
+  end
   resources :contacts
   # use_doorkeeper
   devise_for :users, defaults: { format: :json }
