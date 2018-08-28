@@ -13,6 +13,8 @@ class User < ApplicationRecord
 
   after_initialize :set_default_role, :if => :new_record?
 
+  scope :paginate, ->(page, page_size) { page(page).per(page_size) }
+
   def set_default_role
     self.role ||= :user
   end
