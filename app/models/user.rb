@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :profiles
   has_many :search_monitors
   has_many :favourite_monitors
+  has_many :tenders, through: :tender_committees
 
   enum role: [:admin, :user]
 
