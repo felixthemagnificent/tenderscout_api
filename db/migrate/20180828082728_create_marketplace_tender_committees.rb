@@ -6,6 +6,6 @@ class CreateMarketplaceTenderCommittees < ActiveRecord::Migration[5.1]
 
       t.timestamps
     end
-    add_foreign_key :marketplace_tender_committees, :core_tenders, column: :responder_chain_id
+    add_foreign_key :marketplace_tender_committees, :core_tenders, column: :tender_id
   end
 end
