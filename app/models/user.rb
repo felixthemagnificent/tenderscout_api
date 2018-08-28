@@ -8,10 +8,13 @@ class User < ApplicationRecord
   has_many :profiles
   has_many :search_monitors
   has_many :favourite_monitors
+  has_many :tenders, through: :tender_committees
 
   enum role: [:admin, :user]
 
   after_initialize :set_default_role, :if => :new_record?
+
+  scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   def set_default_role
     self.role ||= :user

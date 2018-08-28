@@ -7,29 +7,17 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
   end
 
   def create
-    if @industry
-      @industry_code = IndustryCode.find_by(
-        industry: @industry,
-        entity_code_name: industry_code_params[:entity_code_name],
-        entity_code_id: industry_code_params[:entity_code_id]
-      )
+    @industry_code = IndustryCode.find_or_create_by(
+      industry: @industry,
+      entity_code_name: industry_code_params[:entity_code_name],
+      entity_code_id: industry_code_params[:entity_code_id]
+    )
 
-      unless @industry_code
-        @industry_code = IndustryCode.new(
-          industry: @industry,
-          entity_code_name: industry_code_params[:entity_code_name],
-          entity_code_id: industry_code_params[:entity_code_id]
-        )
-
-        if @industry_code.save
-          render json: @industry_code, status: :created
-        else
-          render json: @industry_code.errors, status: :unprocessable_entity
-        end
-      end
+    if @industry_code.save
+      render json: @industry_code, status: :created
+    else
+      render json: @industry_code.errors, status: :unprocessable_entity
     end
-
-    render json: @industry_code
   end
 
   # def create_array
