@@ -9,4 +9,8 @@ class Core::Cpv < ApplicationRecord
       cpv_codes: [code]
     }
   end
+
+  def code_name
+    'cpv'
+  end
 end
