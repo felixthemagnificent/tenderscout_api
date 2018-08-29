@@ -14,6 +14,9 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
     @sfgov = Core::Sfgov.all
     @naics = Core::Naics.all
     @cpv = Core::Cpv.all
+    @pro_class = Core::ProClass.all
+    @nhs_e_class = Core::NhsEClass.all
+    @unspsc = Core::Unspsc.all
   end
 
   def create

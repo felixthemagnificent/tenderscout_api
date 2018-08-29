@@ -16,6 +16,15 @@ end
 json.array! @cpv do |code|
   json.partial! 'v1/dictionaries/industry_codes/code', locals: { code: code, code_name: 'cpv' }
 end
-# json.array! @sfgov do |code|
-#   json.partial! 'v1/dictionaries/industry_codes/code', locals: { code: code, code_name: 'sfgov' }
-# end
+json.array! @sfgov do |code|
+  json.partial! 'v1/dictionaries/industry_codes/code', locals: { code: code, code_name: 'sfgov' }
+end
+json.array! @pro_class do |code|
+  json.partial! 'v1/dictionaries/industry_codes/code', locals: { code: code, code_name: 'pro_class' }
+end
+json.array! @nhs_e_class do |code|
+  json.partial! 'v1/dictionaries/industry_codes/code', locals: { code: code, code_name: 'nhs_e_class' }
+end
+json.array! @unspsc do |code|
+  json.partial! 'v1/dictionaries/industry_codes/code', locals: { code: code, code_name: 'unspsc' }
+end
