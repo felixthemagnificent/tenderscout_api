@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828102207) do
+ActiveRecord::Schema.define(version: 20180828132612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,38 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
     t.index ["code"], name: "index_african_codes_on_code"
+  end
+
+  create_table "attached_files", force: :cascade do |t|
+    t.string "filename"
+    t.string "file_type"
+  end
+
+  create_table "case_studies", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.string "cover_img"
+    t.float "budget", default: 0.0, null: false
+    t.string "video_list", default: [], array: true
+    t.datetime "start_date"
+    t.datetime "delivery_date"
+    t.boolean "archived", default: false, null: false
+    t.bigint "profile_id"
+    t.index ["profile_id"], name: "index_case_studies_on_profile_id"
+  end
+
+  create_table "case_studies_galleries", id: false, force: :cascade do |t|
+    t.bigint "gallery_id"
+    t.bigint "case_study_id"
+    t.index ["case_study_id"], name: "index_case_studies_galleries_on_case_study_id"
+    t.index ["gallery_id"], name: "index_case_studies_galleries_on_gallery_id"
+  end
+
+  create_table "case_studies_industry_codes", id: false, force: :cascade do |t|
+    t.bigint "industry_code_id"
+    t.bigint "case_study_id"
+    t.index ["case_study_id"], name: "index_case_studies_industry_codes_on_case_study_id"
+    t.index ["industry_code_id"], name: "index_case_studies_industry_codes_on_industry_code_id"
   end
 
   create_table "classification_codes", force: :cascade do |t|
@@ -537,6 +569,10 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.index ["user_id"], name: "index_favourite_monitors_on_user_id"
   end
 
+  create_table "galleries", force: :cascade do |t|
+    t.string "image"
+  end
+    
   create_table "favourite_tenders", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "tender_id"
@@ -773,6 +809,11 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "case_studies", "profiles"
+  add_foreign_key "case_studies_galleries", "case_studies"
+  add_foreign_key "case_studies_galleries", "galleries"
+  add_foreign_key "case_studies_industry_codes", "case_studies"
+  add_foreign_key "case_studies_industry_codes", "industry_codes"
   add_foreign_key "contacts", "profiles"
   add_foreign_key "core_additional_information", "core_tenders", column: "tender_id", name: "core_additional_information_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_awards", "core_organizations", column: "organization_id", name: "core_awards_organization_id_fk", on_delete: :cascade
