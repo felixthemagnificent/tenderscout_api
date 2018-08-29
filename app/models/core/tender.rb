@@ -49,25 +49,25 @@ class Core::Tender < ApplicationRecord
                   tender_countries: nil)
 
     matches = []
-    # matches <<  {
-    #               range:
-    #               {
-    #                 value_max:
-    #                 {
-    #                  lte: valueTo
-    #                 }
-    #               }
-    #             } if valueTo
+    matches <<  {
+                  range:
+                  {
+                    high_value:
+                    {
+                     lte: tender_value_to
+                    }
+                  }
+                } if tender_value_to
 
-    # matches << {
-    #               range:
-    #               {
-    #                 value_max:
-    #                 {
-    #                   gte: valueFrom
-    #                 }
-    #               }
-    #             } if valueFrom
+    matches << {
+                  range:
+                  {
+                    low_value:
+                    {
+                      gte: tender_value_from
+                    }
+                  }
+                } if tender_value_from
 
     matches << {
                   match:
