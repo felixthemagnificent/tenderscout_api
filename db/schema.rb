@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20180828210015) do
-
+  
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -533,6 +533,15 @@ ActiveRecord::Schema.define(version: 20180828210015) do
 
   create_table "galleries", force: :cascade do |t|
     t.string "image"
+  end
+    
+  create_table "favourite_tenders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_favourite_tenders_on_tender_id"
+    t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
   end
 
   create_table "gsin_codes", force: :cascade do |t|
