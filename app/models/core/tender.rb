@@ -32,6 +32,7 @@ class Core::Tender < ApplicationRecord
   has_many :tender_committees, class_name: 'Marketplace::TenderCommittee'
   has_many :committees, through: :tender_committees, source: :user, class_name: 'Marketplace::TenderCommittee'
   belongs_to :industry
+  has_and_belongs_to_many :attachments
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }

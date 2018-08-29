@@ -24,7 +24,9 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
-      resources :tenders
+      resources :tenders do
+        resources :tender_attachments
+      end
       resources :tender_committees
       resources :tender_criteria
       resources :tender_tasks

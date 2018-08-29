@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828210015) do
+ActiveRecord::Schema.define(version: 20180829192412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,19 @@ ActiveRecord::Schema.define(version: 20180828210015) do
   create_table "attached_files", force: :cascade do |t|
     t.string "filename"
     t.string "file_type"
+  end
+
+  create_table "attachments", force: :cascade do |t|
+    t.string "file"
+    t.string "content_type"
+    t.string "file_size"
+  end
+
+  create_table "attachments_core_tenders", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "tender_id"
+    t.index ["attachment_id"], name: "index_attachments_core_tenders_on_attachment_id"
+    t.index ["tender_id"], name: "index_attachments_core_tenders_on_tender_id"
   end
 
   create_table "case_studies", force: :cascade do |t|
@@ -763,6 +776,8 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "attachments_core_tenders", "attachments"
+  add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "case_studies", "profiles"
   add_foreign_key "case_studies_galleries", "case_studies"
   add_foreign_key "case_studies_galleries", "galleries"
