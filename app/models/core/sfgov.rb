@@ -8,4 +8,8 @@ class Core::Sfgov < ApplicationRecord
       sfgov_codes: [code]
     }
   end
+
+  def code_name
+    'sfgov'
+  end
 end

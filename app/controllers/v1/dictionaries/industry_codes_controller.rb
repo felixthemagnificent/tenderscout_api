@@ -7,16 +7,17 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
   end
 
   def all_codes
-    @african = AfricanCode.all
-    @classification = Core::ClassificationCode.all
-    @gsin = Core::Gsin.all
-    @ngip = Core::Ngip.all
-    @sfgov = Core::Sfgov.all
-    @naics = Core::Naics.all
-    @cpv = Core::Cpv.all
-    @pro_class = Core::ProClass.all
-    @nhs_e_class = Core::NhsEClass.all
-    @unspsc = Core::Unspsc.all
+    render json: AfricanCode.all +
+      Core::ClassificationCode.all +
+      Core::Gsin.all +
+      Core::Ngip.all +
+      Core::Sfgov.all +
+      Core::Naics.all +
+      Core::Cpv.all +
+      Core::ProClass.all +
+      Core::NhsEClass.all +
+      Core::Unspsc.all,
+      each_serializer: CodeSerializer
   end
 
   def create
