@@ -30,7 +30,10 @@ class Core::Tender < ApplicationRecord
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
   has_many :tender_committees, class_name: 'Marketplace::TenderCommittee'
-  has_many :committees, through: :tender_committees, source: :user, class_name: 'Marketplace::TenderCommittee'
+  has_many :committees, through: :tender_committees, source: :user, class_name: 'User'
+  has_many :tasks, class_name: 'Marketplace::TenderTask'
+  has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
+  has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   belongs_to :industry
 
   scope :active, -> { active_on(DateTime.now) }

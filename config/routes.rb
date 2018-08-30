@@ -1,14 +1,20 @@
 Rails.application.routes.draw do
 
   namespace :marketplace do
-    resources :tender_committees
+    resources :tender_criteria_sections
   end
-  namespace :marketplace do
-    resources :tender_criteria
-  end
-  namespace :marketplace do
-    resources :tender_tasks
-  end
+  # namespace :marketplace do
+  #   resources :tender_criteria_sections
+  # end
+  # namespace :marketplace do
+  #   resources :tender_committees
+  # end
+  # namespace :marketplace do
+  #   resources :tender_criteria
+  # end
+  # namespace :marketplace do
+  #   resources :tender_tasks
+  # end
   resources :contacts
   # use_doorkeeper
   devise_for :users, defaults: { format: :json }
@@ -24,10 +30,12 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
-      resources :tenders
-      resources :tender_committees
-      resources :tender_criteria
-      resources :tender_tasks
+      resources :tenders do
+        resources :tender_committees, path: 'committees'
+        resources :tender_criteria, path: 'criteries'
+        resources :tender_tasks, path: 'tasks'
+        resources :tender_criteria_sections, path: 'criteria_sections'
+      end
     end
     resources :users do
       resources :profiles do
