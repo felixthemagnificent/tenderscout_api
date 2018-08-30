@@ -17,7 +17,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # POST /profiles
   def create
-    result = CreateTender.call(params: tender_params, user: current_user)
+    result = CreateTender.call(params: params, user: current_user)
     if result.success?
       render json: result.tender, status: :created
     else
