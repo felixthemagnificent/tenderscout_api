@@ -8,8 +8,8 @@ class UpdateTender
 
       context.tender.estimated_low_value = context.params[:value_from] if context.params[:value_from]
       context.tender.estimated_high_value = context.params[:value_to] if context.params[:value_to]
-      context.tender.industry = Industry.find(industry_params[:industry]) if industry_params
-      context.tender.country = Core::Country.find(geography_params[:geography]) if geography_params
+      context.tender.industry = Industry.find_by_id(industry_params[:industry]) if industry_params
+      context.tender.country = Core::Country.find_by_id(geography_params[:geography]) if geography_params
       context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.update(tender_params)
 
       if contact_params
