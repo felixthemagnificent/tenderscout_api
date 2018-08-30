@@ -1,5 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
+  include Pageable
+  
   self.table_name = "core_tenders"
 
   belongs_to :currency, optional: true
