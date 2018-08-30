@@ -1,7 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
   include Pageable
-  
+
   self.table_name = "core_tenders"
 
   belongs_to :currency, optional: true
@@ -36,14 +36,14 @@ class Core::Tender < ApplicationRecord
   has_many :tasks, class_name: 'Marketplace::TenderTask'
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
-  belongs_to :industry
+  belongs_to :industry, optional: true
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
   scope :inactive, -> { inactive_on(DateTime.now) }
   scope :inactive_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].lt(date)) }
   
-  scope :paginate, ->(page, page_size) { page(page).per(page_size) }
+  # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
