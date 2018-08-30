@@ -1,7 +1,8 @@
 module Pageable
   include ActiveSupport::Concern
-
-  def paginate(page: nil, page_size: nl)
-    page(page).per(page_size)
+  included do
+    def my_paginate(params)
+      page(params[:page].to_i).per(params[:page_size].to_i)
+    end
   end
 end
