@@ -6,8 +6,8 @@ class UpdateTender
       context.fail! errors: { error: :unauthorized, error_description: 'Action is not allowed'},
                       code: :unauthorized unless context.user.admin?
 
-      context.tender.estimated_low_value = params[:value_from] if params[:value_from]
-      context.tender.estimated_high_value = params[:value_to] if params[:value_to]
+      context.tender.estimated_low_value = context.params[:value_from] if context.params[:value_from]
+      context.tender.estimated_high_value = context.params[:value_to] if context.params[:value_to]
       context.tender.industry = Industry.find(industry_params[:industry]) if industry_params
       context.tender.country = Core::Country.find(geography_params[:geography]) if geography_params
       context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.update(tender_params)
