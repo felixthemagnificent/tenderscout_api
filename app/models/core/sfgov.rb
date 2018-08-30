@@ -3,9 +3,13 @@ class Core::Sfgov < ApplicationRecord
   has_many :tender_sfgovs
   has_many :tenders, through: :tender_sfgovs
 
-  # def format_fields
-  #   {
-  #     ngip_codes: [code]
-  #   }
-  # end
+  def format_fields
+    {
+      sfgov_codes: [code]
+    }
+  end
+
+  def code_name
+    'sfgov'
+  end
 end

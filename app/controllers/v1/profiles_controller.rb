@@ -96,10 +96,10 @@ class V1::ProfilesController < ApplicationController
   def profile_params
     params.permit(
       :fullname, :display_name, :profile_type, :city, :timezone,
-      :do_marketplace_available, :company_size, :turnover, :cover_img,
+      :do_marketplace_available, :company_size, :turnover,
       :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
-      :tender_level, :number_public_contracts, keywords: [], countries: [],
-      industries: []
+      :tender_level, :number_public_contracts, :company,
+      keywords: [], countries: [], industries: []
     )
   end
 

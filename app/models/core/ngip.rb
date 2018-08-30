@@ -8,4 +8,8 @@ class Core::Ngip < ApplicationRecord
       ngip_codes: [code]
     }
   end
+
+  def code_name
+    'ngip'
+  end
 end

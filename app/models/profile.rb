@@ -1,5 +1,6 @@
 class Profile < ApplicationRecord
   has_many :contacts
+  has_many :case_studies
 
   has_and_belongs_to_many :keywords
   has_and_belongs_to_many :countries, class_name: 'Core::Country'
