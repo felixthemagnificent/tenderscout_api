@@ -6,7 +6,7 @@ class V1::UsersController < ApplicationController
   def index
 
     users = User.all
-    @users = users.paginate(paginate_params[:page], paginate_params[:page_size])
+    @users = users.paginate(page: paginate_params[:page], page_size: paginate_params[:page_size])
 
     render json: {count: users.count, data: @users}
   end
