@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180829114825) do
+ActiveRecord::Schema.define(version: 20180830100014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(version: 20180829114825) do
     t.text "description"
     t.datetime "published_on"
     t.date "awarded_on"
-    t.datetime "submission_datetime"
+    t.datetime "submission_date"
     t.date "deadline_date"
     t.date "cancelled_on"
     t.integer "procedure_id"
@@ -411,7 +411,7 @@ ActiveRecord::Schema.define(version: 20180829114825) do
     t.index ["published_on"], name: "index_core_published_on"
     t.index ["spider_id"], name: "index_core_tenders_on_spider_id", unique: true
     t.index ["status_cd"], name: "index_core_status_cd"
-    t.index ["submission_datetime"], name: "index_core_submission_datetime"
+    t.index ["submission_date"], name: "index_core_submission_datetime"
     t.index ["title"], name: "index_core_tenders_on_title"
     t.index ["updated_at"], name: "index_core_updated_at"
   end
