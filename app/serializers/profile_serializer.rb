@@ -8,5 +8,5 @@ class ProfileSerializer < ActiveModel::Serializer
              :do_marketplace_available, :profile_type, :company, :company_size,
              :turnover, :timezone, :contacts, :keywords
 
-  attribute(:role) { object.try(:role) }
+  attribute(:role) { object.try(:user).try(:role) }
 end
