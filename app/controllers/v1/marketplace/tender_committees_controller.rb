@@ -1,51 +1,34 @@
 class V1::Marketplace::TenderCommitteesController < ApplicationController
-  before_action :set_marketplace_tender_committee, only: [:show, :update, :destroy]
-
+  before_action :set_tender
+  before_action :set_user, only: [:create, :destroy]
   # GET /marketplace/tender_committees
   def index
-    @marketplace_tender_committees = Marketplace::TenderCommittee.all
+    @marketplace_tender_committees = @tender.committees.all
 
-    render json: @marketplace_tender_committees
-  end
-
-  # GET /marketplace/tender_committees/1
-  def show
-    render json: @marketplace_tender_committee
+    render json: @marketplace_tender_committees, each_serializer: Marketplace::TenderCommitteeSerializer
   end
 
   # POST /marketplace/tender_committees
   def create
-    @marketplace_tender_committee = Marketplace::TenderCommittee.new(marketplace_tender_committee_params)
-
-    if @marketplace_tender_committee.save
-      render json: @marketplace_tender_committee, status: :created, location: @marketplace_tender_committee
-    else
-      render json: @marketplace_tender_committee.errors, status: :unprocessable_entity
+    @tender.transaction do 
+      @tender.committees << @user
+      render json: @marketplace_tender_committees, status: :created
     end
-  end
-
-  # PATCH/PUT /marketplace/tender_committees/1
-  def update
-    if @marketplace_tender_committee.update(marketplace_tender_committee_params)
-      render json: @marketplace_tender_committee
-    else
-      render json: @marketplace_tender_committee.errors, status: :unprocessable_entity
-    end
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   # DELETE /marketplace/tender_committees/1
   def destroy
-    @marketplace_tender_committee.destroy
+    @tender.committees.delete(@user)
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_marketplace_tender_committee
-      @marketplace_tender_committee = Marketplace::TenderCommittee.find(params[:id])
+    def set_tender
+      @tender = Core::Tender.find(params[:tender_id])
     end
 
-    # Only allow a trusted parameter "white list" through.
-    def marketplace_tender_committee_params
-      params.require(:marketplace_tender_committee).permit(:tender_id, :user_id)
+    def set_user
+      @user = User.find(params[:user_id])
     end
 end
