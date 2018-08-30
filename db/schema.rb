@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828210015) do
-  
+ActiveRecord::Schema.define(version: 20180831151350) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,19 @@ ActiveRecord::Schema.define(version: 20180828210015) do
   create_table "attached_files", force: :cascade do |t|
     t.string "filename"
     t.string "file_type"
+  end
+
+  create_table "attachments", force: :cascade do |t|
+    t.string "file"
+    t.string "content_type"
+    t.string "file_size"
+  end
+
+  create_table "attachments_core_tenders", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "tender_id"
+    t.index ["attachment_id"], name: "index_attachments_core_tenders_on_attachment_id"
+    t.index ["tender_id"], name: "index_attachments_core_tenders_on_tender_id"
   end
 
   create_table "case_studies", force: :cascade do |t|
@@ -130,7 +143,7 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.string "contact_point", limit: 255
     t.string "city_name", limit: 255
     t.integer "region_id"
-    t.integer "organization_id", null: false
+    t.integer "organization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "postcode", limit: 255
@@ -297,7 +310,7 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.text "description"
     t.datetime "published_on"
     t.date "awarded_on"
-    t.datetime "submission_datetime"
+    t.datetime "submission_date"
     t.date "deadline_date"
     t.date "cancelled_on"
     t.integer "procedure_id"
@@ -534,15 +547,6 @@ ActiveRecord::Schema.define(version: 20180828210015) do
   create_table "galleries", force: :cascade do |t|
     t.string "image"
   end
-    
-  create_table "favourite_tenders", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "tender_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_favourite_tenders_on_tender_id"
-    t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
-  end
 
   create_table "gsin_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
@@ -594,6 +598,28 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
+  end
+
+  create_table "marketplace_tender_criteria_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_criteria_sections_on_tender_id"
+  end
+
+  create_table "marketplace_tender_task_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_task_sections_on_tender_id"
   end
 
   create_table "marketplace_tender_tasks", force: :cascade do |t|
@@ -602,6 +628,10 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.float "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
 
   create_table "ngip_codes", force: :cascade do |t|
@@ -686,29 +716,30 @@ ActiveRecord::Schema.define(version: 20180828210015) do
   create_table "registration_requests", force: :cascade do |t|
     t.string "fullname", default: "", null: false
     t.string "company", default: "", null: false
-    t.integer "company_size", default: 0, null: false
+    t.string "company_size", default: "0", null: false
     t.string "state", default: "", null: false
     t.string "country", default: "", null: false
     t.string "city", default: "", null: false
-    t.string "sector"
-    t.integer "turnover", default: 0, null: false
+    t.string "turnover", default: "0", null: false
     t.json "markets", default: {}, null: false
     t.integer "tender_level", default: 0, null: false
     t.float "win_rate", default: 0.0, null: false
-    t.integer "number_public_contracts", default: 0, null: false
+    t.string "number_public_contracts", default: "0", null: false
     t.boolean "do_use_automation", default: false, null: false
     t.boolean "do_use_collaboration", default: false, null: false
     t.boolean "do_use_bid_no_bid", default: false, null: false
     t.boolean "do_use_bid_library", default: false, null: false
     t.boolean "do_use_feedback", default: false, null: false
     t.boolean "do_collaborate", default: false, null: false
-    t.float "tender_complete_time", default: 0.0, null: false
+    t.string "tender_complete_time", default: "0.0", null: false
     t.integer "organisation_count", default: 0, null: false
     t.boolean "do_processed", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "country_id"
     t.bigint "industry_id"
+    t.string "email", default: "", null: false
+    t.string "phone"
     t.index ["country_id"], name: "index_registration_requests_on_country_id"
     t.index ["industry_id"], name: "index_registration_requests_on_industry_id"
   end
@@ -745,6 +776,16 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.index ["code"], name: "index_sfgov_codes_on_code"
   end
 
+  create_table "suppliers", force: :cascade do |t|
+    t.string "status", default: "pending", null: false
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_suppliers_on_tender_id"
+    t.index ["user_id"], name: "index_suppliers_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -772,6 +813,8 @@ ActiveRecord::Schema.define(version: 20180828210015) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "attachments_core_tenders", "attachments"
+  add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "case_studies", "profiles"
   add_foreign_key "case_studies_galleries", "case_studies"
   add_foreign_key "case_studies_galleries", "galleries"
@@ -797,6 +840,12 @@ ActiveRecord::Schema.define(version: 20180828210015) do
   add_foreign_key "keywords_profiles", "keywords"
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_task_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "marketplace_tender_task_sections", column: "section_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"
@@ -805,4 +854,6 @@ ActiveRecord::Schema.define(version: 20180828210015) do
   add_foreign_key "registration_requests", "countries"
   add_foreign_key "registration_requests", "industries"
   add_foreign_key "search_monitors", "users"
+  add_foreign_key "suppliers", "core_tenders", column: "tender_id"
+  add_foreign_key "suppliers", "users"
 end
