@@ -32,7 +32,9 @@ class Core::Tender < ApplicationRecord
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
   has_many :tender_committees, class_name: 'Marketplace::TenderCommittee'
+  has_and_belongs_to_many :attachments
   has_many :committees, through: :tender_committees, source: :user, class_name: 'User'
+  has_many :task_sections, class_name: 'Marketplace::TenderTaskSection'
   has_many :tasks, class_name: 'Marketplace::TenderTask'
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
