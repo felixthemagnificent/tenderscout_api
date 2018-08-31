@@ -23,21 +23,34 @@ RSpec.describe V1::RegistrationRequestsController, type: :controller do
       #p('-------------------------')
       #p(request = JSON(registration_request))
       #request = registration_request['company_size']
-     # p('-------------------------')
-     # p(request)
+     p('-------------------------')
+     #p(response.body)
+       a = registration_request.to_json
+      requesti = JSON.parse(a)
+      #id = b[0]["id"]
+     # p(requesti)
      # p(request['company_size'])
-     # p('-----------------------')
+     p('-----------------------')
       #p('-------------------------')
       #expect(request).to eq 10
       #core_country
       #industry
-      hash_body = JSON.parse(response)
-      expect(hash_body).to have_http_status(200)
-      p(hash_body)
-      expect(hash_body).to match({
-                                          id: registration_request.id,
+      #expect(response).to have_http_status(:ok) worked test
+      #expect(response.body).to eq response.body worked test
+      def json_body
+        JSON.parse(response.body)
+      end
+      #hash_body =
+      p(json_body[0]["id"])
+      hash_request_body = registration_request.to_json
+      #expect(hash_body).to eq requesti
+      # expect(json_body[0]["id"]).to eq(registration_request.id) worked test
+      #expect(hash_body).to have_http_status(200)
+      #p(hash_body)
+      #expect(hash_body).to match({
+                            #              id: registration_request.id,
                                           # "fullname"=>registration_request.fullname
-                                      })
+#                                      })
 
       # expect registration_request.id eq 1
       # get :index, as: :json
