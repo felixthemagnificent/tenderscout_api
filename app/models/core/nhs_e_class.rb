@@ -8,4 +8,8 @@ class Core::NhsEClass < ApplicationRecord
       nhs_e_class_codes: [code]
     }
   end
+
+  def code_name
+    'nhs_e_class'
+  end
 end

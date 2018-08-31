@@ -44,8 +44,8 @@ class CreateProfile
 
   def profile_params
     context.params.permit(
-        :fullname, :display_name, :profile_type, :city, :timezone, :avatar_url,
-        :cover_img_url, :do_marketplace_available, :company_size, :turnover,
+        :fullname, :display_name, :profile_type, :city, :timezone,
+        :do_marketplace_available, :company, :company_size, :turnover,
         :valueFrom, :valueTo, :tender_level, :number_public_contracts,
         :industry_id, :country_id
     )

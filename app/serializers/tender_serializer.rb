@@ -1,5 +1,5 @@
 class TenderSerializer < ActiveModel::Serializer
-  attributes  :id, :title, :description, :published_on, :awarded_on, :submission_datetime, :deadline_date,
+  attributes  :id, :title, :description, :published_on, :awarded_on, :submission_date, :deadline_date,
               :cancelled_on, :procedure_id, :procedure_name, :currency_id, :currency_name, :organization_id, :organization_name,
               :status_cd, :contract_authority_type, :main_activity, :contract_category, :location, :flagged_as_sme_friendly, 
               :flagged_as_vcs_friendly, :nuts_codes, :supplementary_codes, :contract_duration_in_days, 

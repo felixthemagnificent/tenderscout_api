@@ -1,9 +1,10 @@
 class V1::Marketplace::TenderCriteriaController < ApplicationController
   before_action :set_marketplace_tender_criterium, only: [:show, :update, :destroy]
+  before_action :set_tender
 
   # GET /marketplace/tender_criteria
   def index
-    @marketplace_tender_criteria = Marketplace::TenderCriterium.all
+    @marketplace_tender_criteria = @tender.criteries.all
 
     render json: @marketplace_tender_criteria
   end
@@ -15,7 +16,7 @@ class V1::Marketplace::TenderCriteriaController < ApplicationController
 
   # POST /marketplace/tender_criteria
   def create
-    @marketplace_tender_criterium = Marketplace::TenderCriterium.new(marketplace_tender_criterium_params)
+    @marketplace_tender_criterium = @tender.criteries.new(marketplace_tender_criterium_params)
 
     if @marketplace_tender_criterium.save
       render json: @marketplace_tender_criterium, status: :created, location: @marketplace_tender_criterium
@@ -42,6 +43,10 @@ class V1::Marketplace::TenderCriteriaController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_criterium
       @marketplace_tender_criterium = Marketplace::TenderCriterium.find(params[:id])
+    end
+
+    def set_tender
+      @tender = Core::Tender.find(params[:tender_id])
     end
 
     # Only allow a trusted parameter "white list" through.
