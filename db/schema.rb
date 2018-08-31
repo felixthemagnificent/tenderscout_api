@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828102207) do
+ActiveRecord::Schema.define(version: 20180831122342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,38 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
     t.index ["code"], name: "index_african_codes_on_code"
+  end
+
+  create_table "attached_files", force: :cascade do |t|
+    t.string "filename"
+    t.string "file_type"
+  end
+
+  create_table "case_studies", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.string "cover_img"
+    t.float "budget", default: 0.0, null: false
+    t.string "video_list", default: [], array: true
+    t.datetime "start_date"
+    t.datetime "delivery_date"
+    t.boolean "archived", default: false, null: false
+    t.bigint "profile_id"
+    t.index ["profile_id"], name: "index_case_studies_on_profile_id"
+  end
+
+  create_table "case_studies_galleries", id: false, force: :cascade do |t|
+    t.bigint "gallery_id"
+    t.bigint "case_study_id"
+    t.index ["case_study_id"], name: "index_case_studies_galleries_on_case_study_id"
+    t.index ["gallery_id"], name: "index_case_studies_galleries_on_gallery_id"
+  end
+
+  create_table "case_studies_industry_codes", id: false, force: :cascade do |t|
+    t.bigint "industry_code_id"
+    t.bigint "case_study_id"
+    t.index ["case_study_id"], name: "index_case_studies_industry_codes_on_case_study_id"
+    t.index ["industry_code_id"], name: "index_case_studies_industry_codes_on_industry_code_id"
   end
 
   create_table "classification_codes", force: :cascade do |t|
@@ -119,7 +151,7 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.string "contact_point", limit: 255
     t.string "city_name", limit: 255
     t.integer "region_id"
-    t.integer "organization_id", null: false
+    t.integer "organization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "postcode", limit: 255
@@ -295,7 +327,7 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.text "description"
     t.datetime "published_on"
     t.date "awarded_on"
-    t.datetime "submission_datetime"
+    t.datetime "submission_date"
     t.date "deadline_date"
     t.date "cancelled_on"
     t.integer "procedure_id"
@@ -379,7 +411,7 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.index ["published_on"], name: "index_core_published_on"
     t.index ["spider_id"], name: "index_core_tenders_on_spider_id", unique: true
     t.index ["status_cd"], name: "index_core_status_cd"
-    t.index ["submission_datetime"], name: "index_core_submission_datetime"
+    t.index ["submission_date"], name: "index_core_submission_datetime"
     t.index ["title"], name: "index_core_tenders_on_title"
     t.index ["updated_at"], name: "index_core_updated_at"
   end
@@ -546,6 +578,10 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
   end
 
+  create_table "galleries", force: :cascade do |t|
+    t.string "image"
+  end
+
   create_table "gsin_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
@@ -596,6 +632,28 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
+  end
+
+  create_table "marketplace_tender_criteria_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_criteria_sections_on_tender_id"
+  end
+
+  create_table "marketplace_tender_task_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_task_sections_on_tender_id"
   end
 
   create_table "marketplace_tender_tasks", force: :cascade do |t|
@@ -604,6 +662,10 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.float "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
 
   create_table "ngip_codes", force: :cascade do |t|
@@ -679,6 +741,7 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.integer "valueTo", default: 0, null: false
     t.integer "tender_level", default: 0, null: false
     t.integer "number_public_contracts", default: 0, null: false
+    t.string "company"
     t.index ["country_id"], name: "index_profiles_on_country_id"
     t.index ["industry_id"], name: "index_profiles_on_industry_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -773,6 +836,11 @@ ActiveRecord::Schema.define(version: 20180828102207) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "case_studies", "profiles"
+  add_foreign_key "case_studies_galleries", "case_studies"
+  add_foreign_key "case_studies_galleries", "galleries"
+  add_foreign_key "case_studies_industry_codes", "case_studies"
+  add_foreign_key "case_studies_industry_codes", "industry_codes"
   add_foreign_key "contacts", "profiles"
   add_foreign_key "core_additional_information", "core_tenders", column: "tender_id", name: "core_additional_information_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_awards", "core_organizations", column: "organization_id", name: "core_awards_organization_id_fk", on_delete: :cascade
@@ -819,6 +887,12 @@ ActiveRecord::Schema.define(version: 20180828102207) do
   add_foreign_key "keywords_profiles", "keywords"
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_task_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "marketplace_tender_task_sections", column: "section_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"

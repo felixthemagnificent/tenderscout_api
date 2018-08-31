@@ -4,9 +4,11 @@ class V1::UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all.paginate(paginate_params[:page], paginate_params[:page_size])
 
-    render json: @users
+    users = User.all
+    @users = users.my_paginate(paginate_params)
+
+    render json: {count: users.count, data: @users}
   end
 
   # GET /users/1
@@ -50,7 +52,7 @@ class V1::UsersController < ApplicationController
     end
     # Only allow a trusted parameter "white list" through.
     def profile_params
-      params.permit(:fullname, :display_name, :company, :timezone)
+      params.permit(:fullname, :display_name, :timezone)
     end
 
     def user_params

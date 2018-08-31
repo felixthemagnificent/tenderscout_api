@@ -1,14 +1,17 @@
 Rails.application.routes.draw do
 
-  namespace :marketplace do
-    resources :tender_committees
-  end
-  namespace :marketplace do
-    resources :tender_criteria
-  end
-  namespace :marketplace do
-    resources :tender_tasks
-  end
+  # namespace :marketplace do
+  #   resources :tender_criteria_sections
+  # end
+  # namespace :marketplace do
+  #   resources :tender_committees
+  # end
+  # namespace :marketplace do
+  #   resources :tender_criteria
+  # end
+  # namespace :marketplace do
+  #   resources :tender_tasks
+  # end
   resources :contacts
   # use_doorkeeper
   devise_for :users, defaults: { format: :json }
@@ -24,10 +27,13 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
-      resources :tenders
-      resources :tender_committees
-      resources :tender_criteria
-      resources :tender_tasks
+      resources :tenders do
+        resources :tender_committees, path: 'committees'
+        resources :tender_criteria, path: 'criteries'
+        resources :tender_tasks, path: 'tasks'
+        resources :tender_criteria_sections, path: 'criteria_sections'
+        resources :tender_task_sections, path: 'task_sections'
+      end
     end
     resources :users do
       resources :profiles do
@@ -36,6 +42,11 @@ Rails.application.routes.draw do
           delete :avatar, to: 'profiles#destroy_avatar'
           post :cover_img, to: 'profiles#create_cover_img'
           delete :cover_img, to: 'profiles#destroy_cover_img'
+        end
+        resources :case_studies, path: 'case_study' do
+          member do
+            delete :remove_image, path: 'image/:image_id', to: 'case_studies#remove_image'
+          end
         end
       end
     end
@@ -66,6 +77,7 @@ Rails.application.routes.draw do
       resources :roles
       resources :industries
       resources :industry_codes
+      get :all_codes, path: 'all_codes', to: 'industry_codes#all_codes'
       resources :african_codes
       resources :classification_codes
       resources :gsin_codes
