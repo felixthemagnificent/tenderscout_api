@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
 
-  namespace :marketplace do
-    resources :tender_criteria_sections
-  end
   # namespace :marketplace do
   #   resources :tender_criteria_sections
   # end
@@ -36,6 +33,7 @@ Rails.application.routes.draw do
         resources :tender_tasks, path: 'tasks'
         resources :tender_criteria_sections, path: 'criteria_sections'
         resources :tender_attachments
+        resources :tender_task_sections, path: 'task_sections'
       end
     end
     resources :users do
