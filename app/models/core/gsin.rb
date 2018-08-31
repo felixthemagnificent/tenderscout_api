@@ -8,4 +8,8 @@ class Core::Gsin < ApplicationRecord
       gsin_codes: [code]
     }
   end
+
+  def code_name
+    'gsin'
+  end
 end

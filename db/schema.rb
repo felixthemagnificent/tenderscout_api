@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180829192412) do
+ActiveRecord::Schema.define(version: 20180831122342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 20180829192412) do
     t.string "contact_point", limit: 255
     t.string "city_name", limit: 255
     t.integer "region_id"
-    t.integer "organization_id", null: false
+    t.integer "organization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "postcode", limit: 255
@@ -310,7 +310,7 @@ ActiveRecord::Schema.define(version: 20180829192412) do
     t.text "description"
     t.datetime "published_on"
     t.date "awarded_on"
-    t.datetime "submission_datetime"
+    t.datetime "submission_date"
     t.date "deadline_date"
     t.date "cancelled_on"
     t.integer "procedure_id"
@@ -388,6 +388,8 @@ ActiveRecord::Schema.define(version: 20180829192412) do
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"
     t.index ["spider_id"], name: "index_core_tenders_on_spider_id", unique: true
+    t.index ["status_cd"], name: "index_core_status_cd"
+    t.index ["submission_date"], name: "index_core_submission_datetime"
     t.index ["title"], name: "index_core_tenders_on_title"
   end
 
@@ -547,6 +549,19 @@ ActiveRecord::Schema.define(version: 20180829192412) do
   create_table "galleries", force: :cascade do |t|
     t.string "image"
   end
+  
+  create_table "favourite_tenders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_favourite_tenders_on_tender_id"
+    t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
+  end
+
+  create_table "galleries", force: :cascade do |t|
+    t.string "image"
+  end
 
   create_table "gsin_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
@@ -598,6 +613,28 @@ ActiveRecord::Schema.define(version: 20180829192412) do
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
+  end
+
+  create_table "marketplace_tender_criteria_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_criteria_sections_on_tender_id"
+  end
+
+  create_table "marketplace_tender_task_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_task_sections_on_tender_id"
   end
 
   create_table "marketplace_tender_tasks", force: :cascade do |t|
@@ -606,6 +643,10 @@ ActiveRecord::Schema.define(version: 20180829192412) do
     t.float "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
 
   create_table "ngip_codes", force: :cascade do |t|
@@ -829,6 +870,12 @@ ActiveRecord::Schema.define(version: 20180829192412) do
   add_foreign_key "keywords_profiles", "keywords"
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_task_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "marketplace_tender_task_sections", column: "section_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"

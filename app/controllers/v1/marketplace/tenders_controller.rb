@@ -5,7 +5,8 @@ class V1::Marketplace::TendersController < ApplicationController
   # GET /profiles
   def index
     tenders = Core::Tender.all
-    @tenders = tenders.paginate(paginate_params[:page], paginate_params[:page_size])
+    # byebug
+    @tenders = tenders.my_paginate(paginate_params)
     render json: { count: tenders.count, data: @tenders }
   end
 
@@ -16,7 +17,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # POST /profiles
   def create
-    result = CreateTender.call(params: tender_params, user: current_user)
+    result = CreateTender.call(params: params, user: current_user)
     if result.success?
       render json: result.tender, status: :created
     else
