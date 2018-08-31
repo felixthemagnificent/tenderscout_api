@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/scienceexchange/postmark_mailer.git
+  revision: 152b64d07df26c85a69da9bef3fd8c8390f9762b
+  specs:
+    postmark_mailer (0.1.2)
+      activejob (>= 4.2)
+      postmark
+
+GIT
   remote: https://github.com/seuros/capistrano-puma.git
   revision: 81647bc8402ff1cb485e81d9ec803dfec31aa851
   specs:
@@ -263,6 +271,7 @@ DEPENDENCIES
   mini_magick
   pg (>= 0.18, < 2.0)
   postmark-rails
+  postmark_mailer!
   puma (~> 3.7)
   rack-cors
   rails (~> 5.1.6)

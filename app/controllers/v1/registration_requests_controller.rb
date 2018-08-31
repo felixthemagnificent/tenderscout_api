@@ -15,8 +15,17 @@ class V1::RegistrationRequestsController < ApplicationController
     @request.country = @country
 
     if @request.save
-      # TODO send email
-      # PostmarkMailer.send_template(current_user.email, 'Registration request', 123, {})
+      CustomPostmarkMailer.template_email(
+        'piskovoy.dmitrij@braincode.xyz',
+        '7951598',
+        {
+          user_name: @request.fullname,
+          product_url: 'product_url',
+          action_url: 'action_url',
+          company_name: @request.company,
+          company_address: 'address'
+        }
+      )
       render json: @request, status: :created
     else
       render json: @request.errors, status: :unprocessable_entity
@@ -28,9 +37,20 @@ class V1::RegistrationRequestsController < ApplicationController
   end
 
   def update
-    @request.update(do_processed: true)
-    # TODO send email
-    # PostmarkMailer.send_template(current_user.email, 'Registration request approved', 123, {})
+    if @request.update(do_processed: true)
+      CustomPostmarkMailer.template_email(
+        'piskovoy.dmitrij@braincode.xyz',
+        '7952090',
+        {
+          product_url: 'product_url_Value',
+          user_name: @request.fullname,
+          support_url: 'support_url_Value',
+          company_name: @request.company,
+          company_address: 'company_address_Value'
+        }
+      ).deliver_now
+    end
+
     render json: @request
   end
 
