@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180831122342) do
+ActiveRecord::Schema.define(version: 20180831151350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -716,23 +716,22 @@ ActiveRecord::Schema.define(version: 20180831122342) do
   create_table "registration_requests", force: :cascade do |t|
     t.string "fullname", default: "", null: false
     t.string "company", default: "", null: false
-    t.integer "company_size", default: 0, null: false
+    t.string "company_size", default: "0", null: false
     t.string "state", default: "", null: false
     t.string "country", default: "", null: false
     t.string "city", default: "", null: false
-    t.string "sector"
-    t.integer "turnover", default: 0, null: false
+    t.string "turnover", default: "0", null: false
     t.json "markets", default: {}, null: false
     t.integer "tender_level", default: 0, null: false
     t.float "win_rate", default: 0.0, null: false
-    t.integer "number_public_contracts", default: 0, null: false
+    t.string "number_public_contracts", default: "0", null: false
     t.boolean "do_use_automation", default: false, null: false
     t.boolean "do_use_collaboration", default: false, null: false
     t.boolean "do_use_bid_no_bid", default: false, null: false
     t.boolean "do_use_bid_library", default: false, null: false
     t.boolean "do_use_feedback", default: false, null: false
     t.boolean "do_collaborate", default: false, null: false
-    t.float "tender_complete_time", default: 0.0, null: false
+    t.string "tender_complete_time", default: "0.0", null: false
     t.integer "organisation_count", default: 0, null: false
     t.boolean "do_processed", default: false, null: false
     t.datetime "created_at", null: false
@@ -842,7 +841,7 @@ ActiveRecord::Schema.define(version: 20180831122342) do
   add_foreign_key "profiles", "core_countries", column: "country_id"
   add_foreign_key "profiles", "industries"
   add_foreign_key "profiles", "users"
-  add_foreign_key "registration_requests", "core_countries", column: "country_id"
+  add_foreign_key "registration_requests", "countries"
   add_foreign_key "registration_requests", "industries"
   add_foreign_key "search_monitors", "users"
 end
