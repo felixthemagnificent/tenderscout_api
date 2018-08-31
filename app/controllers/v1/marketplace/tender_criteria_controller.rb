@@ -19,7 +19,7 @@ class V1::Marketplace::TenderCriteriaController < ApplicationController
     @marketplace_tender_criterium = @tender.criteries.new(marketplace_tender_criterium_params)
 
     if @marketplace_tender_criterium.save
-      render json: @marketplace_tender_criterium, status: :created, location: @marketplace_tender_criterium
+      render json: @marketplace_tender_criterium, status: :created
     else
       render json: @marketplace_tender_criterium.errors, status: :unprocessable_entity
     end

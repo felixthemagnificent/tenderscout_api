@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180830130552) do
+ActiveRecord::Schema.define(version: 20180831122342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -633,6 +633,8 @@ ActiveRecord::Schema.define(version: 20180830130552) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
   end
 
@@ -645,6 +647,15 @@ ActiveRecord::Schema.define(version: 20180830130552) do
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_sections_on_tender_id"
   end
 
+  create_table "marketplace_tender_task_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_task_sections_on_tender_id"
+  end
+
   create_table "marketplace_tender_tasks", force: :cascade do |t|
     t.integer "order"
     t.string "title"
@@ -652,6 +663,8 @@ ActiveRecord::Schema.define(version: 20180830130552) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tender_id"
+    t.bigint "section_id"
+    t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
 
@@ -875,8 +888,11 @@ ActiveRecord::Schema.define(version: 20180830130552) do
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_task_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_tasks", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_tasks", "marketplace_tender_task_sections", column: "section_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"
