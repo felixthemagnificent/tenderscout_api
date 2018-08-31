@@ -17,8 +17,14 @@ class V1::Marketplace::TenderAttachmentsController < ApplicationController
 
   def destroy
     @tender.attachments.delete(@attachment)
-    @attachment.remove_file!
-    @attachment.destroy
+    unless @attachment.remove_file
+      render json: {
+        error: :service_unavailable,
+        error_description: 'Attachment was not deleted from S3'
+      },
+      status: :service_unavailable
+    end
+    render json: @attachment.errors, status: :unprocessable_entity unless @attachment.destroy
   end
 
   # Use callbacks to share common setup or constraints between actions.
