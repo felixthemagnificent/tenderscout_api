@@ -388,8 +388,6 @@ ActiveRecord::Schema.define(version: 20180831122342) do
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"
     t.index ["spider_id"], name: "index_core_tenders_on_spider_id", unique: true
-    t.index ["status_cd"], name: "index_core_status_cd"
-    t.index ["submission_date"], name: "index_core_submission_datetime"
     t.index ["title"], name: "index_core_tenders_on_title"
   end
 
@@ -544,19 +542,6 @@ ActiveRecord::Schema.define(version: 20180831122342) do
     t.datetime "updated_at", null: false
     t.index ["search_monitor_id"], name: "index_favourite_monitors_on_search_monitor_id"
     t.index ["user_id"], name: "index_favourite_monitors_on_user_id"
-  end
-
-  create_table "galleries", force: :cascade do |t|
-    t.string "image"
-  end
-  
-  create_table "favourite_tenders", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "tender_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_favourite_tenders_on_tender_id"
-    t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
   end
 
   create_table "galleries", force: :cascade do |t|
@@ -754,6 +739,8 @@ ActiveRecord::Schema.define(version: 20180831122342) do
     t.datetime "updated_at", null: false
     t.bigint "country_id"
     t.bigint "industry_id"
+    t.string "email", default: "", null: false
+    t.string "phone"
     t.index ["country_id"], name: "index_registration_requests_on_country_id"
     t.index ["industry_id"], name: "index_registration_requests_on_industry_id"
   end
@@ -825,45 +812,19 @@ ActiveRecord::Schema.define(version: 20180831122342) do
   add_foreign_key "case_studies_industry_codes", "case_studies"
   add_foreign_key "case_studies_industry_codes", "industry_codes"
   add_foreign_key "contacts", "profiles"
-  add_foreign_key "core_additional_information", "core_tenders", column: "tender_id", name: "core_additional_information_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_awards", "core_organizations", column: "organization_id", name: "core_awards_organization_id_fk", on_delete: :cascade
-  add_foreign_key "core_awards", "core_tenders", column: "tender_id", name: "core_awards_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_contacts", "core_organizations", column: "organization_id", name: "core_contacts_organization_id_fk", on_delete: :cascade
-  add_foreign_key "core_countries", "core_currencies", column: "currency_id", name: "core_countries_currency_id_fk", on_delete: :nullify
   add_foreign_key "core_countries_profiles", "core_countries", column: "country_id"
   add_foreign_key "core_countries_profiles", "profiles"
-  add_foreign_key "core_documents", "core_tenders", column: "tender_id", name: "core_documents_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_organizations", "core_countries", column: "country_id", name: "core_organizations_country_id_fk"
-  add_foreign_key "core_tenders", "core_currencies", column: "currency_id", name: "core_tenders_currency_id_fk"
-  add_foreign_key "core_tenders", "core_organizations", column: "organization_id", name: "core_tenders_organization_id_fk"
-  add_foreign_key "core_tenders", "core_procedures", column: "procedure_id", name: "core_tenders_procedure_id_fk"
   add_foreign_key "core_tenders", "industries"
   add_foreign_key "core_tenders_categories", "core_categories", column: "category_id", name: "core_tenders_categories_category_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_tenders", column: "tender_id", name: "core_tenders_categories_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_contacts", "core_contacts", column: "contact_id", name: "core_tenders_contacts_contact_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_contacts", "core_tenders", column: "tender_id", name: "core_tenders_contacts_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_cpvs", "core_cpvs", column: "cpv_id", name: "core_tenders_cpvs_cpv_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_cpvs", "core_tenders", column: "tender_id", name: "core_tenders_cpvs_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_gsin_codes", "core_gsin_codes", column: "gsin_id", name: "core_tenders_gsin_codes_gsin_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_gsin_codes", "core_tenders", column: "tender_id", name: "core_tenders_gsin_codes_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_naicses", "core_naicses", column: "naics_id", name: "core_tenders_naicses_naics_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_naicses", "core_tenders", column: "tender_id", name: "core_tenders_naicses_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_ngip_codes", "core_ngip_codes", column: "ngip_code_id", name: "core_tenders_ngip_codes_ngip_code_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_ngip_codes", "core_tenders", column: "tender_id", name: "core_tenders_ngip_codes_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_nhs_e_classes", "core_nhs_e_classes", column: "nhs_eclass_id", name: "core_tenders_nhs_e_classes_nhs_eclass_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_nhs_e_classes", "core_tenders", column: "tender_id", name: "core_tenders_nhs_e_classes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_nigp_codes", "core_nigp_codes", column: "nigp_code_id", name: "core_tenders_nigp_codes_nigp_code_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_nigp_codes", "core_tenders", column: "tender_id", name: "core_tenders_nigp_codes_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_pro_classes", "core_pro_classes", column: "pro_class_id", name: "core_tenders_pro_classes_pro_class_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_pro_classes", "core_tenders", column: "tender_id", name: "core_tenders_pro_classes_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_unspsces", "core_tenders", column: "tender_id", name: "core_tenders_unspsces_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_unspsces", "core_unspsces", column: "unspsc_id", name: "core_tenders_unspsces_unspsc_id_fk", on_delete: :cascade
   add_foreign_key "countries", "currencies", column: "currencies_id"
   add_foreign_key "countries", "world_regions", column: "world_regions_id"
   add_foreign_key "favourite_monitors", "search_monitors"
   add_foreign_key "favourite_monitors", "users"
-  add_foreign_key "favourite_tenders", "core_tenders", column: "tender_id"
-  add_foreign_key "favourite_tenders", "users"
   add_foreign_key "industries_profiles", "industries"
   add_foreign_key "industries_profiles", "profiles"
   add_foreign_key "industry_codes", "industries"
