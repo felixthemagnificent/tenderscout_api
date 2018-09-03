@@ -1,35 +1,8 @@
 FactoryBot.define do
-  # factory :industry do
-  #   name { 'Software' }
-  # end
-
   factory :world_region, class: Core::WorldRegion do
     code { '376' }
     name { 'Andorra' }
   end
-
-  # factory :currency, class: Core::Currency do
-  #   name { 'Dirhams' }
-  #   code { Faker::Currency.code }
-  #   unit { '' }
-  # end
-
-  # factory :country, class: Core::Country do
-  #
-  #   currency
-  #   code { '376' }
-  #   number { '020' }
-  #   alpha2code { 'AD' }
-  #   alpha3code { 'AND' }
-  #   name { 'Andorra' }
-  #   #world_region
-  #   world_region { 'Europe' }
-  #
-  #   world_subregion { 'Southern Europe' }
-  #
-  #   currency_id { 1 }
-  #   #world_region_id { 1 }
-  # end
 
   factory :registration_request, class: RegistrationRequest do |t|
     industry
