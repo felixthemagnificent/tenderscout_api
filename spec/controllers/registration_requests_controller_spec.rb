@@ -7,7 +7,7 @@ RSpec.describe V1::RegistrationRequestsController, type: :controller do
   let(:registration_request_list) { FactoryBot.create_list(:registration_request,3) }
   let(:industry) { FactoryBot.create(:industry) }
   let(:country) { FactoryBot.create(:country) }
-  let(:registration_request_params) { FactoryBot.attributes_for(:registration_request_1, industry_id: 1,
+  let(:registration_request_params) { FactoryBot.attributes_for(:registration_request, industry_id: 1,
                                       country_id: 1) }
   describe 'GET #index' do
     it 'should return worked status' do
@@ -59,7 +59,7 @@ RSpec.describe V1::RegistrationRequestsController, type: :controller do
 
   end
 
-  describe 'POST #creacte' do
+  describe 'POST #create' do
     it 'should return worked status' do
      industry
      country
@@ -72,6 +72,6 @@ RSpec.describe V1::RegistrationRequestsController, type: :controller do
       post :create,params: { industry_id: industry.id, country_id: country.id, fullname: Faker::Name.name}, as: :json
       expect(json_body["fullname"]).to eq json_body["fullname"]
     end
-    end
+  end
 
 end

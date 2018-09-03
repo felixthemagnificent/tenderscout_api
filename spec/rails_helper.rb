@@ -13,6 +13,8 @@ require 'support/database_cleaner'
 require 'shoulda/matchers'
 require 'support/factory_bot'
 require 'support/api_helpers'
+require 'devise'
+require 'support/controller_macros'
 #
 # Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
@@ -37,7 +39,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ApiHelpers
-
+  config.extend ControllerMacros, type: :controller
 end
 
 # Shoulda configuration

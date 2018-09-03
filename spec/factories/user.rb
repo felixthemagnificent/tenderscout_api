@@ -4,9 +4,14 @@ FactoryBot.define do
     email         { Faker::Internet.email }
     password      { Faker::Internet.password }
     role          { 1 }
-    fullname      { Faker::Name.name }
-    confirmed_at  { '2016-07-17 07:35:55.139051' }
+    confirmed_at  { DateTime.now }
   end
 
+  factory :admin do
+    email         { Faker::Internet.email }
+    password      { Faker::Internet.password }
+    role          { 0 }
+    confirmed_at  { DateTime.now }
+  end
 
 end
