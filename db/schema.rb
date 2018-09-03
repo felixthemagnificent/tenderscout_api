@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180831151350) do
+ActiveRecord::Schema.define(version: 20180903065249) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -723,7 +723,7 @@ ActiveRecord::Schema.define(version: 20180831151350) do
     t.string "turnover", default: "0", null: false
     t.json "markets", default: {}, null: false
     t.integer "tender_level", default: 0, null: false
-    t.float "win_rate", default: 0.0, null: false
+    t.string "win_rate", default: "0.0", null: false
     t.string "number_public_contracts", default: "0", null: false
     t.boolean "do_use_automation", default: false, null: false
     t.boolean "do_use_collaboration", default: false, null: false
@@ -732,7 +732,7 @@ ActiveRecord::Schema.define(version: 20180831151350) do
     t.boolean "do_use_feedback", default: false, null: false
     t.boolean "do_collaborate", default: false, null: false
     t.string "tender_complete_time", default: "0.0", null: false
-    t.integer "organisation_count", default: 0, null: false
+    t.string "organisation_count", default: "0", null: false
     t.boolean "do_processed", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -774,6 +774,16 @@ ActiveRecord::Schema.define(version: 20180831151350) do
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
     t.index ["code"], name: "index_sfgov_codes_on_code"
+  end
+
+  create_table "suppliers", force: :cascade do |t|
+    t.string "status", default: "pending", null: false
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_suppliers_on_tender_id"
+    t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -844,4 +854,6 @@ ActiveRecord::Schema.define(version: 20180831151350) do
   add_foreign_key "registration_requests", "countries"
   add_foreign_key "registration_requests", "industries"
   add_foreign_key "search_monitors", "users"
+  add_foreign_key "suppliers", "core_tenders", column: "tender_id"
+  add_foreign_key "suppliers", "users"
 end
