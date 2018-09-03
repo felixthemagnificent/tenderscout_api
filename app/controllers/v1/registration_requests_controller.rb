@@ -16,7 +16,7 @@ class V1::RegistrationRequestsController < ApplicationController
 
     if @request.save
       CustomPostmarkMailer.template_email(
-        'piskovoy.dmitrij@braincode.xyz',
+        'anton.rogachevskyi@braincode.xyz',
         '7951598',
         {
           user_name: @request.fullname,
@@ -25,7 +25,7 @@ class V1::RegistrationRequestsController < ApplicationController
           company_name: @request.company,
           company_address: 'address'
         }
-      )
+      ).deliver_now
       render json: @request, status: :created
     else
       render json: @request.errors, status: :unprocessable_entity
@@ -39,7 +39,7 @@ class V1::RegistrationRequestsController < ApplicationController
   def update
     if @request.update(do_processed: true)
       CustomPostmarkMailer.template_email(
-        'piskovoy.dmitrij@braincode.xyz',
+        @request.email,
         '7952090',
         {
           product_url: 'product_url_Value',
