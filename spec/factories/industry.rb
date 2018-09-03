@@ -1,8 +1,6 @@
 FactoryBot.define do
-
-  # factory :industry do
-  #   id { 1 }
-  #   name { 'Software' }
-  # end
+  factory :industry do
+    name { 'Software' }
+  end
 
 end

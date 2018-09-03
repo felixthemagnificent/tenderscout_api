@@ -12,7 +12,7 @@ require 'rspec/rails'
 require 'support/database_cleaner'
 require 'shoulda/matchers'
 require 'support/factory_bot'
-
+require 'support/api_helpers'
 #
 # Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
@@ -36,6 +36,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include ApiHelpers
 
 end
 

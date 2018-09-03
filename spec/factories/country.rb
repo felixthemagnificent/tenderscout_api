@@ -1,15 +1,19 @@
 FactoryBot.define do
+  factory :country, class: Core::Country do
 
-  # factory :country do
-  #   id { 1 }
-  #   code { '376' }
-  #   number { '020' }
-  #   alpha2code { 'AD' }
-  #   alpha3code { 'AND' }
-  #   name { 'Andorra' }
-  #   word_region { 'Europe' }
-  #   word_subregion { 'Southern Europe' }
-  #   currency_id { 43 }
-  # end
+    currency
+    code { '376' }
+    number { '020' }
+    alpha2code { 'AD' }
+    alpha3code { 'AND' }
+    name { 'Andorra' }
+    #world_region
+    world_region { 'Europe' }
+
+    world_subregion { 'Southern Europe' }
+
+    # currency_id { 1 }
+    #world_region_id { 1 }
+  end
 
 end
