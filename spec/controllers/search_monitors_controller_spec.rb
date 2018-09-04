@@ -6,10 +6,10 @@ RSpec.describe V1::SearchMonitorsController, type: :controller do
   let(:search_monitors) { FactoryBot.build_list(:search_monitor, 3) }
   #let(:search_monitor_1) { FactoryBot.create(:search_monitor) }
   let(:search_monitor) { FactoryBot.build_list(:search_monitor, 1) }
-
   let(:favourite_monitor) { FactoryBot.create(:favourite_monitor, search_monitor: search_monitor.first) }
   let(:user) { FactoryBot.create(:user, search_monitors: search_monitor) }
   #let(:user_with_monitors) { FactoryBot.create(:user, search_monitors: search_monitors) }
+  let(:tender) { FactoryBot.create{:tender} }
 
   describe 'GET #index' do
     login_user
@@ -103,6 +103,15 @@ RSpec.describe V1::SearchMonitorsController, type: :controller do
     it "should return worked status" do
       put :update, params: { id: user.search_monitors.first.id, tenderTitle: Faker::Name.name } ,as: :json
       expect(json_body["tenderTitle"]).to eq json_body["tenderTitle"]
+    end
+
+  end
+
+  describe 'POST #preview' do
+    login_user
+    it "should return worked status" do
+     # tender
+
     end
 
   end
