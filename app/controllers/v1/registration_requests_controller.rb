@@ -50,10 +50,11 @@ class V1::RegistrationRequestsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def request_params
     params.permit(:fullname, :company, :company_size, :state, :country,
-      :industry, :city, :sector, :turnover, :markets, :tender_level, :win_rate,
+      :industry, :city, :turnover, :tender_level, :win_rate, :email, :phone,
       :number_public_contracts, :do_use_automation, :do_use_collaboration,
       :do_use_bid_no_bid, :do_use_bid_library, :do_use_feedback, :do_collaborate,
-      :tender_complete_time, :organisation_count, :do_processed, :industry_id, :country_id
+      :tender_complete_time, :organisation_count, :industry_id, :country_id,
+      markets: []
     )
   end
 end
