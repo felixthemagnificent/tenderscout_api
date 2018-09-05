@@ -45,6 +45,15 @@ class V1::Marketplace::TendersController < ApplicationController
     end
   end
 
+  def publish
+    result = PublishTender.call(tender: @tender, user: current_user)
+    if result.success?
+      render json: nil, status: :ok
+    else
+      render json: result.errors, status: result.code
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
