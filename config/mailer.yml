@@ -6,10 +6,12 @@ default: &default
   admin_email: 'anton.rogachevskyi@braincode.xyz'
   product_url: 'http://dev.tenderscout.braincode.xyz'
   support: 'http://tenderscout.support.com'
+  tender_management_url: 'http://tender_management_url'
 
   templates:
     sign_up_request: '7951598'
     sign_up_process: '7952090'
+    tender_publish: '8111794'
 
   uri:
     admin_sign_up: '/users/signup-requests'
