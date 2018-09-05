@@ -1,7 +1,7 @@
 class Core::Country < ApplicationRecord
   self.table_name = "core_countries"
   belongs_to :currency
-  belongs_to :world_region
+  #belongs_to :world_region, optional: true
 
   def format_fields
     {
