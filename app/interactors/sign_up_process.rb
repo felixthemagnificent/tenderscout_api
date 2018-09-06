@@ -9,7 +9,7 @@ class SignUpProcess
       Rails.configuration.mailer['templates']['sign_up_process'],
       {
         user_name: context.request.fullname,
-        product_url: Rails.configuration.mailer['templates']['sign_up_request'],
+        product_url: Rails.configuration.mailer['product_url'],
         support_url: Rails.configuration.mailer['support'],
         company_name: Rails.configuration.mailer['company_name'],
         company_address: Rails.configuration.mailer['company_address']

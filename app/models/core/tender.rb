@@ -41,7 +41,7 @@ class Core::Tender < ApplicationRecord
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User'
 
-  enum status: [:new, :open, :archived]
+  enum status: [:created, :open, :archived]
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
