@@ -2,17 +2,17 @@ class SignUpRequest
   include Interactor
 
   def call
-    industry = Industry.find(context.params[:industry_id])
+    industry = Industry.find_by(id: params[:industry_id])
     unless industry.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Industry not found'},
                     code: :unprocessable_entity
     end
-    country = Country.find(context.params[:country_id])
+    country = Core::Country.find_by(id: params[:country_id])
     unless country.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Country not found'},
                     code: :unprocessable_entity
     end
-    context.request = RegistrationRequest.new(context.params)
+    context.request = RegistrationRequest.new(params)
     context.request.do_processed = false
     context.request.industry = industry
     context.request.country = country
@@ -30,5 +30,18 @@ class SignUpRequest
         company_address: Rails.configuration.mailer['company_address']
       }
     ).deliver_now
+  end
+
+  private
+
+  def params
+    context.params.permit(
+        :fullname, :company, :company_size, :state,
+        :city, :turnover, :tender_level, :win_rate, :email, :phone,
+        :number_public_contracts, :do_use_automation, :do_use_collaboration,
+        :do_use_bid_no_bid, :do_use_bid_library, :do_use_feedback, :do_collaborate,
+        :tender_complete_time, :organisation_count, :industry_id, :country_id,
+        markets: []
+    )
   end
 end
