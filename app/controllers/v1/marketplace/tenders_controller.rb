@@ -1,7 +1,6 @@
 class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
-  before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
-  before_action :set_publish_tender, only: [:publish]
+  before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish]
 
   # GET /profiles
   def index
@@ -60,10 +59,6 @@ class V1::Marketplace::TendersController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_tender
     @tender = Core::Tender.find(params[:id])
-  end
-
-  def set_publish_tender
-    @tender = Core::Tender.find(params[:tender_id])
   end
 
   def paginate_params
