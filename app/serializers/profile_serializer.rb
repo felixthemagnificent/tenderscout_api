@@ -10,5 +10,6 @@ class ProfileSerializer < ActiveModel::Serializer
              :valueFrom, :valueTo, :turnover, :timezone, :tender_level,
              :number_public_contracts, :contacts, :keywords, :countries
 
+  attribute(:user_id) { object.try(:user).try(:id) }
   attribute(:role) { object.try(:user).try(:role) }
 end
