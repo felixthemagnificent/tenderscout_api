@@ -7,8 +7,6 @@ class UpdateProfile
                     code: :unauthorized
     end
 
-    byebug
-
     if contact_params
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:type], value: e[:value])}
