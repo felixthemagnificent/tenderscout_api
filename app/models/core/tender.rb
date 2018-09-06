@@ -39,7 +39,7 @@ class Core::Tender < ApplicationRecord
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   belongs_to :industry, optional: true
-  belongs_to :creator, class_name: 'User'
+  belongs_to :creator, class_name: 'User', optional: true
 
   enum status: [:created, :open, :archived]
 
