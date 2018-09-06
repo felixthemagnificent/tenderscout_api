@@ -11,7 +11,7 @@ class V1::RegistrationRequestsController < ApplicationController
     if result.success?
       render json: result.request, status: :created
     else
-      render json: result.request.errors, status: :unprocessable_entity
+      render json: result.errors, status: :unprocessable_entity
     end
   end
 
@@ -24,7 +24,7 @@ class V1::RegistrationRequestsController < ApplicationController
     if result.success?
       render json: result.request, status: :created
     else
-      render json: result.request.errors, status: :unprocessable_entity
+      render json: result.errors, status: :unprocessable_entity
     end
   end
 
