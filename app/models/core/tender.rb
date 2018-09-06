@@ -39,12 +39,15 @@ class Core::Tender < ApplicationRecord
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   belongs_to :industry, optional: true
+  belongs_to :creator, class_name: 'User'
+
+  enum status: [:created, :open, :archived]
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
   scope :inactive, -> { inactive_on(DateTime.now) }
   scope :inactive_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].lt(date)) }
-  
+
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   scope :with_relations, -> do
@@ -116,6 +119,10 @@ class Core::Tender < ApplicationRecord
       }
     end
     TendersIndex.query(matches).order(created_at: { order: :desc })
+  end
+
+  def owner?(current_user)
+    creator == current_user
   end
 
   ####################################################################################################

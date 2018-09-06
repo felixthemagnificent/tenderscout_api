@@ -28,6 +28,21 @@ gem 'rack-cors'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  #rspec-rails is a testing framework for Rails
+  gem 'rspec-rails'
+  #Factory Bot is a software library. That provides factory methods to create test
+  # fixtures for automated software testing.
+  # The fixture objects can be created on the fly;
+  gem 'factory_bot_rails'
+  #This gem is a port of Perl's Data::Faker library that generates fake data.
+  gem 'faker', '~> 1.6', '>= 1.6.3'
+  #Database Cleaner is a set of strategies for cleaning your database in Ruby.
+  gem 'database_cleaner'
+  #Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test common Rails functionality.
+  gem 'shoulda-matchers', '~> 3.1'
+  #SimpleCov is a code coverage analysis tool for Ruby.
+  gem 'simplecov', require: false
+
 end
 
 group :development do
@@ -47,6 +62,7 @@ gem 'chewy'
 gem 'kaminari'
 gem 'interactor'
 gem 'postmark-rails'
+gem 'postmark_mailer', github: 'scienceexchange/postmark_mailer'
 gem 'carrierwave', '~> 1.0'
 gem "fog-aws"
 gem "mini_magick"
