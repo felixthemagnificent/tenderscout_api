@@ -50,16 +50,5 @@ class V1::Scrapper::ScrapperController < ApplicationController
 
   def tender_keys
     [:origin_id, :title, :description, :published_on, :submission_datetime, :tender_urls]
-    # "origin_id":"274406630439680467235399788154093001389937736130",
-    # "title":"Alytaus miesto gatvių ir pėsčiųjų perėjų skersinio ir išilginio ženklinimo termoplastu ir šviesą atspindinčiais dažais darbai",
-    # "organization_name":"Alytaus miesto savivaldybės administracija",
-    # "country_name":"Lithuania",
-    # "world_region":"LT",
-    # "world_subregion":"",
-    # "created_at":"2018-07-30",
-    # "updated_at":"",
-    # "published_on":"2018-07-30",
-    # "submission_datetime":"2018-08-07 10:00:00",
-    # "tender_urls"
   end
 end
