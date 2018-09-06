@@ -26,14 +26,14 @@ class UpdateProfile
     if country_params
       context.profile.countries.destroy_all
       country_params.each { |e|
-        country = Core::Country.find(e)
+        country = Core::Country.find_by_id(e)
         context.profile.countries << country if country.present?
       }
     end
     if industry_params
       context.profile.industries.destroy_all
       industry_params.each { |e|
-        industry = Industry.find(e)
+        industry = Industry.find_by_id(e)
         context.profile.industries << industry if industry.present?
       }
     end
