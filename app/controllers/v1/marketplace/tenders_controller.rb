@@ -1,6 +1,6 @@
 class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
-  before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
+  before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish]
 
   # GET /profiles
   def index
@@ -38,6 +38,15 @@ class V1::Marketplace::TendersController < ApplicationController
   # DELETE /profiles/1
   def destroy
     result = DestroyTender.call(tender: @tender, params: tender_params, user: current_user)
+    if result.success?
+      render json: nil, status: :ok
+    else
+      render json: result.errors, status: result.code
+    end
+  end
+
+  def publish
+    result = PublishTender.call(tender: @tender, user: current_user)
     if result.success?
       render json: nil, status: :ok
     else

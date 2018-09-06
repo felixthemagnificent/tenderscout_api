@@ -28,6 +28,9 @@ Rails.application.routes.draw do
     end
     namespace :marketplace do
       resources :tenders do
+        member do
+          put :publish
+        end
         resources :tender_committees, path: 'committees'
         resources :tender_criteria, path: 'criteries'
         resources :tender_tasks, path: 'tasks'

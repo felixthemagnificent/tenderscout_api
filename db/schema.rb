@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180903065249) do
+ActiveRecord::Schema.define(version: 20180905101118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -384,6 +384,7 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.boolean "retender_status", default: false
     t.datetime "dispatch_date"
     t.bigint "industry_id"
+    t.integer "status", default: 0
     t.index ["industry_id"], name: "index_core_tenders_on_industry_id"
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"
