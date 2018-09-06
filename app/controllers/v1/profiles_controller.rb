@@ -16,7 +16,7 @@ class V1::ProfilesController < ApplicationController
 
   # POST /profiles
   def create
-    result = CreateProfile.call(params: profile_params, user: current_user)
+    result = CreateProfile.call(params: params, user: current_user)
     if result.success?
       render json: result.profile, status: :created
     else
@@ -26,7 +26,7 @@ class V1::ProfilesController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
-    result = UpdateProfile.call(profile: @profile, params: profile_params, user: current_user)
+    result = UpdateProfile.call(profile: @profile, params: params, user: current_user)
     if result.success?
       render json: result.profile
     else

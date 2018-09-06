@@ -7,8 +7,8 @@ class Profile < ApplicationRecord
   has_and_belongs_to_many :industries
 
   belongs_to :user
-  belongs_to :country, class_name: 'Core::Country'
-  belongs_to :industry
+  belongs_to :country, class_name: 'Core::Country', optional: true
+  belongs_to :industry, optional: true
 
   enum profile_type: [:consultant, :company]
 
