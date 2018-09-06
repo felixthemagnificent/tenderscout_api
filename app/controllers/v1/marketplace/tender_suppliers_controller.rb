@@ -1,6 +1,6 @@
 class V1::Marketplace::TenderSuppliersController < ApplicationController
   before_action :set_tender
-  before_action :set_supplier, only: [:destroy]
+  before_action :set_supplier, only: [:destroy, :invite_approve]
 
   def index
     render json: Supplier.where(tender_id: params[:tender_id])

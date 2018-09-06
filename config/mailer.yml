@@ -8,11 +8,13 @@ default: &default
   support: 'http://tenderscout.support.com'
 
   templates:
+    supplier_invite: '8112615'
     sign_up_request: '7951598'
     sign_up_process: '7952090'
 
   uri:
     admin_sign_up: '/users/signup-requests'
+    tender_details: ''
 
 development:
   <<: *default

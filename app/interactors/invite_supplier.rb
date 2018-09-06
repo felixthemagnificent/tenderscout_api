@@ -2,8 +2,7 @@ class InviteSupplier
   include Interactor
 
   def call
-    # TODO check if is owner
-    unless context.user.admin?
+    unless context.tender.owner?(context.user)
       context.fail! errors: { error: :unauthorized, error_description: 'Action is not allowed'},
                     code: :unauthorized
     end
@@ -34,5 +33,31 @@ class InviteSupplier
       context.fail! errors: context.supplier.errors,
                     code: :unprocessable_entity
     end
+
+    user_profile = context.supplier.user.profiles.find_by(profile_type: :consultant)
+    inviter_profile = context.tender.creator.profiles.find_by(profile_type: :consultant)
+
+    CustomPostmarkMailer.template_email(
+      context.supplier.user.email,
+      Rails.configuration.mailer['templates']['supplier_invite'],
+      {
+        user_name: user_profile.fullname,
+        inviter_name: inviter_profile.fullname,
+        tender_name: context.tender.title,
+        tender_id: context.tender.id,
+        tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
+        invite_link_url: Rails.configuration.mailer['domain'] + Rails.application.routes.url_helpers.url_for(
+            controller: 'v1/marketplace/tender_suppliers',
+            action: 'invite_approve',
+            tender_id: context.tender.id,
+            id: context.supplier.id,
+            only_path: true
+        ),
+        product_url: Rails.configuration.mailer['product_url'],
+        support_url: Rails.configuration.mailer['support'],
+        company_name: Rails.configuration.mailer['company_name'],
+        company_address: Rails.configuration.mailer['company_address']
+      }
+    ).deliver_now
   end
 end
