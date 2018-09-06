@@ -385,6 +385,9 @@ ActiveRecord::Schema.define(version: 20180905104934) do
     t.datetime "dispatch_date"
     t.bigint "industry_id"
     t.integer "status", default: 0
+    t.index ["awarded_on"], name: "index_core_awarded_on"
+    t.index ["created_at"], name: "index_core_created_at"
+    t.index ["flagged_as_sme_friendly"], name: "index_core_flagged_as_sme_friendly"
     t.index ["industry_id"], name: "index_core_tenders_on_industry_id"
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"

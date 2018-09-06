@@ -7,10 +7,8 @@ class UpdateProfile
                     code: :unauthorized
     end
 
-    unless context.profile.update(profile_params)
-      context.fail! errors: context.profile.errors,
-                    code: :unprocessable_entity
-    end
+    byebug
+
     if contact_params
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:type], value: e[:value])}
@@ -36,6 +34,11 @@ class UpdateProfile
         industry = Industry.find_by_id(e)
         context.profile.industries << industry if industry.present?
       }
+    end
+
+    unless context.profile.update(profile_params)
+      context.fail! errors: context.profile.errors,
+                    code: :unprocessable_entity
     end
   end
 
