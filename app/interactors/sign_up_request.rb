@@ -7,7 +7,7 @@ class SignUpRequest
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Industry not found'},
                     code: :unprocessable_entity
     end
-    country = Industry.find(context.params[:country_id])
+    country = Country.find(context.params[:country_id])
     unless country.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Country not found'},
                     code: :unprocessable_entity
