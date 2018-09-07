@@ -2,12 +2,14 @@ class ProfileSerializer < ActiveModel::Serializer
   has_many :contacts, serializer: ContactSerializer
   has_many :keywords
   has_many :countries, class_name: 'Core::Country', serializer: CountrySerializer
+  has_many :industries, serializer: IndustrySerializer
   belongs_to :country, class_name: 'Core::Country', serializer: CountrySerializer
   belongs_to :industry, serializer: IndustrySerializer
 
   attributes :id, :fullname, :display_name, :avatar, :cover_img, :city,
              :do_marketplace_available, :profile_type, :company, :company_size,
              :valueFrom, :valueTo, :turnover, :timezone, :tender_level,
+             :industry, :industries, :country,
              :number_public_contracts, :contacts, :keywords, :countries
 
   attribute(:user_id) { object.try(:user).try(:id) }
