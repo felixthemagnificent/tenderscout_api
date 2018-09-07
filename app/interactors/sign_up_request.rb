@@ -19,6 +19,8 @@ class SignUpRequest
 
     context.fail! errors: context.request.errors, code: :unprocessable_entity unless context.request.save
 
+    p Rails.configuration.mailer
+
     CustomPostmarkMailer.template_email(
       Rails.configuration.mailer['admin_email'],
       Rails.configuration.mailer['templates']['sign_up_request'],
