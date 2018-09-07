@@ -96,11 +96,9 @@ Rails.application.routes.draw do
         end
       end
     end
-
     put :update_password, to: 'users#update_password', path: 'users/password/update'
 
     resources :assistances
-
     resources :users do
       resources :profiles do
         member do
@@ -132,6 +130,7 @@ Rails.application.routes.draw do
       end
     end
     post 'bidder/monitor/preview' => 'search_monitors#preview'
+    post 'create_ticket', to: 'zen_service#create_ticket'
     resources :registration_requests, path: 'user/registration_request' do
       member do
         put 'process', to: 'registration_requests#update'

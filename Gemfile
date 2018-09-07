@@ -67,6 +67,7 @@ gem 'carrierwave', '~> 1.0'
 gem "fog-aws"
 gem "mini_magick"
 gem 'sidekiq'
+gem "zendesk_api"
 
 group :development do
   gem 'capistrano'
