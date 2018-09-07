@@ -7,7 +7,7 @@ default: &default
   support: 'http://tenderscout.support.com'
   tender_management_url: 'http://tender_management_url'
   api_url: 'http://api.dev.tenderscout.braincode.xyz'
-  admin_url: 'http://admin.dev.tenderscout.braincode.xyz/'
+  admin_url: 'http://admin.dev.tenderscout.braincode.xyz'
   templates:
     sign_up_request: '7951598'
     sign_up_process: '7952090'
