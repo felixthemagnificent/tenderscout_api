@@ -25,7 +25,7 @@ class SignUpRequest
       {
         user_name: context.request.fullname,
         product_url: Rails.configuration.mailer['product_url'],
-        action_url: Rails.configuration.mailer['product_url'] + Rails.configuration.mailer['uri']['admin_sign_up'],
+        action_url: Rails.configuration.mailer['admin_url'] + Rails.configuration.mailer['uri']['admin_sign_up'],
         company_name: Rails.configuration.mailer['company_name'],
         company_address: Rails.configuration.mailer['company_address']
       }
