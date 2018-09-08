@@ -24,6 +24,12 @@ class CreateProfile
         context.profile.keywords << keyword
       }
     end
+
+    if value_params
+      context.profile.valueFrom = value_params.first
+      context.profile.valueTo = value_params.second
+    end
+
     if country_params
       context.profile.countries.destroy_all
       country_params.each { |e|
@@ -53,6 +59,10 @@ class CreateProfile
 
   def contact_params
     context.params[:contacts]
+  end
+
+  def value_params
+    context.params[:values]
   end
 
   def keyword_params
