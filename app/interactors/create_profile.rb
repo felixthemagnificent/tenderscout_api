@@ -53,7 +53,7 @@ class CreateProfile
         :fullname, :display_name, :profile_type, :city, :timezone,
         :do_marketplace_available, :company, :company_size, :turnover,
         :valueFrom, :valueTo, :tender_level, :number_public_contracts,
-        :industry_id, :country_id
+        :industry_id, :country_id, values: []
     )
   end
 

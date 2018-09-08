@@ -19,6 +19,12 @@ class UpdateProfile
         context.profile.keywords << keyword
       }
     end
+
+    if value_params
+      context.profile.valueFrom = value_params.first
+      context.profile.valueTo = value_params.second
+    end
+
     if country_params
       context.profile.countries.destroy_all
       country_params.each { |e|
@@ -49,6 +55,10 @@ class UpdateProfile
         :valueFrom, :valueTo, :tender_level, :number_public_contracts,
         :industry_id, :country_id
     )
+  end
+
+  def value_params
+    context.params[:values]
   end
 
   def contact_params
