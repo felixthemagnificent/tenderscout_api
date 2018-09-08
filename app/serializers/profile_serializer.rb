@@ -12,6 +12,7 @@ class ProfileSerializer < ActiveModel::Serializer
              :industry, :industries, :country,
              :number_public_contracts, :contacts, :keywords, :countries
 
+  attribute(:values) { [object.valueFrom, object.valueTo] }
   attribute(:user_id) { object.try(:user).try(:id) }
   attribute(:role) { object.try(:user).try(:role) }
 end
