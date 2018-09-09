@@ -773,7 +773,7 @@ ActiveRecord::Schema.define(version: 20180907124925) do
     t.string "turnover", default: "0", null: false
     t.json "markets", default: {}, null: false
     t.integer "tender_level", default: 0, null: false
-    t.string "win_rate", default: "0.0", null: false
+    t.float "win_rate", default: 0.0, null: false
     t.string "number_public_contracts", default: "0", null: false
     t.boolean "do_use_automation", default: false, null: false
     t.boolean "do_use_collaboration", default: false, null: false
