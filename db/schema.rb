@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180907124925) do
+ActiveRecord::Schema.define(version: 20180909120652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,16 @@ ActiveRecord::Schema.define(version: 20180907124925) do
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
     t.index ["code"], name: "index_african_codes_on_code"
+  end
+
+  create_table "assistances", force: :cascade do |t|
+    t.integer "assistance_type", null: false
+    t.text "message"
+    t.integer "status", default: 0
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_assistances_on_user_id"
   end
 
   create_table "attached_files", force: :cascade do |t|
@@ -773,7 +783,7 @@ ActiveRecord::Schema.define(version: 20180907124925) do
     t.string "turnover", default: "0", null: false
     t.json "markets", default: {}, null: false
     t.integer "tender_level", default: 0, null: false
-    t.float "win_rate", default: 0.0, null: false
+    t.string "win_rate", default: "0.0", null: false
     t.string "number_public_contracts", default: "0", null: false
     t.boolean "do_use_automation", default: false, null: false
     t.boolean "do_use_collaboration", default: false, null: false
@@ -826,6 +836,16 @@ ActiveRecord::Schema.define(version: 20180907124925) do
     t.index ["code"], name: "index_sfgov_codes_on_code"
   end
 
+  create_table "suppliers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "status"
+    t.index ["tender_id"], name: "index_suppliers_on_tender_id"
+    t.index ["user_id"], name: "index_suppliers_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -853,6 +873,7 @@ ActiveRecord::Schema.define(version: 20180907124925) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "case_studies", "profiles"
