@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180903065249) do
+ActiveRecord::Schema.define(version: 20180909120652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,16 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
     t.index ["code"], name: "index_african_codes_on_code"
+  end
+
+  create_table "assistances", force: :cascade do |t|
+    t.integer "assistance_type", null: false
+    t.text "message"
+    t.integer "status", default: 0
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_assistances_on_user_id"
   end
 
   create_table "attached_files", force: :cascade do |t|
@@ -350,7 +360,7 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.date "potential_retender_date"
     t.string "tender_urls", default: [], array: true
     t.string "award_urls", limit: 255, default: [], null: false, array: true
-    t.integer "spider_id"
+    t.string "spider_id"
     t.boolean "delta", default: true
     t.string "file_reference_number", limit: 255
     t.integer "creator_id"
@@ -384,6 +394,7 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.boolean "retender_status", default: false
     t.datetime "dispatch_date"
     t.bigint "industry_id"
+    t.integer "status", default: 0
     t.index ["industry_id"], name: "index_core_tenders_on_industry_id"
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"
@@ -600,6 +611,8 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.datetime "updated_at", null: false
     t.bigint "tender_id"
     t.bigint "section_id"
+    t.bigint "parent_id"
+    t.index ["parent_id"], name: "index_marketplace_tender_criteria_on_parent_id"
     t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
   end
@@ -723,7 +736,7 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.string "turnover", default: "0", null: false
     t.json "markets", default: {}, null: false
     t.integer "tender_level", default: 0, null: false
-    t.float "win_rate", default: 0.0, null: false
+    t.string "win_rate", default: "0.0", null: false
     t.string "number_public_contracts", default: "0", null: false
     t.boolean "do_use_automation", default: false, null: false
     t.boolean "do_use_collaboration", default: false, null: false
@@ -777,11 +790,11 @@ ActiveRecord::Schema.define(version: 20180903065249) do
   end
 
   create_table "suppliers", force: :cascade do |t|
-    t.string "status", default: "pending", null: false
     t.bigint "user_id"
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status"
     t.index ["tender_id"], name: "index_suppliers_on_tender_id"
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
@@ -813,6 +826,7 @@ ActiveRecord::Schema.define(version: 20180903065249) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "case_studies", "profiles"
