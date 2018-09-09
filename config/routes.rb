@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       end
     end
     resources :users do
+      resources :assistances
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'
