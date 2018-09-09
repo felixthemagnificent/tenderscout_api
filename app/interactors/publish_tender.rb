@@ -26,29 +26,65 @@ class PublishTender
       context.fail! errors: { error: :unprocessable_entity, error_description: 'You should have at least one criteria'},
                     code: :unprocessable_entity
     end
-    unless context.tender.criteria_sections.present?
-      context.fail! errors: { error: :unprocessable_entity, error_description: 'You should have at least one section'},
-                    code: :unprocessable_entity
-    end
     unless context.tender.awards.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'You should have at least one award'},
                     code: :unprocessable_entity
     end
-    unless context.tender.submission_date > Date.now
+    unless context.tender.submission_date.present? && context.tender.submission_date > DateTime.now
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Submission date is incorrect'},
                     code: :unprocessable_entity
     end
-    unless context.tender.submission_date < context.tender.dispatch_date
+    unless context.tender.submission_date.present? &&
+        context.tender.dispatch_date.present? &&
+        context.tender.submission_date < context.tender.dispatch_date
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Dispatch date is incorrect'},
                     code: :unprocessable_entity
     end
-    unless context.tender.contacts.first.contact_point.present?
+    unless context.tender.contacts.first.present? && context.tender.contacts.first.contact_point.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Contact person is not specified'},
                     code: :unprocessable_entity
     end
-    unless context.tender.contacts.first.email.present?
+    unless context.tender.contacts.first.present? && context.tender.contacts.first.email.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Contact email is not specified'},
                     code: :unprocessable_entity
+    end
+
+    context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.update(status: :open)
+
+    model = {
+      user_name: '',
+      product_url: Rails.configuration.mailer['product_url'],
+      tender_name: context.tender.title,
+      tender_id: context.tender.id,
+      tender_management_url: Rails.configuration.mailer['tender_management_url'],
+      support_url: Rails.configuration.mailer['support'],
+      company_name: Rails.configuration.mailer['company_name'],
+      company_address: Rails.configuration.mailer['company_address']
+    }
+
+    profile = context.tender.creator.profiles.find_by(profile_type: :consultant)
+    model['user_name'] = profile.fullname if profile.present?
+
+    unless profile.present?
+      CustomPostmarkMailer.template_email(
+        context.tender.creator.email,
+        Rails.configuration.mailer['templates']['tender_publish'],
+        model
+      ).deliver_now
+    end
+
+    unless context.tender.committees.present?
+      context.tender.committees.each do |user|
+        profile = user.profiles.find_by(profile_type: :consultant)
+        model['user_name'] = profile.fullname if profile.present?
+        unless profile.present?
+          CustomPostmarkMailer.template_email(
+            user.email,
+            Rails.configuration.mailer['templates']['tender_publish'],
+            model
+          ).deliver_now
+        end
+      end
     end
   end
 end

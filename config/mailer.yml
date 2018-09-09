@@ -1,22 +1,26 @@
 default: &default
   from: 'anton.rogachevskyi@braincode.xyz'
-  domain: 'http://api.dev.tenderscout.braincode.xyz'
   company_name: 'Company Name'
   company_address: 'Company Address'
   admin_email: 'anton.rogachevskyi@braincode.xyz'
   product_url: 'http://dev.tenderscout.braincode.xyz'
   support: 'http://tenderscout.support.com'
-
+  tender_management_url: 'http://tender_management_url'
+  api_url: 'http://api.dev.tenderscout.braincode.xyz'
+  admin_url: 'http://admin.dev.tenderscout.braincode.xyz'
   templates:
     supplier_invite: '8112615'
     sign_up_request: '7951598'
     sign_up_process: '7952090'
-
+    tender_publish: '8111794'
   uri:
     admin_sign_up: '/users/signup-requests'
     tender_details: ''
 
 development:
+  <<: *default
+
+staging:
   <<: *default
 
 test:

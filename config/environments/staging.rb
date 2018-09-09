@@ -1,5 +1,5 @@
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  # Settings specified here will take с over those in config/application.rb.
 
   # Code is not reloaded between requests.
   config.cache_classes = true
@@ -54,9 +54,9 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "tenderscout-api_#{Rails.env}"
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = { :api_token => "2f791fbd-8c09-40a5-97f3-40d1138baa3f" }
-  config.action_mailer.default_url_options = { :host => "braincode.tenderscout.xyz" }
+  # config.action_mailer.delivery_method = :postmark
+  # config.action_mailer.postmark_settings = { :api_token => "2f791fbd-8c09-40a5-97f3-40d1138baa3f" }
+  # config.action_mailer.default_url_options = { :host => "braincode.tenderscout.xyz" }
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
@@ -71,6 +71,7 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
+  config.mailer = config_for(:mailer)
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')

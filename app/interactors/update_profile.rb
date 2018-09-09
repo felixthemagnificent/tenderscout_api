@@ -7,10 +7,6 @@ class UpdateProfile
                     code: :unauthorized
     end
 
-    unless context.profile.update(profile_params)
-      context.fail! errors: context.profile.errors,
-                    code: :unprocessable_entity
-    end
     if contact_params
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:type], value: e[:value])}
@@ -23,19 +19,30 @@ class UpdateProfile
         context.profile.keywords << keyword
       }
     end
+
+    if value_params
+      context.profile.valueFrom = value_params.first
+      context.profile.valueTo = value_params.second
+    end
+
     if country_params
       context.profile.countries.destroy_all
       country_params.each { |e|
-        country = Core::Country.find(e)
+        country = Core::Country.find_by_id(e)
         context.profile.countries << country if country.present?
       }
     end
     if industry_params
       context.profile.industries.destroy_all
       industry_params.each { |e|
-        industry = Industry.find(e)
+        industry = Industry.find_by_id(e)
         context.profile.industries << industry if industry.present?
       }
+    end
+
+    unless context.profile.update(profile_params)
+      context.fail! errors: context.profile.errors,
+                    code: :unprocessable_entity
     end
   end
 
@@ -48,6 +55,10 @@ class UpdateProfile
         :valueFrom, :valueTo, :tender_level, :number_public_contracts,
         :industry_id, :country_id
     )
+  end
+
+  def value_params
+    context.params[:values]
   end
 
   def contact_params

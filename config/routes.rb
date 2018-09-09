@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   # use_doorkeeper
   devise_for :users, defaults: { format: :json }
   namespace :v1 do
+    post 'scrapper/input' => 'scrapper/scrapper#input'
+
     use_doorkeeper scope: 'auth' do
       controllers tokens: 'api_auth'
       skip_controllers :authorizations, :applications, :authorized_applications, :tokens
@@ -28,7 +30,9 @@ Rails.application.routes.draw do
     end
     namespace :marketplace do
       resources :tenders do
-        put 'publish' => 'tenders#publish'
+        member do
+          put :publish
+        end
         resources :tender_committees, path: 'committees'
         resources :tender_criteria, path: 'criteries'
         resources :tender_tasks, path: 'tasks'
