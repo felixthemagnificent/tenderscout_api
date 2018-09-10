@@ -36,7 +36,11 @@ Rails.application.routes.draw do
         resources :tender_committees, path: 'committees'
         resources :tender_criteria, path: 'criteries'
         resources :tender_tasks, path: 'tasks'
-        resources :tender_criteria_sections, path: 'criteria_sections'
+        resources :tender_criteria_sections, path: 'criteria_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
         resources :tender_attachments
         resources :tender_task_sections, path: 'task_sections'
         resources :tender_suppliers, path: 'suppliers' do
