@@ -9,7 +9,7 @@ class UpdateProfile
 
     if contact_params
       context.profile.contacts.destroy_all
-      contact_params.each { |e| context.profile.contacts.create(contact_type: e[:type], value: e[:value])}
+      contact_params.each { |e| context.profile.contacts.create(contact_type: e[:contact_type], value: e[:value])}
     end
 
     if keyword_params
