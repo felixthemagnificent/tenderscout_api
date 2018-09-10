@@ -3,29 +3,27 @@ class BulkCreateCriteriaSection
 
   def call
     Marketplace::TenderCriteriaSection.transaction do
-      context.fail! errors: { error: :unauthorized, error_description: 'Action is not allowed'},
-                      code: :unauthorized unless context.user.admin?
 
       section = context.tender.criteria_sections.new(marketplace_tender_criteria_section_params)
       section.save!
 
-      create_criteries(marketplace_tender_criteria_params)
-      
+      create_criteries(params: context.params.to_unsafe_h, section: section, parent: nil)
     end
   end
 
   private
 
-  def create_criteries(params: nil, parent: nil)
+  def create_criteries(params: nil, section: nil, parent: nil)
+
     params[:criteries].each do |e|
-      criteria = section.criteries.create(
+      criteria = section.criteries.new(
         order: e[:order],
         title: e[:title],
         parent: parent
         )
-      create_criteries(params: e[:criteries], parent: criteria) if e[:criteries]
+      criteria.save!
+      create_criteries(params: e, section: section, parent: criteria) if e[:criteries]
     end
-    section.criteries.create(order: order, )
   end
 
   def marketplace_tender_criteria_section_params
