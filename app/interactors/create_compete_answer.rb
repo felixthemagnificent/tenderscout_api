@@ -15,9 +15,8 @@ class CreateCompeteAnswer
                     code: :unauthorized
     end
 
-    context.answer = CompeteAnswer.new(params)
+    context.answer = @comment.answers.new(answer_params)
     context.answer.user = context.user
-    context.answer.compete_comment = @comment
     unless context.answer.save
       context.fail! errors: context.answer.errors,
                     code: :unprocessable_entity
@@ -26,7 +25,7 @@ class CreateCompeteAnswer
 
   private
 
-  def params
+  def answer_params
     context.params.permit(:message, :parent_id)
   end
 end

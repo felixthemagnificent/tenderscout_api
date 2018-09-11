@@ -8,8 +8,7 @@ class CreateCompeteComment
                     code: :unauthorized
     end
 
-    context.comment = CompeteComment.new(params)
-    context.comment.user = context.user
+    context.comment = context.user.comments.new(params)
     unless context.comment.save
       context.fail! errors: context.comment.errors,
                     code: :unprocessable_entity
