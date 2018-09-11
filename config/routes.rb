@@ -48,6 +48,11 @@ Rails.application.routes.draw do
             put :invite_approve
           end
         end
+        resources :tender_compete_comments, path: 'compete_comments' do
+          member do
+            post :answer
+          end
+        end
       end
     end
     resources :users do

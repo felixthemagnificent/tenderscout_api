@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180909120652) do
+ActiveRecord::Schema.define(version: 20180910073551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,28 @@ ActiveRecord::Schema.define(version: 20180909120652) do
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
     t.index ["code"], name: "index_classification_codes_on_code"
+  end
+
+  create_table "compete_answers", force: :cascade do |t|
+    t.text "message", null: false
+    t.integer "parent_id"
+    t.bigint "user_id"
+    t.bigint "compete_comment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["compete_comment_id"], name: "index_compete_answers_on_compete_comment_id"
+    t.index ["user_id"], name: "index_compete_answers_on_user_id"
+  end
+
+  create_table "compete_comments", force: :cascade do |t|
+    t.text "message", null: false
+    t.integer "parent_id"
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_compete_comments_on_tender_id"
+    t.index ["user_id"], name: "index_compete_comments_on_user_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -834,6 +856,10 @@ ActiveRecord::Schema.define(version: 20180909120652) do
   add_foreign_key "case_studies_galleries", "galleries"
   add_foreign_key "case_studies_industry_codes", "case_studies"
   add_foreign_key "case_studies_industry_codes", "industry_codes"
+  add_foreign_key "compete_answers", "compete_comments"
+  add_foreign_key "compete_answers", "users"
+  add_foreign_key "compete_comments", "core_tenders", column: "tender_id"
+  add_foreign_key "compete_comments", "users"
   add_foreign_key "contacts", "profiles"
   add_foreign_key "core_countries_profiles", "core_countries", column: "country_id"
   add_foreign_key "core_countries_profiles", "profiles"
