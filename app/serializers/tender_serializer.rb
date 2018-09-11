@@ -14,7 +14,7 @@ class TenderSerializer < ActiveModel::Serializer
               :lead_source, :next_step, :private, :probability, :quantity, :stage, :salesforce_type, :industry, 
               :partner, :primary, :role, :competitor, :strengths, :weaknesses, :set_aside, :archiving_policy, 
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
-              :retender_status
+              :retender_status, :status
 
   attribute(:country) { CountrySerializer.new(object.organization.country) }
   attribute(:contact_email) { object.organization.email || 'N/A'}
