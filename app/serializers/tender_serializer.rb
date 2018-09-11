@@ -15,4 +15,11 @@ class TenderSerializer < ActiveModel::Serializer
               :partner, :primary, :role, :competitor, :strengths, :weaknesses, :set_aside, :archiving_policy, 
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
               :retender_status
+
+  attribute :country { CountrySerializer.new(object.organization.country) }
+  attribute :contact_email { object.organization.email || 'N/A'}
+  attribute :contact_phone { object.organization.phone || 'N/A'}
+  attribute :classification { object.try(:classification).try(:description) || 'N/A'}
+
+  has_many :naicses, serializer: Core::NaicsSerializer
 end
