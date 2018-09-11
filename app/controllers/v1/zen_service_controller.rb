@@ -3,7 +3,11 @@ class V1::ZenServiceController < ApplicationController
     check_valid_params
     params = ticket_params
     begin
-      ticket = ZendeskAPI::Ticket.new($client, :subject => params["subject"], :comment => { :value => params["comment_value"] },:requester => {name: current_user.profiles.first.fullname ,email: current_user.email }, :priority => "urgent")
+      ticket = ZendeskAPI::Ticket.new($client, subject: params["subject"],
+                                      comment: { value: params["comment_value"] },
+                                      requester: {name: current_user.profiles.first.fullname ,
+                                                     email: current_user.email },
+                                      priority: "urgent")
       ticket.save!
     rescue ZendeskAPI::Error::RecordInvalid => e
       render json: {
