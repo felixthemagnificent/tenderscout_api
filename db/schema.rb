@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180910073551) do
+ActiveRecord::Schema.define(version: 20180915145211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -523,6 +523,13 @@ ActiveRecord::Schema.define(version: 20180910073551) do
     t.index ["unspsc_id"], name: "index_core_tenders_unspsces_on_unspsc_id"
   end
 
+  create_table "core_tenders_users", id: false, force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.index ["tender_id"], name: "index_core_tenders_users_on_tender_id"
+    t.index ["user_id"], name: "index_core_tenders_users_on_user_id"
+  end
+
   create_table "core_unspsces", force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
@@ -617,6 +624,25 @@ ActiveRecord::Schema.define(version: 20180910073551) do
     t.index ["profile_id"], name: "index_keywords_profiles_on_profile_id"
   end
 
+  create_table "marketplace_tender_award_criteria", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.text "description"
+    t.bigint "section_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["section_id"], name: "index_marketplace_tender_award_criteria_on_section_id"
+  end
+
+  create_table "marketplace_tender_award_criteria_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_award_criteria_sections_on_tender_id"
+  end
+
   create_table "marketplace_tender_committees", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "user_id"
@@ -634,6 +660,7 @@ ActiveRecord::Schema.define(version: 20180910073551) do
     t.bigint "tender_id"
     t.bigint "section_id"
     t.bigint "parent_id"
+    t.text "description"
     t.index ["parent_id"], name: "index_marketplace_tender_criteria_on_parent_id"
     t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
@@ -821,6 +848,34 @@ ActiveRecord::Schema.define(version: 20180910073551) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
+  create_table "tender_criteria_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_criteria_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_criteria_id"], name: "index_tender_criteria_answers_on_tender_criteria_id"
+    t.index ["tender_id"], name: "index_tender_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_tender_criteria_answers_on_user_id"
+  end
+
+  create_table "tender_task_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_task_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_tender_task_answers_on_tender_id"
+    t.index ["tender_task_id"], name: "index_tender_task_answers_on_tender_task_id"
+    t.index ["user_id"], name: "index_tender_task_answers_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -870,6 +925,8 @@ ActiveRecord::Schema.define(version: 20180910073551) do
   add_foreign_key "core_tenders_ngip_codes", "core_tenders", column: "tender_id", name: "core_tenders_ngip_codes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_nigp_codes", "core_nigp_codes", column: "nigp_code_id", name: "core_tenders_nigp_codes_nigp_code_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_nigp_codes", "core_tenders", column: "tender_id", name: "core_tenders_nigp_codes_tender_id_fk", on_delete: :cascade
+  add_foreign_key "core_tenders_users", "core_tenders", column: "tender_id"
+  add_foreign_key "core_tenders_users", "users"
   add_foreign_key "countries", "currencies", column: "currencies_id"
   add_foreign_key "countries", "world_regions", column: "world_regions_id"
   add_foreign_key "favourite_monitors", "search_monitors"
@@ -879,6 +936,8 @@ ActiveRecord::Schema.define(version: 20180910073551) do
   add_foreign_key "industry_codes", "industries"
   add_foreign_key "keywords_profiles", "keywords"
   add_foreign_key "keywords_profiles", "profiles"
+  add_foreign_key "marketplace_tender_award_criteria", "marketplace_tender_award_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
@@ -896,4 +955,10 @@ ActiveRecord::Schema.define(version: 20180910073551) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
+  add_foreign_key "tender_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_criteria_answers", "marketplace_tender_criteria", column: "tender_criteria_id"
+  add_foreign_key "tender_criteria_answers", "users"
+  add_foreign_key "tender_task_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
+  add_foreign_key "tender_task_answers", "users"
 end

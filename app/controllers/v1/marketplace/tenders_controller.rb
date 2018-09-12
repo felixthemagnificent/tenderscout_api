@@ -54,6 +54,13 @@ class V1::Marketplace::TendersController < ApplicationController
     end
   end
 
+  def compete
+    result = CompeteProcessingInfo.call(params: compete_params, user: current_user)
+    render json: {
+      complete: result.complete
+    }
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -72,5 +79,9 @@ class V1::Marketplace::TendersController < ApplicationController
       :value_to, :keywords, :submission_date, :dispatch_date,
       contact_info: []
     )
+  end
+
+  def compete_params
+    params.permit(:id)
   end
 end
