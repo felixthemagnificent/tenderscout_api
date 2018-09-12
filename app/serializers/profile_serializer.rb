@@ -15,4 +15,5 @@ class ProfileSerializer < ActiveModel::Serializer
   attribute(:values) { [object.valueFrom, object.valueTo] }
   attribute(:user_id) { object.try(:user).try(:id) }
   attribute(:role) { object.try(:user).try(:role) }
+  attribute(:email) { object.try(:user).try(:email) }
 end
