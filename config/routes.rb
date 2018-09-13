@@ -55,6 +55,9 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    put :update_password, to: 'users#update_password', path: 'users/password/update'
+
     resources :users do
       resources :assistances
       resources :profiles do
