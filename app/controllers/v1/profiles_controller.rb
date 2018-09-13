@@ -88,8 +88,8 @@ class V1::ProfilesController < ApplicationController
       :fullname, :display_name, :profile_type, :city, :timezone,
       :do_marketplace_available, :company_size, :turnover, :email,
       :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
-      :tender_level, :number_public_contracts, :company, :password,
-      :password_confirmation, keywords: [], countries: [], industries: []
+      :tender_level, :number_public_contracts, :company,
+      keywords: [], countries: [], industries: []
     )
   end
 

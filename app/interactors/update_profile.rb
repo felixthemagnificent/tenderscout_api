@@ -32,6 +32,7 @@ class UpdateProfile
         context.profile.countries << country if country.present?
       }
     end
+
     if industry_params
       context.profile.industries.destroy_all
       industry_params.each { |e|
@@ -39,17 +40,9 @@ class UpdateProfile
         context.profile.industries << industry if industry.present?
       }
     end
+
     if user_email_params
       context.user.email = user_email_params
-      context.user.save
-    end
-    if user_password_params
-      unless context.params[:password] == context.params[:password_confirmation]
-        context.fail! errors: { error: :unprocessable_entity, error_description: 'Passwords not equal'},
-                      code: :unprocessable_entity
-      end
-
-      context.user.reset_password(context.params[:password], context.params[:password_confirmation])
       context.user.save
     end
 
@@ -63,10 +56,10 @@ class UpdateProfile
 
   def profile_params
     context.params.permit(
-        :fullname, :display_name, :profile_type, :city, :timezone,
-        :do_marketplace_available, :company, :company_size, :turnover,
-        :valueFrom, :valueTo, :tender_level, :number_public_contracts,
-        :industry_id, :country_id
+      :fullname, :display_name, :profile_type, :city, :timezone,
+      :do_marketplace_available, :company, :company_size, :turnover,
+      :valueFrom, :valueTo, :tender_level, :number_public_contracts,
+      :industry_id, :country_id
     )
   end
 
@@ -91,9 +84,5 @@ class UpdateProfile
   end
   def user_email_params
     context.params[:email]
-  end
-
-  def user_password_params
-    context.params[:password]
   end
 end
