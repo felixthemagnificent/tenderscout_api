@@ -39,6 +39,19 @@ class UpdateProfile
         context.profile.industries << industry if industry.present?
       }
     end
+    if user_email_params
+      context.user.email = user_email_params
+      context.user.save
+    end
+    if user_password_params
+      unless context.params[:password] == context.params[:password_confirmation]
+        context.fail! errors: { error: :unprocessable_entity, error_description: 'Passwords not equal'},
+                      code: :unprocessable_entity
+      end
+
+      context.user.reset_password(context.params[:password], context.params[:password_confirmation])
+      context.user.save
+    end
 
     unless context.profile.update(profile_params)
       context.fail! errors: context.profile.errors,
@@ -75,5 +88,12 @@ class UpdateProfile
 
   def industry_params
     context.params[:industries]
+  end
+  def user_email_params
+    context.params[:email]
+  end
+
+  def user_password_params
+    context.params[:password]
   end
 end
