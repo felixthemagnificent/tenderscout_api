@@ -6,6 +6,20 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
     render json: IndustryCode.all
   end
 
+  def all_codes
+    render json: AfricanCode.all +
+      Core::ClassificationCode.all +
+      Core::Gsin.all +
+      Core::Ngip.all +
+      Core::Sfgov.all +
+      Core::Naics.all +
+      Core::Cpv.all +
+      Core::ProClass.all +
+      Core::NhsEClass.all +
+      Core::Unspsc.all,
+      each_serializer: CodeSerializer
+  end
+
   def create
     @industry_code = IndustryCode.find_or_create_by(
       industry: @industry,

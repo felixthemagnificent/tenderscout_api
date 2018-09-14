@@ -4,9 +4,11 @@ class V1::UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all.paginate(paginate_params[:page], paginate_params[:page_size])
 
-    render json: @users
+    users = User.all
+    @users = users.my_paginate(paginate_params)
+
+    render json: {count: users.count, data: @users}
   end
 
   # GET /users/1
@@ -40,20 +42,36 @@ class V1::UsersController < ApplicationController
     @user.destroy
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
+  def update_password
+    result = UpdateProfilePassword.call(params: password_params, user: current_user)
+    if result.success?
+      render status: :ok
+    else
+      render json: result.errors, status: result.code
     end
-    def paginate_params
-      params.permit(:page, :page_size)
-    end
-    # Only allow a trusted parameter "white list" through.
-    def profile_params
-      params.permit(:fullname, :display_name, :company, :timezone)
-    end
+  end
 
-    def user_params
-      params.permit(:email, :password)
-    end
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def paginate_params
+    params.permit(:page, :page_size)
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def profile_params
+    params.permit(:fullname, :display_name, :timezone)
+  end
+
+  def user_params
+    params.permit(:email, :password)
+  end
+
+  def password_params
+    params.permit(:password, :password_confirmation, :current_password)
+  end
 end

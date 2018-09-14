@@ -8,4 +8,8 @@ class Core::Naics < ApplicationRecord
       naics_codes: [code]
     }
   end
+
+  def code_name
+    'naics'
+  end
 end

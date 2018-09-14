@@ -1,8 +1,6 @@
 class V1::ProfilesController < ApplicationController
   include ActionController::Serialization
   before_action :set_profile, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
-  before_action :set_industry, except: [:index, :show, :destroy]
-  before_action :set_country, except: [:index, :show, :destroy]
   before_action :set_user
 
   # GET /profiles
@@ -18,7 +16,7 @@ class V1::ProfilesController < ApplicationController
 
   # POST /profiles
   def create
-    result = CreateProfile.call(params: profile_params, user: current_user)
+    result = CreateProfile.call(params: params, user: current_user)
     if result.success?
       render json: result.profile, status: :created
     else
@@ -28,7 +26,7 @@ class V1::ProfilesController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
-    result = UpdateProfile.call(profile: @profile, params: profile_params, user: current_user)
+    result = UpdateProfile.call(profile: @profile, params: params, user: current_user)
     if result.success?
       render json: result.profile
     else
@@ -80,14 +78,6 @@ class V1::ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
   end
 
-  def set_industry
-    @industry = Industry.find(params[:industry_id])
-  end
-
-  def set_country
-    @country = Core::Country.find(params[:country_id])
-  end
-
   def set_user
     @user = User.find(params[:user_id]) rescue current_user
   end
@@ -96,10 +86,10 @@ class V1::ProfilesController < ApplicationController
   def profile_params
     params.permit(
       :fullname, :display_name, :profile_type, :city, :timezone,
-      :do_marketplace_available, :company_size, :turnover, :cover_img,
+      :do_marketplace_available, :company_size, :turnover, :email,
       :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
-      :tender_level, :number_public_contracts, keywords: [], countries: [],
-      industries: []
+      :tender_level, :number_public_contracts, :company,
+      keywords: [], countries: [], industries: []
     )
   end
 

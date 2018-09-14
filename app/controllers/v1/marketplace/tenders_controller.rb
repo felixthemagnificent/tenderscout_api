@@ -1,11 +1,13 @@
 class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
-  before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
+  before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish]
 
   # GET /profiles
   def index
-    @tenders = Core::Tender.all.paginate(paginate_params[:page], paginate_params[:page_size])
-    render json: @tenders
+    tenders = Core::Tender.all
+    # byebug
+    @tenders = tenders.my_paginate(paginate_params)
+    render json: { count: tenders.count, data: @tenders }
   end
 
   # GET /profiles/1
@@ -15,7 +17,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # POST /profiles
   def create
-    result = CreateTender.call(params: tender_params, user: current_user)
+    result = CreateTender.call(params: params, user: current_user)
     if result.success?
       render json: result.tender, status: :created
     else
@@ -36,6 +38,15 @@ class V1::Marketplace::TendersController < ApplicationController
   # DELETE /profiles/1
   def destroy
     result = DestroyTender.call(tender: @tender, params: tender_params, user: current_user)
+    if result.success?
+      render json: nil, status: :ok
+    else
+      render json: result.errors, status: result.code
+    end
+  end
+
+  def publish
+    result = PublishTender.call(tender: @tender, user: current_user)
     if result.success?
       render json: nil, status: :ok
     else

@@ -1,5 +1,3 @@
 class Marketplace::TenderCommitteeSerializer < ActiveModel::Serializer
-  attributes :id
-  has_one :tender
-  has_one :user
+  attributes :id, :email
 end

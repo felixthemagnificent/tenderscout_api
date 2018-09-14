@@ -1,9 +1,9 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
   before_action :set_marketplace_tender_task, only: [:show, :update, :destroy]
-
+  before_action :set_tender
   # GET /marketplace/tender_tasks
   def index
-    @marketplace_tender_tasks = Marketplace::TenderTask.all
+    @marketplace_tender_tasks = @tender.tasks.all
 
     render json: @marketplace_tender_tasks
   end
@@ -15,10 +15,10 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
   # POST /marketplace/tender_tasks
   def create
-    @marketplace_tender_task = Marketplace::TenderTask.new(marketplace_tender_task_params)
+    @marketplace_tender_task = @tender.tasks.new(marketplace_tender_task_params)
 
     if @marketplace_tender_task.save
-      render json: @marketplace_tender_task, status: :created, location: @marketplace_tender_task
+      render json: @marketplace_tender_task, status: :created
     else
       render json: @marketplace_tender_task.errors, status: :unprocessable_entity
     end
@@ -44,8 +44,13 @@ class V1::Marketplace::TenderTasksController < ApplicationController
       @marketplace_tender_task = Marketplace::TenderTask.find(params[:id])
     end
 
+
+    def set_tender
+      @tender = Core::Tender.find(params[:tender_id])
+    end
+
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_task_params
-      params.require(:marketplace_tender_task).permit(:order, :title, :weight)
+      params.permit(:order, :title, :weight, :section_id)
     end
 end

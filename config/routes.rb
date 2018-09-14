@@ -1,18 +1,23 @@
 Rails.application.routes.draw do
 
-  namespace :marketplace do
-    resources :tender_committees
-  end
-  namespace :marketplace do
-    resources :tender_criteria
-  end
-  namespace :marketplace do
-    resources :tender_tasks
-  end
+  # namespace :marketplace do
+  #   resources :tender_criteria_sections
+  # end
+  # namespace :marketplace do
+  #   resources :tender_committees
+  # end
+  # namespace :marketplace do
+  #   resources :tender_criteria
+  # end
+  # namespace :marketplace do
+  #   resources :tender_tasks
+  # end
   resources :contacts
   # use_doorkeeper
   devise_for :users, defaults: { format: :json }
   namespace :v1 do
+    post 'scrapper/input' => 'scrapper/scrapper#input'
+
     use_doorkeeper scope: 'auth' do
       controllers tokens: 'api_auth'
       skip_controllers :authorizations, :applications, :authorized_applications, :tokens
@@ -24,18 +29,48 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
-      resources :tenders
-      resources :tender_committees
-      resources :tender_criteria
-      resources :tender_tasks
+      resources :tenders do
+        member do
+          put :publish
+        end
+        resources :tender_committees, path: 'committees'
+        resources :tender_criteria, path: 'criteries'
+        resources :tender_tasks, path: 'tasks'
+        resources :tender_criteria_sections, path: 'criteria_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
+        resources :tender_attachments
+        resources :tender_task_sections, path: 'task_sections'
+        resources :tender_suppliers, path: 'suppliers' do
+          member do
+            put :invite_approve
+          end
+        end
+        resources :tender_compete_comments, path: 'compete_comments' do
+          member do
+            post :answer
+          end
+        end
+      end
     end
+
+    put :update_password, to: 'users#update_password', path: 'users/password/update'
+
     resources :users do
+      resources :assistances
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'
           delete :avatar, to: 'profiles#destroy_avatar'
           post :cover_img, to: 'profiles#create_cover_img'
           delete :cover_img, to: 'profiles#destroy_cover_img'
+        end
+        resources :case_studies, path: 'case_study' do
+          member do
+            delete :remove_image, path: 'image/:image_id', to: 'case_studies#remove_image'
+          end
         end
       end
     end
@@ -66,6 +101,7 @@ Rails.application.routes.draw do
       resources :roles
       resources :industries
       resources :industry_codes
+      get :all_codes, path: 'all_codes', to: 'industry_codes#all_codes'
       resources :african_codes
       resources :classification_codes
       resources :gsin_codes

@@ -8,4 +8,8 @@ class Core::Unspsc < ApplicationRecord
       unspsc_codes: [code]
     }
   end
+
+  def code_name
+    'unspsc'
+  end
 end

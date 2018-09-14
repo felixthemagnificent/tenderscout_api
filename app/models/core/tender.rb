@@ -1,5 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
+  include Pageable
+
   self.table_name = "core_tenders"
 
   belongs_to :currency, optional: true
@@ -30,15 +32,23 @@ class Core::Tender < ApplicationRecord
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
   has_many :tender_committees, class_name: 'Marketplace::TenderCommittee'
-  has_many :committees, through: :tender_committees, source: :user, class_name: 'Marketplace::TenderCommittee'
-  belongs_to :industry
+  has_and_belongs_to_many :attachments
+  has_many :committees, through: :tender_committees, source: :user, class_name: 'User'
+  has_many :task_sections, class_name: 'Marketplace::TenderTaskSection'
+  has_many :tasks, class_name: 'Marketplace::TenderTask'
+  has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
+  has_many :criteries, class_name: 'Marketplace::TenderCriterium'
+  belongs_to :industry, optional: true
+  belongs_to :creator, class_name: 'User', optional: true
+
+  enum status: [:created, :open, :archived]
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
   scope :inactive, -> { inactive_on(DateTime.now) }
   scope :inactive_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].lt(date)) }
-  
-  scope :paginate, ->(page, page_size) { page(page).per(page_size) }
+
+  # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
@@ -49,25 +59,25 @@ class Core::Tender < ApplicationRecord
                   tender_countries: nil)
 
     matches = []
-    # matches <<  {
-    #               range:
-    #               {
-    #                 value_max:
-    #                 {
-    #                  lte: valueTo
-    #                 }
-    #               }
-    #             } if valueTo
+    matches <<  {
+                  range:
+                  {
+                    high_value:
+                    {
+                     lte: tender_value_to
+                    }
+                  }
+                } if tender_value_to
 
-    # matches << {
-    #               range:
-    #               {
-    #                 value_max:
-    #                 {
-    #                   gte: valueFrom
-    #                 }
-    #               }
-    #             } if valueFrom
+    matches << {
+                  range:
+                  {
+                    low_value:
+                    {
+                      gte: tender_value_from
+                    }
+                  }
+                } if tender_value_from
 
     matches << {
                   match:
@@ -109,6 +119,10 @@ class Core::Tender < ApplicationRecord
       }
     end
     TendersIndex.query(matches).order(created_at: { order: :desc })
+  end
+
+  def owner?(current_user)
+    creator == current_user
   end
 
   ####################################################################################################
