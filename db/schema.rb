@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180910073551) do
+ActiveRecord::Schema.define(version: 20180913051748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -617,6 +617,25 @@ ActiveRecord::Schema.define(version: 20180910073551) do
     t.index ["profile_id"], name: "index_keywords_profiles_on_profile_id"
   end
 
+  create_table "marketplace_tender_award_criteria", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.text "description"
+    t.bigint "section_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["section_id"], name: "index_marketplace_tender_award_criteria_on_section_id"
+  end
+
+  create_table "marketplace_tender_award_criteria_sections", force: :cascade do |t|
+    t.integer "order"
+    t.string "title"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_award_criteria_sections_on_tender_id"
+  end
+
   create_table "marketplace_tender_committees", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "user_id"
@@ -634,6 +653,7 @@ ActiveRecord::Schema.define(version: 20180910073551) do
     t.bigint "tender_id"
     t.bigint "section_id"
     t.bigint "parent_id"
+    t.text "description"
     t.index ["parent_id"], name: "index_marketplace_tender_criteria_on_parent_id"
     t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
@@ -879,6 +899,8 @@ ActiveRecord::Schema.define(version: 20180910073551) do
   add_foreign_key "industry_codes", "industries"
   add_foreign_key "keywords_profiles", "keywords"
   add_foreign_key "keywords_profiles", "profiles"
+  add_foreign_key "marketplace_tender_award_criteria", "marketplace_tender_award_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"

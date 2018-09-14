@@ -17,9 +17,9 @@ class TenderSerializer < ActiveModel::Serializer
               :retender_status, :status
 
   attribute(:country) { CountrySerializer.new(object.organization.country) }
-  attribute(:contact_email) { object.organization.email || 'N/A'}
-  attribute(:contact_phone) { object.organization.phone || 'N/A'}
-  attribute(:classification) { object.try(:classification).try(:description) || 'N/A'}
+  attribute(:contact_email) { object.organization.email }
+  attribute(:contact_phone) { object.organization.phone }
+  attribute(:classification) { object.try(:classification).try(:description) }
 
   has_many :naicses, serializer: Core::NaicsSerializer
 end
