@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  namespace :marketplace do
+    resources :tender_award_criteria
+  end
+  namespace :marketplace do
+    resources :tender_award_criteria_sections
+  end
   # namespace :marketplace do
   #   resources :tender_criteria_sections
   # end
