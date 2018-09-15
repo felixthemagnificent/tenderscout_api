@@ -1,6 +1,5 @@
 class V1::AssistancesController < ApplicationController
   before_action :set_assistance, only: [:show]
-  before_action :set_user
 
   def index
     render json: Assistance.all
@@ -11,28 +10,23 @@ class V1::AssistancesController < ApplicationController
   end
 
   def create
-    @assistance = Assistance.new(assistance_params)
-
-    if @assistance.save
-      render json: @assistance, status: :created
+    result = CreateAssistanceRequest.call(params: assistance_params, user: current_user)
+    if result.success?
+      render json: result.assistance, status: :created
     else
-      render json: @assistance.errors, status: :unprocessable_entity
+      render json: result.errors, status: result.code
     end
   end
 
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_user
-    @user = User.find(params[:user_id])
-  end
-
   def set_assistance
     @assistance = Assistance.find(params[:id])
   end
 
   # Only allow a trusted parameter "white list" through.
   def assistance_params
-    params.permit(:assistance_type, :message, :user_id)
+    params.permit(:assistance_type, :message, :current_password)
   end
 end

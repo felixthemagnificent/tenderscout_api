@@ -64,8 +64,9 @@ Rails.application.routes.draw do
 
     put :update_password, to: 'users#update_password', path: 'users/password/update'
 
+    resources :assistances
+
     resources :users do
-      resources :assistances
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'
