@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180913152611) do
+ActiveRecord::Schema.define(version: 20180915145211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -862,6 +862,34 @@ ActiveRecord::Schema.define(version: 20180913152611) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
+  create_table "tender_criteria_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_criteria_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_criteria_id"], name: "index_tender_criteria_answers_on_tender_criteria_id"
+    t.index ["tender_id"], name: "index_tender_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_tender_criteria_answers_on_user_id"
+  end
+
+  create_table "tender_task_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_task_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_tender_task_answers_on_tender_id"
+    t.index ["tender_task_id"], name: "index_tender_task_answers_on_tender_task_id"
+    t.index ["user_id"], name: "index_tender_task_answers_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -944,4 +972,10 @@ ActiveRecord::Schema.define(version: 20180913152611) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
+  add_foreign_key "tender_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_criteria_answers", "marketplace_tender_criteria", column: "tender_criteria_id"
+  add_foreign_key "tender_criteria_answers", "users"
+  add_foreign_key "tender_task_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
+  add_foreign_key "tender_task_answers", "users"
 end
