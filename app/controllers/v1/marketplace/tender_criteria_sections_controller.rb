@@ -15,7 +15,7 @@ class V1::Marketplace::TenderCriteriaSectionsController < ApplicationController
   end
 
   def bulk_create
-    result = BulkCreateCriteriaSection.call(params: params, tender: @tender)
+    result = BulkCreateCriteriaSections.call(params: params, tender: @tender)
     if result.success?
       render json: result.profile, status: :created
     else
