@@ -38,6 +38,8 @@ class Core::Tender < ApplicationRecord
   has_many :tasks, class_name: 'Marketplace::TenderTask'
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
+  has_many :award_criteria_sections, class_name: 'Marketplace::TenderAwardCriteriaSection'
+  has_many :award_criteries, class_name: 'Marketplace::TenderAwardCriterium'
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
 

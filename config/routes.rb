@@ -47,8 +47,17 @@ Rails.application.routes.draw do
             post :bulk_create
           end
         end
+        resources :tender_award_criteria_sections, path: 'award_criteria_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
         resources :tender_attachments
-        resources :tender_task_sections, path: 'task_sections'
+        resources :tender_task_sections, path: 'task_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
         resources :tender_suppliers, path: 'suppliers' do
           member do
             put :invite_approve

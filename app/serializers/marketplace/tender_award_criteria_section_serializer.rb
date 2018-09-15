@@ -1,4 +1,4 @@
 class Marketplace::TenderAwardCriteriaSectionSerializer < ActiveModel::Serializer
   attributes :id, :order, :title
-  has_one :tender
+  has_many :award_criteries, serializer: TenderAwardCriteriumSerializer
 end

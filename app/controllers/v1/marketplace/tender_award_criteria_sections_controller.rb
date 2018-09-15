@@ -25,6 +25,15 @@ class Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
     end
   end
 
+  def bulk_create
+    result = BulkCreateAwardCriteriaSections.call(params: params, tender: @tender)
+    if result.success?
+      render json: result.profile, status: :created
+    else
+      render json: result.errors, status: result.code
+    end
+  end
+
   # PATCH/PUT /marketplace/tender_award_criteria_sections/1
   def update
     if @marketplace_tender_award_criteria_section.update(marketplace_tender_award_criteria_section_params)
