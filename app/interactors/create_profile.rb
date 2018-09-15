@@ -44,17 +44,25 @@ class CreateProfile
         context.profile.industries << industry if industry.present?
       }
     end
+    if user_email_params
+      context.user.email = user_email_params
+      context.user.save
+    end
   end
 
   private
 
   def profile_params
     context.params.permit(
-        :fullname, :display_name, :profile_type, :city, :timezone,
-        :do_marketplace_available, :company, :company_size, :turnover,
-        :valueFrom, :valueTo, :tender_level, :number_public_contracts,
-        :industry_id, :country_id, values: []
+      :fullname, :display_name, :profile_type, :city, :timezone,
+      :do_marketplace_available, :company, :company_size, :turnover,
+      :valueFrom, :valueTo, :tender_level, :number_public_contracts,
+      :industry_id, :country_id, values: []
     )
+  end
+
+  def user_email_params
+    context.params[:email]
   end
 
   def contact_params

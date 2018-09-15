@@ -567,6 +567,20 @@ ActiveRecord::Schema.define(version: 20180915145211) do
     t.index ["world_regions_id"], name: "index_countries_on_world_regions_id"
   end
 
+  create_table "criteria_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_criteria_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_criteria_id"], name: "index_criteria_answers_on_tender_criteria_id"
+    t.index ["tender_id"], name: "index_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_criteria_answers_on_user_id"
+  end
+
   create_table "currencies", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "code", default: "", null: false
@@ -929,6 +943,9 @@ ActiveRecord::Schema.define(version: 20180915145211) do
   add_foreign_key "core_tenders_users", "users"
   add_foreign_key "countries", "currencies", column: "currencies_id"
   add_foreign_key "countries", "world_regions", column: "world_regions_id"
+  add_foreign_key "criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "criteria_answers", "marketplace_tender_criteria", column: "tender_criteria_id"
+  add_foreign_key "criteria_answers", "users"
   add_foreign_key "favourite_monitors", "search_monitors"
   add_foreign_key "favourite_monitors", "users"
   add_foreign_key "industries_profiles", "industries"

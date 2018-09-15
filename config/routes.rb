@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  namespace :marketplace do
+    resources :tender_award_criteria
+  end
+  namespace :marketplace do
+    resources :tender_award_criteria_sections
+  end
   # namespace :marketplace do
   #   resources :tender_criteria_sections
   # end
@@ -54,8 +60,17 @@ Rails.application.routes.draw do
             post :bulk_create
           end
         end
+        resources :tender_award_criteria_sections, path: 'award_criteria_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
         resources :tender_attachments
-        resources :tender_task_sections, path: 'task_sections'
+        resources :tender_task_sections, path: 'task_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
         resources :tender_suppliers, path: 'suppliers' do
           member do
             put :invite_approve
@@ -68,8 +83,12 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    put :update_password, to: 'users#update_password', path: 'users/password/update'
+
+    resources :assistances
+
     resources :users do
-      resources :assistances
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'

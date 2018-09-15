@@ -32,12 +32,18 @@ class UpdateProfile
         context.profile.countries << country if country.present?
       }
     end
+
     if industry_params
       context.profile.industries.destroy_all
       industry_params.each { |e|
         industry = Industry.find_by_id(e)
         context.profile.industries << industry if industry.present?
       }
+    end
+
+    if user_email_params
+      context.user.email = user_email_params
+      context.user.save
     end
 
     unless context.profile.update(profile_params)
@@ -50,10 +56,10 @@ class UpdateProfile
 
   def profile_params
     context.params.permit(
-        :fullname, :display_name, :profile_type, :city, :timezone,
-        :do_marketplace_available, :company, :company_size, :turnover,
-        :valueFrom, :valueTo, :tender_level, :number_public_contracts,
-        :industry_id, :country_id
+      :fullname, :display_name, :profile_type, :city, :timezone,
+      :do_marketplace_available, :company, :company_size, :turnover,
+      :valueFrom, :valueTo, :tender_level, :number_public_contracts,
+      :industry_id, :country_id
     )
   end
 
@@ -75,5 +81,8 @@ class UpdateProfile
 
   def industry_params
     context.params[:industries]
+  end
+  def user_email_params
+    context.params[:email]
   end
 end
