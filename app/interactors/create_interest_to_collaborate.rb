@@ -2,6 +2,11 @@ class CreateInterestToCollaborate
   include Interactor
 
   def call
+    unless context.user.valid_password?(context.params[:current_password])
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Wrong password'},
+                    code: :unprocessable_entity
+    end
+
     tender = Core::Tender.where(id: interest_params[:tender_id]).first
     unless tender.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Tender not found'},

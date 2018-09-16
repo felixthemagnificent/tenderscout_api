@@ -46,6 +46,6 @@ class V1::CollaborationInterestsController < ApplicationController
   end
 
   def interest_params
-    params.permit(:message, :is_public, :tender_id)
+    params.permit(:current_password, :message, :is_public, :tender_id)
   end
 end
