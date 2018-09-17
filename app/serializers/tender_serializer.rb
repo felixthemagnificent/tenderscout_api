@@ -16,15 +16,16 @@ class TenderSerializer < ActiveModel::Serializer
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
               :retender_status, :status
 
-  attribute(:country) { CountrySerializer.new(object.organization.country) }
-  attribute(:contact_email) { object.organization.email }
-  attribute(:contact_phone) { object.organization.phone }
+  attribute(:country) { CountrySerializer.new(object.try(:organization).try(:country)) if object.organization }
+  attribute(:contact_email) { object.organization.email rescue nil }
+  attribute(:contact_phone) { object.organization.phone rescue nil }
   attribute(:classification) { object.try(:classification).try(:description) }
 
   has_many :naicses, serializer: Core::NaicsSerializer
   
   attribute(:bidsense) do
     # byebug
-    Bidsense.score(profile: @instance_options[:current_user].profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
- end
+    current_user ||= @instance_options[:current_user] || @instance_options[:scope]
+    Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
+  end
 end

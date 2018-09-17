@@ -7,7 +7,7 @@ class V1::Marketplace::TendersController < ApplicationController
     tenders = Core::Tender.all
     # byebug
     @tenders = tenders.my_paginate(paginate_params)
-    render json: { count: tenders.count, data: @tenders }
+    render json: { count: tenders.count, data: @tenders }, current_user: current_user
   end
 
   def get_bnb_data
@@ -38,7 +38,7 @@ class V1::Marketplace::TendersController < ApplicationController
   def update
     result = UpdateTender.call(tender: @tender, params: tender_params, user: current_user)
     if result.success?
-      render json: result.tender
+      render json: result.tender, current_user: current_user
     else
       render json: result.errors, status: result.code
     end
