@@ -22,4 +22,9 @@ class TenderSerializer < ActiveModel::Serializer
   attribute(:classification) { object.try(:classification).try(:description) }
 
   has_many :naicses, serializer: Core::NaicsSerializer
+  
+  attribute(:bidsense) do
+    # byebug
+    Bidsense.score(profile: @instance_options[:current_user].profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
+ end
 end
