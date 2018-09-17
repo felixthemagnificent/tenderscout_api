@@ -71,6 +71,10 @@ class V1::Marketplace::TendersController < ApplicationController
     }
   end
 
+  def current_buyer_company_won_list
+    render json: []
+  end
+
   def best_bidsense_profiles
      result = @tender.matched_competitor_profiles.map(&:profile)
      render json: result
