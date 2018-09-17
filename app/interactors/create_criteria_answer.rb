@@ -1,0 +1,52 @@
+class CreateCriteriaAnswer
+  include Interactor
+
+  def call
+    tender = Core::Tender.find(answer_params[:tender_id])
+    unless tender.present?
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Tender not found'},
+                    code: :unprocessable_entity
+    end
+    if tender.owner?(context.user) || tender.committees.exists?(context.user.id)
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
+                    code: :unprocessable_entity
+    end
+    criteria = tender.criteries.where(id: criteria_params[:tender_criterium_id]).first
+    unless criteria.present?
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Criteria not found'},
+                    code: :unprocessable_entity
+    end
+
+    unless answer_params[:pass_fail].present? || answer_params[:score].present?
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'No answer provided'},
+                    code: :unprocessable_entity
+    end
+
+    if criteria.answers.exists?(closed: true)
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Answer is already closed'},
+                    code: :unprocessable_entity
+    end
+
+    context.answer = criteria.answers.new(answer_params)
+    context.answer.user = context.user
+
+    unless context.answer.save
+      context.fail! errors: context.answer.errors,
+                    code: :unprocessable_entity
+    end
+
+    unless tender.buyers.exists?(context.user.id)
+      tender.buyers << context.user
+    end
+  end
+
+  private
+
+  def criteria_params
+    context.params.permit(:tender_criterium_id)
+  end
+
+  def answer_params
+    context.params.permit(:tender_id, :pass_fail, :score, :closed)
+  end
+end

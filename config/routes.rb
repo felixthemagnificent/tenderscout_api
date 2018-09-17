@@ -49,6 +49,7 @@ Rails.application.routes.draw do
       resources :tenders do
         member do
           put :publish
+          get :compete
         end
         member do
           scope :compete do
@@ -56,9 +57,22 @@ Rails.application.routes.draw do
             post :bid_no_bid_answer, to: 'tenders#process_bnb_data'
           end
         end
+        resources :collaboration_interests
         resources :tender_committees, path: 'committees'
-        resources :tender_criteria, path: 'criteries'
-        resources :tender_tasks, path: 'tasks'
+        resources :tender_criteria, path: 'criteries' do
+          resources :tender_criteria_answer, path: 'answers' do
+            collection do
+              put :close
+            end
+          end
+        end
+        resources :tender_tasks, path: 'tasks' do
+          resources :tender_task_answers, path: 'answers' do
+            collection do
+              put :close
+            end
+          end
+        end
         resources :tender_criteria_sections, path: 'criteria_sections' do
           collection do
             post :bulk_create

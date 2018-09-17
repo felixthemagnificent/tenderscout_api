@@ -103,6 +103,32 @@ ActiveRecord::Schema.define(version: 20180917002808) do
     t.index ["code"], name: "index_classification_codes_on_code"
   end
 
+  create_table "collaboration_interests", force: :cascade do |t|
+    t.text "message"
+    t.boolean "is_public"
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_collaboration_interests_on_tender_id"
+    t.index ["user_id"], name: "index_collaboration_interests_on_user_id"
+  end
+
+  create_table "collaborations", force: :cascade do |t|
+    t.bigint "tender_id"
+    t.index ["tender_id"], name: "index_collaborations_on_tender_id"
+  end
+
+  create_table "collaborators", force: :cascade do |t|
+    t.string "role"
+    t.bigint "user_id"
+    t.bigint "collaboration_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collaboration_id"], name: "index_collaborators_on_collaboration_id"
+    t.index ["user_id"], name: "index_collaborators_on_user_id"
+  end
+
   create_table "compete_answers", force: :cascade do |t|
     t.text "message", null: false
     t.integer "parent_id"
@@ -919,6 +945,34 @@ ActiveRecord::Schema.define(version: 20180917002808) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
+  create_table "tender_criteria_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_criteria_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_criteria_id"], name: "index_tender_criteria_answers_on_tender_criteria_id"
+    t.index ["tender_id"], name: "index_tender_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_tender_criteria_answers_on_user_id"
+  end
+
+  create_table "tender_task_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_task_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_tender_task_answers_on_tender_id"
+    t.index ["tender_task_id"], name: "index_tender_task_answers_on_tender_task_id"
+    t.index ["user_id"], name: "index_tender_task_answers_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -954,6 +1008,10 @@ ActiveRecord::Schema.define(version: 20180917002808) do
   add_foreign_key "case_studies_galleries", "galleries"
   add_foreign_key "case_studies_industry_codes", "case_studies"
   add_foreign_key "case_studies_industry_codes", "industry_codes"
+  add_foreign_key "collaboration_interests", "core_tenders", column: "tender_id"
+  add_foreign_key "collaboration_interests", "users"
+  add_foreign_key "collaborators", "collaborations"
+  add_foreign_key "collaborators", "users"
   add_foreign_key "compete_answers", "compete_comments"
   add_foreign_key "compete_answers", "users"
   add_foreign_key "compete_comments", "core_tenders", column: "tender_id"
@@ -1027,4 +1085,10 @@ ActiveRecord::Schema.define(version: 20180917002808) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
+  add_foreign_key "tender_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_criteria_answers", "marketplace_tender_criteria", column: "tender_criteria_id"
+  add_foreign_key "tender_criteria_answers", "users"
+  add_foreign_key "tender_task_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
+  add_foreign_key "tender_task_answers", "users"
 end
