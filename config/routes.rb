@@ -1,6 +1,17 @@
 Rails.application.routes.draw do
 
   namespace :marketplace do
+    namespace :compete do
+      resources :bid_no_bid_answers
+    end
+  end
+  namespace :marketplace do
+    resources :bid_no_bid_answers
+  end
+  namespace :marketplace do
+    resources :bid_no_bid_questions
+  end
+  namespace :marketplace do
     resources :tender_award_criteria
   end
   namespace :marketplace do
@@ -39,6 +50,12 @@ Rails.application.routes.draw do
         member do
           put :publish
           get :compete
+        end
+        member do
+          scope :compete do
+            get :bid_no_bid_answers, to: 'tenders#get_bnb_data'
+            post :bid_no_bid_answer, to: 'tenders#process_bnb_data'
+          end
         end
         resources :collaboration_interests
         resources :tender_committees, path: 'committees'
