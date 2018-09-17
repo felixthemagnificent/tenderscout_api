@@ -9,4 +9,9 @@ class Core::Organization < ApplicationRecord
       organization_phone: phone
     }
   end
+
+  def complete_tenders
+    self.tenders.where(status: :archived)
+  end
+
 end
