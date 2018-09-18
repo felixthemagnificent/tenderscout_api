@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180917002808) do
+ActiveRecord::Schema.define(version: 20180918052137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,21 @@ ActiveRecord::Schema.define(version: 20180917002808) do
     t.bigint "tender_id"
     t.index ["attachment_id"], name: "index_attachments_core_tenders_on_attachment_id"
     t.index ["tender_id"], name: "index_attachments_core_tenders_on_tender_id"
+  end
+
+  create_table "bidsense_results", force: :cascade do |t|
+    t.float "budget"
+    t.float "geography"
+    t.float "subject"
+    t.float "incumbent"
+    t.float "time"
+    t.float "buyer_related"
+    t.bigint "profile_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_bidsense_results_on_profile_id"
+    t.index ["tender_id"], name: "index_bidsense_results_on_tender_id"
   end
 
   create_table "case_studies", force: :cascade do |t|
@@ -949,6 +964,8 @@ ActiveRecord::Schema.define(version: 20180917002808) do
   add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
+  add_foreign_key "bidsense_results", "core_tenders", column: "tender_id"
+  add_foreign_key "bidsense_results", "profiles"
   add_foreign_key "case_studies", "profiles"
   add_foreign_key "case_studies_galleries", "case_studies"
   add_foreign_key "case_studies_galleries", "galleries"

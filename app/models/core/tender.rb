@@ -43,6 +43,7 @@ class Core::Tender < ApplicationRecord
   has_many :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidQuestion'
   has_many :bid_no_bid_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidAnswer'
   has_many :bid_no_bid_compete_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::Compete::BidNoBidAnswer', source: :bid_no_bid_answers
+  has_many :bidsense_results
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
 
@@ -52,6 +53,8 @@ class Core::Tender < ApplicationRecord
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
   scope :inactive, -> { inactive_on(DateTime.now) }
   scope :inactive_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].lt(date)) }
+
+  after_save :recalculate_bidsense
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
@@ -265,5 +268,10 @@ class Core::Tender < ApplicationRecord
                                [contract_duration_in_months, 'months'],
                                [contract_duration_in_years, 'years']].find{ |d| !d[0].nil? }
     }
+  end
+
+  private
+  def recalculate_bidsense
+    Bidsense::RecalcBidsenseWorker.perform_async(tender: self)
   end
 end
