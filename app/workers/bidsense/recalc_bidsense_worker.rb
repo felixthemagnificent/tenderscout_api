@@ -23,12 +23,13 @@ class Bidsense::RecalcBidsenseWorker
     if average_bidsense >= 0.5
       result = BidsenseResult.find_or_create_by(profile: profile, tender: tender)
       result.update_attributes(bidsense)
+      result.average_score = average_bidsense
       result.save
     end
   end
 
   def avg_bidsense(result)
     vals = result.map { |_, v| v if v >= 0 }.delete_if { |v| v == nil }
-    return (vals.inject(&:+)) / vals.count
+    return vals.sum / vals.count
   end
 end

@@ -74,7 +74,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   def best_bidsense_profiles
      result = [];
-     @tender.bidsense_results.all.each{|x| result<< x.profile if x.calculate > 0.6}
+     @tender.matched_competitors
      render json: result
   end
 
