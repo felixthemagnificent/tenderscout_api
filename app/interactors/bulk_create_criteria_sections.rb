@@ -1,4 +1,4 @@
-class BulkCreateCriteriaSection
+class BulkCreateCriteriaSections
   include Interactor
 
   def call
