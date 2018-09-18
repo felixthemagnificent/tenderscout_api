@@ -602,13 +602,6 @@ ActiveRecord::Schema.define(version: 20180918052137) do
     t.index ["unspsc_id"], name: "index_core_tenders_unspsces_on_unspsc_id"
   end
 
-  create_table "core_tenders_users", id: false, force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "tender_id"
-    t.index ["tender_id"], name: "index_core_tenders_users_on_tender_id"
-    t.index ["user_id"], name: "index_core_tenders_users_on_user_id"
-  end
-
   create_table "core_unspsces", force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false

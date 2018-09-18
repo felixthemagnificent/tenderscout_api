@@ -40,6 +40,9 @@ class Core::Tender < ApplicationRecord
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   has_many :award_criteria_sections, class_name: 'Marketplace::TenderAwardCriteriaSection'
   has_many :award_criteries, class_name: 'Marketplace::TenderAwardCriterium'
+  has_many :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidQuestion'
+  has_many :bid_no_bid_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidAnswer'
+  has_many :bid_no_bid_compete_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::Compete::BidNoBidAnswer', source: :bid_no_bid_answers
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
@@ -56,6 +59,59 @@ class Core::Tender < ApplicationRecord
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
     includes(relations).references(*relations)
+  end
+
+  def create_qa
+    if self.bid_no_bid_questions.count == 0
+      ActiveRecord::Base.transaction do
+        (1..8).each do |question_num|
+          question_name = "Question #{question_num}"
+          question = self.bid_no_bid_questions.create!({question_text: question_name, position: question_num})
+          (1..5).each do |ans_num|
+            answer_name = "Answer #{ans_num}"
+            question.bid_no_bid_answers.create!({ answer_text: answer_name, position: ans_num } )
+          end 
+        end
+      end
+    end
+  end
+
+  def get_bnb_data
+    data = []
+    self.bid_no_bid_questions.each do |question|
+      _tmp = {}
+      answers = question.available_answers.map do |e|
+        {
+          id: e.id,
+          answer_text: e.answer_text
+        }
+      end
+      answered = question.answers.map do |e| 
+        { 
+          id: e.id, 
+          user_id: e.user.id, 
+          answer_id: e.bid_no_bid_answer.id
+        } 
+      end
+      _tmp[:question] = {
+        id: question.id,
+        question_text: question.question_text,
+        available_answers: answers,
+        answered: answered
+      }
+      data << _tmp
+    end
+    data
+  end
+
+  def process_bnb_data(params, current_user)
+    answer = Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
+    question = Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
+    question.answers.create({
+      bid_no_bid_answer: answer,
+      user: current_user
+      
+      })
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
