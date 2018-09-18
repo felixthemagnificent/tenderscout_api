@@ -1,4 +1,4 @@
-class V1::CollaborationInterestsController < ApplicationController
+class V1::Marketplace::CollaborationInterestsController < ApplicationController
   include ActionController::Serialization
   before_action :set_collaboration_interest, only: [:show, :destroy]
 
