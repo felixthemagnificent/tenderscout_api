@@ -1,10 +1,12 @@
-class Bidsense::RecalcBidsenseWorker
-  include Sidekiq::Worker
+class Bidsense::RecalculateScoreJob < ApplicationJob
+  queue_as :default
 
   def perform(profile: nil, tender: nil)
-    return unless profile or tender
 
-    if profile
+    return unless profile or tender
+    if profile && tender
+      update_results(profile, tender)
+    elsif profile
       Core::Tender.all.each do |tender|
         update_results(profile, tender)
       end
@@ -33,3 +35,4 @@ class Bidsense::RecalcBidsenseWorker
     return vals.sum / vals.count
   end
 end
+

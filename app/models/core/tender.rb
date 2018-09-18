@@ -277,6 +277,6 @@ class Core::Tender < ApplicationRecord
 
   private
   def recalculate_bidsense
-    Bidsense::RecalcBidsenseWorker.perform_async(tender: self)
+    Bidsense::RecalculateScoreJob.perform_later tender: self
   end
 end
