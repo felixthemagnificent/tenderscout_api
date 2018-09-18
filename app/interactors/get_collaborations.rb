@@ -8,17 +8,27 @@ class GetCollaborations
                     code: :unprocessable_entity
     end
 
-    context.results = Profile.all
+    users = []
+    users = tender.collaboration_interests.map(&:user) if index_params[:interest] == 'true'
+    context.results = []
 
-    if index_params[:match]
+    unless users.empty?
+      case index_params[:type]
+      when nil
+        users.each { |user| generate_profile_array(user.profiles) }
+      else
+        users.each { |user| generate_profile_array(user.profiles.where(profile_type: index_params[:type])) }
+      end
     end
-
-    context.results = context.results.where(profile_type: 'company') if index_params[:type] == 'company'
   end
 
   private
 
   def index_params
     context.params.permit(:match, :interest, :type, :tender_id)
+  end
+
+  def generate_profile_array(profiles)
+    profiles.each { |item| context.results.push(item) }
   end
 end

@@ -43,6 +43,7 @@ class Core::Tender < ApplicationRecord
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
+  has_many :collaboration_interests, class_name: 'CollaborationInterest', foreign_key: :tender_id
 
   enum status: [:created, :open, :archived]
 

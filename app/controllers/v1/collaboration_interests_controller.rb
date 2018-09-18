@@ -4,7 +4,7 @@ class V1::CollaborationInterestsController < ApplicationController
 
   def index
     result = GetCollaborations.call(params: index_params, user: current_user)
-    render json: result.results
+    render json: result.results, each_serializer: ProfileSerializer
   end
 
   def show
