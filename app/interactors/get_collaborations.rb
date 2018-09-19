@@ -10,13 +10,19 @@ class GetCollaborations
 
     profiles = []
     context.results = []
-
-    profiles = tender.collaboration_interests.map(&:user).map(&:profiles).inject(&:+) if index_params[:interest] == 'true'
-    if index_params[:match]
-      profiles = BidsenseResult.where(tender: tender).where('average_score >= ?', 0.6).map(&:profile) - profiles
+    if index_params[:interest] and index_params[:interest] == 'true'
+      profiles = tender.collaboration_interests.map(&:user).map(&:profiles).flatten
+    else
+      profiles = Profile.all
     end
-    profiles = Profile.all unless profiles.any?
-    profiles = profiles.where(profile_type: Profile.profile_types(index_params[:type])) if index_params[:type]
+
+    if index_params[:match] and index_params[:match] == 'true'
+      profiles = BidsenseResult.where(tender: tender).where('average_score >= ?', 0.6).map(&:profile) & profiles
+    end
+
+    if index_params[:type] and index_params[:type] != 'all'
+      profiles = profiles.where(profile_type: Profile.profile_types[index_params[:type]])
+    end
     profiles.each { |item| context.results.push(item) }
   end
 
