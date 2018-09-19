@@ -257,7 +257,6 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     ruby_dep (1.5.0)
-<<<<<<< 654d2e921879945dce233c76f950eacb5140959a
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
     sidekiq (5.2.2)
@@ -269,9 +268,6 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-=======
-    scrub_rb (1.0.1)
->>>>>>> [+] add zendesk create ticket
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
