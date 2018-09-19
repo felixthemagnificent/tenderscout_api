@@ -40,6 +40,7 @@ Rails.application.routes.draw do
           put :publish
           get :compete
           get :best_bidsense_profiles
+          get :current_buyer_company_won_list
         end
         member do
           scope :compete do

@@ -76,6 +76,10 @@ class V1::Marketplace::TendersController < ApplicationController
      render json: result
   end
 
+  def current_buyer_company_won_list
+    render json: []
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
