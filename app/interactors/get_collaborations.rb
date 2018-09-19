@@ -17,7 +17,7 @@ class GetCollaborations
     end
     profiles = Profile.all unless profiles.any?
     profiles = profiles.where(profile_type: Profile.profile_types(index_params[:type])) if index_params[:type]
-    users.each { |user| generate_profile_array(profiles) }
+    profiles.each { |item| context.results.push(item) }
   end
 
   private
@@ -26,7 +26,4 @@ class GetCollaborations
     context.params.permit(:match, :interest, :type, :tender_id)
   end
 
-  def generate_profile_array(profiles)
-    profiles.each { |item| context.results.push(item) }
-  end
 end
