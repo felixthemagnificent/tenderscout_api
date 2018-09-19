@@ -27,6 +27,6 @@ class Profile < ApplicationRecord
 
   private
   def recalculate_bidsense
-    Bidsense::RecalcBidsenseWorker.perform_async(profile: self)
+    Bidsense::RecalculateScoreJob.perform_later profile: self
   end
 end
