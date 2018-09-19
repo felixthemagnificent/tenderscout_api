@@ -1,7 +1,7 @@
 class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
-                                    :process_bnb_data, :best_bidsense_profiles]
+                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list]
 
   # GET /profiles
   def index
@@ -78,6 +78,10 @@ class V1::Marketplace::TendersController < ApplicationController
 
   def current_buyer_company_won_list
     render json: []
+  end
+
+  def complete_organization_tenders_list
+    render json: @tender.organization.complete_tenders
   end
 
   private
