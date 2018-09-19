@@ -1,6 +1,5 @@
 class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
-  skip_before_action :authenticate_user!
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles]
 
