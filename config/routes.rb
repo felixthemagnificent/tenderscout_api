@@ -33,8 +33,6 @@ Rails.application.routes.draw do
       #   resources :bid_no_bid_answers
       # end
 
-      resources :tender_award_criteria
-      resources :tender_award_criteria_sections
       resources :tenders do
         member do
           put :publish
@@ -78,6 +76,7 @@ Rails.application.routes.draw do
             post :bulk_create
           end
         end
+        resources :tender_award_criteria, path: 'award_criteria'
         resources :tender_attachments
         resources :tender_task_sections, path: 'task_sections' do
           collection do

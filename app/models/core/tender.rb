@@ -39,7 +39,7 @@ class Core::Tender < ApplicationRecord
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   has_many :award_criteria_sections, class_name: 'Marketplace::TenderAwardCriteriaSection'
-  has_many :award_criteries, class_name: 'Marketplace::TenderAwardCriterium'
+  has_many :award_criteries, class_name: 'Marketplace::TenderAwardCriterium', through: :award_criteria_sections
   has_many :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidQuestion'
   has_many :bid_no_bid_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidAnswer'
   has_many :bid_no_bid_compete_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::Compete::BidNoBidAnswer', source: :bid_no_bid_answers
@@ -47,7 +47,6 @@ class Core::Tender < ApplicationRecord
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
-  has_many :collaboration_interests, class_name: 'CollaborationInterest', foreign_key: :tender_id
 
   enum status: [:created, :open, :archived]
 
@@ -66,7 +65,7 @@ class Core::Tender < ApplicationRecord
   end
 
   def matched_competitor_profiles
-    self.bidsense_results.where('average_score > ?', 0.6)
+    self.bidsense_results.where('average_score > ?', 0.6).map { |e| e.profile }
   end
 
   def create_qa

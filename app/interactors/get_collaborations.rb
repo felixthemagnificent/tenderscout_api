@@ -8,15 +8,16 @@ class GetCollaborations
                     code: :unprocessable_entity
     end
 
-    users = []
-    users = tender.collaboration_interests.map(&:user) if index_params[:interest] == 'true'
+    profiles = []
     context.results = []
 
-    unless users.empty?
-      profiles = user.profiles
-      profiles = profiles.where(profile_type: Profile.profile_types(index_params[:type])) unless index_params[:type]
-      users.each { |user| generate_profile_array(profiles) }
+    profiles = tender.collaboration_interests.map(&:user).map(&:profiles).inject(&:+) if index_params[:interest] == 'true'
+    if index_params[:match]
+      profiles = BidsenseResult.where(tender: tender).where('average_score >= ?', 0.6).map(&:profile) - profiles
     end
+    profiles = Profile.all unless profiles.any?
+    profiles = profiles.where(profile_type: Profile.profile_types(index_params[:type])) if index_params[:type]
+    users.each { |user| generate_profile_array(profiles) }
   end
 
   private

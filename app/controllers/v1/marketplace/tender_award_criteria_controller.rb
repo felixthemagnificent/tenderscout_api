@@ -1,9 +1,10 @@
-class Marketplace::TenderAwardCriteriaController < ApplicationController
+class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy]
+  before_action :set_tender
 
   # GET /marketplace/tender_award_criteria
   def index
-    @marketplace_tender_award_criteria = Marketplace::TenderAwardCriterium.all
+    @marketplace_tender_award_criteria = @tender.award_criteries
 
     render json: @marketplace_tender_award_criteria
   end
@@ -39,6 +40,9 @@ class Marketplace::TenderAwardCriteriaController < ApplicationController
   end
 
   private
+    def set_tender
+      @tender = Core::Tender.find_by_id params[:tender_id]
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_award_criterium
       @marketplace_tender_award_criterium = Marketplace::TenderAwardCriterium.find(params[:id])
