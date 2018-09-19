@@ -1,4 +1,4 @@
-class Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
+class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
   before_action :set_tender
   before_action :set_marketplace_tender_award_criteria_section, only: [:show, :update, :destroy]
 
@@ -16,10 +16,10 @@ class Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
 
   # POST /marketplace/tender_award_criteria_sections
   def create
-    @marketplace_tender_award_criteria_section = @tender.criteria_sections.new(marketplace_tender_award_criteria_section_params)
+    @marketplace_tender_award_criteria_section = @tender.award_criteria_sections.new(marketplace_tender_award_criteria_section_params)
 
     if @marketplace_tender_award_criteria_section.save
-      render json: @marketplace_tender_award_criteria_section, status: :created, location: @marketplace_tender_award_criteria_section
+      render json: @marketplace_tender_award_criteria_section, status: :created
     else
       render json: @marketplace_tender_award_criteria_section.errors, status: :unprocessable_entity
     end
@@ -61,6 +61,6 @@ class Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_award_criteria_section_params
-      params.require(:marketplace_tender_award_criteria_section).permit(:order, :title, :tender_id)
+      params.permit(:order, :title, :tender_id)
     end
 end
