@@ -1,22 +1,5 @@
 Rails.application.routes.draw do
 
-  namespace :marketplace do
-    namespace :compete do
-      resources :bid_no_bid_answers
-    end
-  end
-  namespace :marketplace do
-    resources :bid_no_bid_answers
-  end
-  namespace :marketplace do
-    resources :bid_no_bid_questions
-  end
-  namespace :marketplace do
-    resources :tender_award_criteria
-  end
-  namespace :marketplace do
-    resources :tender_award_criteria_sections
-  end
   # namespace :marketplace do
   #   resources :tender_criteria_sections
   # end
@@ -46,6 +29,12 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
+      # namespace :compete do
+      #   resources :bid_no_bid_answers
+      # end
+
+      resources :tender_award_criteria
+      resources :tender_award_criteria_sections
       resources :tenders do
         member do
           put :publish
@@ -58,6 +47,9 @@ Rails.application.routes.draw do
             post :bid_no_bid_answer, to: 'tenders#process_bnb_data'
           end
         end
+        resources :bid_no_bid_answers
+        resources :bid_no_bid_questions
+      
         resources :collaboration_interests
         resources :tender_committees, path: 'committees'
         resources :tender_criteria, path: 'criteries' do

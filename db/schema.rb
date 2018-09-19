@@ -50,6 +50,11 @@ ActiveRecord::Schema.define(version: 20180918151146) do
     t.index ["reduced_notice_id"], name: "index_analyzed_notices_on_reduced_notice_id"
     t.index ["title"], name: "index_analyzed_notices_on_title"
   end
+  create_table "african_codes", force: :cascade do |t|
+    t.string "code", default: "", null: false
+    t.string "description", default: "", null: false
+    t.index ["code"], name: "index_african_codes_on_code"
+  end
 
   create_table "assistances", force: :cascade do |t|
     t.integer "assistance_type"
@@ -322,11 +327,7 @@ ActiveRecord::Schema.define(version: 20180918151146) do
     t.string "title", limit: 255
     t.string "other_address", limit: 255
     t.string "other_phone", limit: 255
-    t.index ["address"], name: "index_core_address"
-    t.index ["contact_point"], name: "index_core_contact_point"
-    t.index ["email"], name: "index_core_email"
     t.index ["organization_id"], name: "index_core_contacts_on_organization_id"
-    t.index ["phone"], name: "index_core_phone"
     t.index ["region_id"], name: "index_core_contacts_on_region_id"
   end
 
@@ -513,15 +514,10 @@ ActiveRecord::Schema.define(version: 20180918151146) do
     t.string "sic_code", limit: 255
     t.string "salesforce_type", limit: 255
     t.string "ticker_symbol", limit: 255
-    t.index ["awarded_tenders_count"], name: "index_core_awarded_tenders_count"
-    t.index ["country_id"], name: "index_core_country_id"
     t.index ["country_id"], name: "index_core_organizations_on_country_id"
-    t.index ["creator_id"], name: "index_core_creator_id"
     t.index ["name", "country_id", "creator_id"], name: "index_core_organizations_on_name_and_country_id_and_creator_id", unique: true
     t.index ["name"], name: "index_core_organizations_on_name"
-    t.index ["published_tenders_count"], name: "index_core_published_tenders_count"
     t.index ["region_id"], name: "index_core_organizations_on_region_id"
-    t.index ["web_url"], name: "index_core_web_url"
   end
 
   create_table "core_organizations_cpvs", id: :serial, force: :cascade do |t|
@@ -854,19 +850,11 @@ ActiveRecord::Schema.define(version: 20180918151146) do
     t.datetime "dispatch_date"
     t.bigint "industry_id"
     t.integer "status", default: 0
-    t.index ["awarded_on"], name: "index_core_awarded_on"
-    t.index ["created_at"], name: "index_core_created_at"
-    t.index ["flagged_as_sme_friendly"], name: "index_core_flagged_as_sme_friendly"
     t.index ["industry_id"], name: "index_core_tenders_on_industry_id"
-    t.index ["offers_count"], name: "index_core_offers_count"
     t.index ["organization_id"], name: "index_core_tenders_on_organization_id"
     t.index ["procedure_id"], name: "index_core_tenders_on_procedure_id"
-    t.index ["published_on"], name: "index_core_published_on"
     t.index ["spider_id"], name: "index_core_tenders_on_spider_id", unique: true
-    t.index ["status_cd"], name: "index_core_status_cd"
-    t.index ["submission_date"], name: "index_core_submission_datetime"
     t.index ["title"], name: "index_core_tenders_on_title"
-    t.index ["updated_at"], name: "index_core_updated_at"
   end
 
   create_table "core_tenders_african_codes", id: :serial, force: :cascade do |t|
@@ -1554,25 +1542,18 @@ ActiveRecord::Schema.define(version: 20180918151146) do
   add_foreign_key "core_tenders", "core_currencies", column: "currency_id", name: "core_tenders_currency_id_fk"
   add_foreign_key "core_tenders", "core_organizations", column: "organization_id", name: "core_tenders_organization_id_fk"
   add_foreign_key "core_tenders", "core_procedures", column: "procedure_id", name: "core_tenders_procedure_id_fk"
+  add_foreign_key "core_countries_profiles", "core_countries", column: "country_id"
+  add_foreign_key "core_countries_profiles", "profiles"
   add_foreign_key "core_tenders", "industries"
   add_foreign_key "core_tenders_african_codes", "core_african_codes", column: "afr_code_id", name: "core_tenders_african_codes_afr_code_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_african_codes", "core_tenders", column: "tender_id", name: "core_tenders_african_codes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_categories", column: "category_id", name: "core_tenders_categories_category_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_tenders", column: "tender_id", name: "core_tenders_categories_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_contacts", "core_contacts", column: "contact_id", name: "core_tenders_contacts_contact_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_contacts", "core_tenders", column: "tender_id", name: "core_tenders_contacts_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_cpvs", "core_cpvs", column: "cpv_id", name: "core_tenders_cpvs_cpv_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_cpvs", "core_tenders", column: "tender_id", name: "core_tenders_cpvs_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_gsin_codes", "core_gsin_codes", column: "gsin_id", name: "core_tenders_gsin_codes_gsin_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_gsin_codes", "core_tenders", column: "tender_id", name: "core_tenders_gsin_codes_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_naicses", "core_naicses", column: "naics_id", name: "core_tenders_naicses_naics_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_naicses", "core_tenders", column: "tender_id", name: "core_tenders_naicses_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_ngip_codes", "core_ngip_codes", column: "ngip_code_id", name: "core_tenders_ngip_codes_ngip_code_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_ngip_codes", "core_tenders", column: "tender_id", name: "core_tenders_ngip_codes_tender_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_nhs_e_classes", "core_nhs_e_classes", column: "nhs_eclass_id", name: "core_tenders_nhs_e_classes_nhs_eclass_id_fk", on_delete: :cascade
-  add_foreign_key "core_tenders_nhs_e_classes", "core_tenders", column: "tender_id", name: "core_tenders_nhs_e_classes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_nigp_codes", "core_nigp_codes", column: "nigp_code_id", name: "core_tenders_nigp_codes_nigp_code_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_nigp_codes", "core_tenders", column: "tender_id", name: "core_tenders_nigp_codes_tender_id_fk", on_delete: :cascade
+
   add_foreign_key "core_tenders_pro_classes", "core_pro_classes", column: "pro_class_id", name: "core_tenders_pro_classes_pro_class_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_pro_classes", "core_tenders", column: "tender_id", name: "core_tenders_pro_classes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_sfgov_codes", "core_sfgov_codes", column: "sfgov_id", name: "core_tenders_sfgov_codes_sfgov_id_fk", on_delete: :cascade
@@ -1608,7 +1589,7 @@ ActiveRecord::Schema.define(version: 20180918151146) do
   add_foreign_key "profiles", "core_countries", column: "country_id"
   add_foreign_key "profiles", "industries"
   add_foreign_key "profiles", "users"
-  add_foreign_key "registration_requests", "core_countries", column: "country_id"
+  add_foreign_key "registration_requests", "countries"
   add_foreign_key "registration_requests", "industries"
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"

@@ -1,10 +1,10 @@
-class V1::CollaborationInterestsController < ApplicationController
+class V1::Marketplace::CollaborationInterestsController < ApplicationController
   include ActionController::Serialization
   before_action :set_collaboration_interest, only: [:show, :destroy]
 
   def index
     result = GetCollaborations.call(params: index_params, user: current_user)
-    render json: result.results
+    render json: result.results, each_serializer: ProfileSerializer
   end
 
   def show
@@ -46,6 +46,6 @@ class V1::CollaborationInterestsController < ApplicationController
   end
 
   def interest_params
-    params.permit(:message, :is_public, :tender_id)
+    params.permit(:current_password, :message, :is_public, :tender_id)
   end
 end
