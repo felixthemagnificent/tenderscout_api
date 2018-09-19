@@ -13,12 +13,9 @@ class GetCollaborations
     context.results = []
 
     unless users.empty?
-      case index_params[:type]
-      when nil
-        users.each { |user| generate_profile_array(user.profiles) }
-      else
-        users.each { |user| generate_profile_array(user.profiles.where(profile_type: index_params[:type])) }
-      end
+      profiles = user.profiles
+      profiles = profiles.where(profile_type: Profile.profile_types(index_params[:type])) unless index_params[:type]
+      users.each { |user| generate_profile_array(profiles) }
     end
   end
 
