@@ -1,9 +1,9 @@
 class Marketplace::Compete::BidNoBidAnswersController < ApplicationController
   before_action :set_marketplace_compete_bid_no_bid_answer, only: [:show, :update, :destroy]
-
+  before_action :set_tender
   # GET /marketplace/compete/bid_no_bid_answers
   def index
-    @marketplace_compete_bid_no_bid_answers = Marketplace::Compete::BidNoBidAnswer.all
+    @marketplace_compete_bid_no_bid_answers = @tender.bid_no_bid_answers
 
     render json: @marketplace_compete_bid_no_bid_answers
   end
@@ -15,7 +15,7 @@ class Marketplace::Compete::BidNoBidAnswersController < ApplicationController
 
   # POST /marketplace/compete/bid_no_bid_answers
   def create
-    @marketplace_compete_bid_no_bid_answer = Marketplace::Compete::BidNoBidAnswer.new(marketplace_compete_bid_no_bid_answer_params)
+    @marketplace_compete_bid_no_bid_answer = @tender.bid_no_bid_answers.new(marketplace_compete_bid_no_bid_answer_params)
 
     if @marketplace_compete_bid_no_bid_answer.save
       render json: @marketplace_compete_bid_no_bid_answer, status: :created, location: @marketplace_compete_bid_no_bid_answer
@@ -39,6 +39,9 @@ class Marketplace::Compete::BidNoBidAnswersController < ApplicationController
   end
 
   private
+    def set_tender
+      @tender = Core::Tender.find params[:tender_id]
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_compete_bid_no_bid_answer
       @marketplace_compete_bid_no_bid_answer = Marketplace::Compete::BidNoBidAnswer.find(params[:id])
