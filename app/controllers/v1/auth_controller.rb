@@ -1,7 +1,10 @@
 class V1::AuthController < Doorkeeper::TokensController
 
   def create
-    super
+    if super == :ok
+      print 'sign_zendesk'
+      # byebug
+    end
   end
 
   def logoff
