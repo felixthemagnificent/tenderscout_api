@@ -49,6 +49,6 @@ class Marketplace::Compete::BidNoBidAnswersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_compete_bid_no_bid_answer_params
-      params.require(:marketplace_compete_bid_no_bid_answer).permit(:answer_text, :bid_no_bid_answer_id, :comment, :bid_no_bid_question_id)
+      params.require(:marketplace_compete_bid_no_bid_answer).permit(:answer_text, :bid_no_bid_answer_id, :comment, :bid_no_bid_question_id, :tender_id)
     end
 end
