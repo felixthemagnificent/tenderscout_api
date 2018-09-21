@@ -115,14 +115,7 @@ class Core::Tender < ApplicationRecord
 
   def process_bnb_data(params, current_user)
     # byebug
-    answer = Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
-    question = Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
-    self.bid_no_bid_compete_answers.create!({
-      bid_no_bid_answer: answer,
-      bid_no_bid_question: question,
-      user: current_user
-      
-      })
+
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
