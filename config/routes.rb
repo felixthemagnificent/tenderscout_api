@@ -130,6 +130,7 @@ Rails.application.routes.draw do
     end
     post 'bidder/monitor/preview' => 'search_monitors#preview'
     post 'create_ticket', to: 'zen_service#create_ticket'
+    get 'sign_into_zendesk', to: 'zen_service#sign_into_zendesk'
     resources :registration_requests, path: 'user/registration_request' do
       member do
         put 'process', to: 'registration_requests#update'
