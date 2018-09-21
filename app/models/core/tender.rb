@@ -114,7 +114,7 @@ class Core::Tender < ApplicationRecord
   end
 
   def process_bnb_data(params, current_user)
-    byebug
+    # byebug
     answer = Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
     question = Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
     self.bid_no_bid_compete_answers.create!({
