@@ -16,11 +16,10 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def process_bnb_data
-    @tender.process_bnb_data(params, current_user)
     answer = Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
     question = Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
     if answer.bid_no_bid_question == question
-      self.bid_no_bid_compete_answers.create!({
+      @tender.bid_no_bid_compete_answers.create!({
         bid_no_bid_answer: answer,
         bid_no_bid_question: question,
         user: current_user
