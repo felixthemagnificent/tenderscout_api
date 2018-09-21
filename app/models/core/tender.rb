@@ -95,7 +95,7 @@ class Core::Tender < ApplicationRecord
           order: e.order
         }
       end
-      answered = question.answers.map do |e| 
+      answered = self.bid_no_bid_compete_answers.where(bid_no_bid_question: question).map do |e| 
         { 
           id: e.id, 
           user_id: e.user.id, 
