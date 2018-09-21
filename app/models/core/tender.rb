@@ -42,7 +42,7 @@ class Core::Tender < ApplicationRecord
   has_many :award_criteries, class_name: 'Marketplace::TenderAwardCriterium', through: :award_criteria_sections
   has_many :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidQuestion'
   has_many :bid_no_bid_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidAnswer'
-  has_many :bid_no_bid_compete_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::Compete::BidNoBidAnswer', source: :bid_no_bid_answers
+  has_many :bid_no_bid_compete_answers, class_name: 'Marketplace::Compete::BidNoBidAnswer'
   has_many :bidsense_results
   has_many :collaboration_interests
   belongs_to :industry, optional: true
@@ -86,9 +86,9 @@ class Core::Tender < ApplicationRecord
 
   def get_bnb_data
     data = []
-    self.bid_no_bid_questions.each do |question|
+    Marketplace::BidNoBidQuestion.all.each do |question|
       _tmp = {}
-      answers = question.available_answers.map do |e|
+      answers = question.bid_no_bid_answers.map do |e|
         {
           id: e.id,
           answer_text: e.answer_text
@@ -113,10 +113,12 @@ class Core::Tender < ApplicationRecord
   end
 
   def process_bnb_data(params, current_user)
+    byebug
     answer = Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
     question = Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
-    question.answers.create({
+    self.bid_no_bid_compete_answers.create!({
       bid_no_bid_answer: answer,
+      bid_no_bid_question: question,
       user: current_user
       
       })

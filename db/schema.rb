@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180920120302) do
+ActiveRecord::Schema.define(version: 20180920162842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -715,7 +715,7 @@ ActiveRecord::Schema.define(version: 20180920120302) do
 
   create_table "marketplace_bid_no_bid_answers", force: :cascade do |t|
     t.text "answer_text"
-    t.integer "position"
+    t.integer "order"
     t.bigint "bid_no_bid_question_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -739,8 +739,10 @@ ActiveRecord::Schema.define(version: 20180920120302) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.bigint "tender_id"
     t.index ["bid_no_bid_answer_id"], name: "index_compete_bnb_answers_on_bnb_answer"
     t.index ["bid_no_bid_question_id"], name: "index_compete_bnb_answers_on_bnb_question"
+    t.index ["tender_id"], name: "index_marketplace_compete_bid_no_bid_answers_on_tender_id"
     t.index ["user_id"], name: "index_marketplace_compete_bid_no_bid_answers_on_user_id"
   end
 
@@ -1090,6 +1092,7 @@ ActiveRecord::Schema.define(version: 20180920120302) do
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_bid_no_bid_answers", "marketplace_bid_no_bid_questions", column: "bid_no_bid_question_id"
   add_foreign_key "marketplace_bid_no_bid_questions", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_compete_bid_no_bid_answers", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "marketplace_bid_no_bid_answers", column: "bid_no_bid_answer_id", name: "index_compete_bnb_answers_on_bnb_answer"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "marketplace_bid_no_bid_questions", column: "bid_no_bid_question_id", name: "index_compete_bnb_answers_on_bnb_question"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "users"
