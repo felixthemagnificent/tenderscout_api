@@ -91,7 +91,8 @@ class Core::Tender < ApplicationRecord
       answers = question.bid_no_bid_answers.map do |e|
         {
           id: e.id,
-          answer_text: e.answer_text
+          answer_text: e.answer_text,
+          order: e.order
         }
       end
       answered = question.answers.map do |e| 
