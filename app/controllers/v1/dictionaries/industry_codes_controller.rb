@@ -7,17 +7,12 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
   end
 
   def all_codes
-    render json: AfricanCode.all +
-      Core::ClassificationCode.all +
-      Core::Gsin.all +
-      Core::Ngip.all +
-      Core::Sfgov.all +
-      Core::Naics.all +
-      Core::Cpv.all +
-      Core::ProClass.all +
-      Core::NhsEClass.all +
-      Core::Unspsc.all,
-      each_serializer: CodeSerializer
+    if codes_params[:codes]
+      codes = IndustryCode.search_codes(codes_params[:codes])
+      render json: codes, each_serializer: CodeSerializer
+    else
+      render json: nil
+    end
   end
 
   def create
@@ -62,6 +57,10 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
 
   def destroy
     @industry_code.destroy
+  end
+
+  def paginate_params
+    params.permit(:page, :page_size)
   end
 
   # Use callbacks to share common setup or constraints between actions.
