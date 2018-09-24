@@ -46,6 +46,6 @@ class Marketplace::BidNoBidAnswersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_bid_no_bid_answer_params
-      params.require(:marketplace_bid_no_bid_answer).permit(:answer_text, :position, :bid_no_bid_question_id)
+      params.permit(:answer_text, :position, :bid_no_bid_question_id)
     end
 end
