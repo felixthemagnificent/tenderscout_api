@@ -81,7 +81,8 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def complete_organization_tenders_list
-    render json: @tender.organization.complete_tenders
+    organization_list = @tender.organization.complete_tenders rescue nil
+    render json: organization_list
   end
 
   private
