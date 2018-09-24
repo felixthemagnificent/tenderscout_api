@@ -1,6 +1,6 @@
 class V1::ProfilesController < ApplicationController
   include ActionController::Serialization
-  before_action :set_profile, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar]
+  before_action :set_profile, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :create_avatar]
   before_action :set_user
 
   # GET /profiles
@@ -43,7 +43,7 @@ class V1::ProfilesController < ApplicationController
     @profile.remove_avatar!
     @profile.save
 
-    if @profie.update(avatar_params)
+    if @profile.update(avatar_params)
       render json: @profile
     else
       render json: @profile.errors, status: result.code
