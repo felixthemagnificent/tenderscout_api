@@ -20,6 +20,7 @@ class BulkCreateCriteriaSections
       criteria = section.criteries.new(
         order: e[:order],
         title: e[:title],
+        weight: e[:weight],
         parent: parent
         )
       criteria.save!
@@ -32,11 +33,11 @@ class BulkCreateCriteriaSections
   end
 
   def marketplace_tender_criteria_section_params
-    context.params.permit(:order, :title)
+    context.params.permit(:order, :title, :weight)
   end
 
   def marketplace_tender_criteria_params
-    context.params.permit(:order, :title, :tender_id, criteries: [])
+    context.params.permit(:order, :title, :weight, :tender_id, criteries: [])
   end
 
 
