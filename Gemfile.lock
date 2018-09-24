@@ -91,6 +91,7 @@ GEM
       elasticsearch (>= 2.0.0)
       elasticsearch-dsl
     concurrent-ruby (1.0.5)
+    connection_pool (2.2.2)
     crass (1.0.4)
     database_cleaner (1.7.0)
     devise (4.3.0)
@@ -147,12 +148,15 @@ GEM
     formatador (0.2.5)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    hashie (3.6.0)
     i18n (1.1.0)
       concurrent-ruby (~> 1.0)
+    inflection (1.0.0)
     interactor (3.1.0)
     ipaddress (0.8.3)
     json (2.1.0)
     jsonapi-renderer (0.2.0)
+    jwt (1.5.6)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.1.1)
@@ -201,6 +205,8 @@ GEM
     puma (3.12.0)
     rack (2.0.5)
     rack-cors (1.0.1)
+    rack-protection (2.0.4)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.1.6)
@@ -230,6 +236,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    redis (4.0.2)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
@@ -253,6 +260,10 @@ GEM
     ruby_dep (1.5.0)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
+    sidekiq (5.2.2)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -282,6 +293,12 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
+    zendesk_api (1.16.0)
+      faraday (~> 0.9)
+      hashie (>= 3.5.2, < 4.0.0)
+      inflection
+      mime-types
+      multipart-post (~> 2.0)
 
 PLATFORMS
   ruby
@@ -303,6 +320,7 @@ DEPENDENCIES
   faker (~> 1.6, >= 1.6.3)
   fog-aws
   interactor
+  jwt
   kaminari
   listen (>= 3.0.5, < 3.2)
   mini_magick
@@ -314,10 +332,12 @@ DEPENDENCIES
   rails (~> 5.1.6)
   rspec-rails
   shoulda-matchers (~> 3.1)
+  sidekiq
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
+  zendesk_api
 
 BUNDLED WITH
    1.16.4

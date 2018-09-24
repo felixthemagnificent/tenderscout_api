@@ -29,20 +29,60 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
+      # namespace :compete do
+      #   resources :bid_no_bid_answers
+      # end
+
       resources :tenders do
         member do
           put :publish
+          get :compete
+          get :best_bidsense_profiles
+          get :current_buyer_company_won_list
+          get :complete_organization_tenders_list
         end
+        member do
+          scope :compete do
+            get :bid_no_bid_answers, to: 'tenders#get_bnb_data'
+            post :bid_no_bid_answer, to: 'tenders#process_bnb_data'
+          end
+        end
+        resources :bid_no_bid_answers
+        resources :bid_no_bid_questions
+      
+        resources :collaboration_interests
         resources :tender_committees, path: 'committees'
-        resources :tender_criteria, path: 'criteries'
-        resources :tender_tasks, path: 'tasks'
+        resources :tender_criteria, path: 'criteries' do
+          resources :tender_criteria_answer, path: 'answers' do
+            collection do
+              put :close
+            end
+          end
+        end
+        resources :tender_tasks, path: 'tasks' do
+          resources :tender_task_answers, path: 'answers' do
+            collection do
+              put :close
+            end
+          end
+        end
         resources :tender_criteria_sections, path: 'criteria_sections' do
           collection do
             post :bulk_create
           end
         end
+        resources :tender_award_criteria_sections, path: 'award_criteria_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
+        resources :tender_award_criteria, path: 'award_criteria'
         resources :tender_attachments
-        resources :tender_task_sections, path: 'task_sections'
+        resources :tender_task_sections, path: 'task_sections' do
+          collection do
+            post :bulk_create
+          end
+        end
         resources :tender_suppliers, path: 'suppliers' do
           member do
             put :invite_approve
@@ -55,11 +95,10 @@ Rails.application.routes.draw do
         end
       end
     end
-
     put :update_password, to: 'users#update_password', path: 'users/password/update'
 
+    resources :assistances
     resources :users do
-      resources :assistances
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'
@@ -90,6 +129,8 @@ Rails.application.routes.draw do
       end
     end
     post 'bidder/monitor/preview' => 'search_monitors#preview'
+    post 'create_ticket', to: 'zen_service#create_ticket'
+    get 'sign_into_zendesk', to: 'zen_service#sign_into_zendesk'
     resources :registration_requests, path: 'user/registration_request' do
       member do
         put 'process', to: 'registration_requests#update'

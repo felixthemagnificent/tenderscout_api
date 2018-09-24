@@ -42,7 +42,7 @@ group :development, :test do
   gem 'shoulda-matchers', '~> 3.1'
   #SimpleCov is a code coverage analysis tool for Ruby.
   gem 'simplecov', require: false
-
+  gem 'jwt'
 end
 
 group :development do
@@ -66,6 +66,8 @@ gem 'postmark_mailer', github: 'scienceexchange/postmark_mailer'
 gem 'carrierwave', '~> 1.0'
 gem "fog-aws"
 gem "mini_magick"
+gem 'sidekiq'
+gem "zendesk_api"
 
 group :development do
   gem 'capistrano'

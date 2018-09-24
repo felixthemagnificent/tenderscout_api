@@ -9,7 +9,7 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :id, :fullname, :display_name, :avatar, :cover_img, :city,
              :do_marketplace_available, :profile_type, :company, :company_size,
              :valueFrom, :valueTo, :turnover, :timezone, :tender_level,
-             :industry, :industries, :country,
+             :industry, :industries, :country, :description,
              :number_public_contracts, :contacts, :keywords, :countries
 
   attribute(:values) { [object.valueFrom, object.valueTo] }

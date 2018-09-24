@@ -56,7 +56,7 @@ class CreateProfile
     context.params.permit(
       :fullname, :display_name, :profile_type, :city, :timezone,
       :do_marketplace_available, :company, :company_size, :turnover,
-      :valueFrom, :valueTo, :tender_level, :number_public_contracts,
+      :valueFrom, :valueTo, :tender_level, :number_public_contracts, :description,
       :industry_id, :country_id, values: []
     )
   end
