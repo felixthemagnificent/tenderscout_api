@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180921105328) do
+ActiveRecord::Schema.define(version: 20180924151321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -754,6 +754,7 @@ ActiveRecord::Schema.define(version: 20180921105328) do
     t.bigint "section_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "weight"
     t.index ["section_id"], name: "index_marketplace_tender_award_criteria_on_section_id"
   end
 
@@ -784,6 +785,7 @@ ActiveRecord::Schema.define(version: 20180921105328) do
     t.bigint "section_id"
     t.bigint "parent_id"
     t.text "description"
+    t.integer "weight"
     t.index ["parent_id"], name: "index_marketplace_tender_criteria_on_parent_id"
     t.index ["section_id"], name: "index_marketplace_tender_criteria_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_on_tender_id"
