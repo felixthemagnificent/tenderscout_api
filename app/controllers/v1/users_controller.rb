@@ -16,6 +16,14 @@ class V1::UsersController < ApplicationController
     render json: @user
   end
 
+  def search
+    search_field = params[:query]
+    results = User.search(search_field)
+    count = results.count
+    results = results.objects.page(paginate_params[:page]).per(paginate_params[:page_size])
+    render json: {data: results, count: count}
+  end
+
   # POST /users
   def create
     @user = User.new(user_params)

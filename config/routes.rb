@@ -99,6 +99,9 @@ Rails.application.routes.draw do
 
     resources :assistances
     resources :users do
+      collection do
+        get :search
+      end
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'
@@ -106,6 +109,7 @@ Rails.application.routes.draw do
           post :cover_img, to: 'profiles#create_cover_img'
           delete :cover_img, to: 'profiles#destroy_cover_img'
         end
+
         resources :case_studies, path: 'case_study' do
           member do
             delete :remove_image, path: 'image/:image_id', to: 'case_studies#remove_image'
