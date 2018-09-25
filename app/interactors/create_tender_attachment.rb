@@ -13,8 +13,10 @@ class CreateTenderAttachment
     end
 
     if attachment_params
-      attachment_params.each do |file|
-        attachment = Attachment.new(file: file)
+      attachments = []
+      attachments<<attachment_params
+      attachments.each do |file|
+        attachment = Attachment.new(file: attachment_params)
         context.fail! errors: attachment.errors, code: :unprocessable_entity unless attachment.save
         context.tender.attachments << attachment
       end
