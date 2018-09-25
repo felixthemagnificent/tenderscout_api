@@ -42,6 +42,6 @@ class V1::Marketplace::TenderAttachmentsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def attachment_params
-    params.permit(:files )
+    params.permit(files: {} )
   end
 end
