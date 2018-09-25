@@ -13,7 +13,7 @@ class CreateTender
       context.tender.country = Core::Country.find_by_id(geography_params[:geography]) if geography_params[:geography]
       context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.save
 
-      if contact_params[:person] and contact_params[:email]
+      if contact_params and contact_params[:person] and contact_params[:email]
         contact = context.tender.contacts.new
         contact.contact_point = contact_params[:person]
         contact.email = contact_params[:email]
