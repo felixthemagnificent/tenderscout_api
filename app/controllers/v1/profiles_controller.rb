@@ -1,6 +1,7 @@
 class V1::ProfilesController < ApplicationController
   include ActionController::Serialization
-  before_action :set_profile, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :create_avatar]
+
+  before_action :set_profile, only: [:show, :update, :destroy, :create_avatar, :destroy_avatar, :create_cover_img, :destroy_cover_img]
   before_action :set_user
 
   # GET /profiles
