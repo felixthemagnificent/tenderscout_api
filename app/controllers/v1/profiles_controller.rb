@@ -47,7 +47,7 @@ class V1::ProfilesController < ApplicationController
     if @profile.update(avatar_params)
       render json: @profile
     else
-      render json: @profile.errors, status: result.code
+      render json: @profile.errors, status: :unprocessable_entity
     end
   end
 
@@ -63,7 +63,7 @@ class V1::ProfilesController < ApplicationController
     if @profie.update(cover_img_params)
       render json: @profile
     else
-      render json: @profile.errors, status: result.code
+      render json: @profile.errors, status: :unprocessable_entity
     end
   end
 
