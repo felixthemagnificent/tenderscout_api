@@ -1,4 +1,5 @@
 class V1::ZenServiceController < ApplicationController
+
   def create_ticket()
     check_valid_params
     params = ticket_params
@@ -14,6 +15,23 @@ class V1::ZenServiceController < ApplicationController
           error: e.to_s
       }
     end
+  end
+
+  def sign_into_zendesk(user = current_user)
+    iat = Time.now.to_i
+    jti = "#{iat}/#{SecureRandom.hex(18)}"
+    payload = JWT.encode({
+                             :iat   => iat, # Seconds since epoch, determine when this token is stale
+                             :jti   => jti, # Unique token id, helps prevent replay attacks
+                             :name  => user.profiles.first.fullname,
+                             :email => user.email,
+                         }, ZENDESK_SHARED_SECRET)
+    zendesk_sso_url(payload)
+  end
+
+  def zendesk_sso_url(payload)
+    url = "https://#{ZENDESK_SUBDOMAIN}.zendesk.com/access/jwt?jwt=#{payload}"
+    render json: {url: url}
   end
 
   private

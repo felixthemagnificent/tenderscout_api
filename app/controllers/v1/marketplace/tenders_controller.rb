@@ -83,8 +83,9 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def best_bidsense_profiles
-     result = @tender.matched_competitor_profiles.map(&:profile)
-     render json: result
+     bidsenses = @tender.matched_competitor_bidsense
+     profiles = bidsenses.map(&:profile)
+     render json: { profiles: profiles, bidsense: bidsenses }
   end
 
   def current_buyer_company_won_list
@@ -92,7 +93,8 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def complete_organization_tenders_list
-    render json: @tender.organization.complete_tenders
+    organization_list = @tender.organization.complete_tenders rescue nil
+    render json: organization_list
   end
 
   private

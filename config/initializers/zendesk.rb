@@ -1,5 +1,6 @@
 require 'zendesk_api'
-
+ZENDESK_SHARED_SECRET = 'hQPHYq9Ust8yaJrNpA16LfDMzKnQ4jX2ij5F4TH2pVhmZjRv'
+ZENDESK_SUBDOMAIN = 'tenderscoutsupport'
 $client = ZendeskAPI::Client.new do |config|
   # Mandatory:
 
