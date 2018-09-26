@@ -635,7 +635,7 @@ ActiveRecord::Schema.define(version: 20180924151321) do
     t.string "name", default: "", null: false
     t.string "world_region", default: "", null: false
     t.string "world_subregion", default: "", null: false
-    t.jsonb "other_names", default: {}, null: false
+    t.json "other_names", default: {}, null: false
     t.bigint "currencies_id"
     t.bigint "world_regions_id"
     t.index ["alpha2code"], name: "index_countries_on_alpha2code", unique: true

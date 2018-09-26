@@ -23,7 +23,7 @@ require 'rails_helper'
 # removed from Rails core in Rails 5, but can be added back in via the
 # `rails-controller-testing` gem.
 
-RSpec.describe Marketplace::BidNoBidAnswersController, type: :controller do
+RSpec.describe V1::Marketplace::BidNoBidAnswersController, type: :controller do
 
   # This should return the minimal set of attributes required to create a valid
   # Marketplace::BidNoBidAnswer. As you add validations to Marketplace::BidNoBidAnswer, be sure to
@@ -61,13 +61,13 @@ RSpec.describe Marketplace::BidNoBidAnswersController, type: :controller do
     context "with valid params" do
       it "creates a new Marketplace::BidNoBidAnswer" do
         expect {
-          post :create, params: {marketplace_bid_no_bid_answer: valid_attributes}, session: valid_session
+          post :create, params: {marketplace_bid_no_bid_answer => valid_attributes}, session: valid_session
         }.to change(Marketplace::BidNoBidAnswer, :count).by(1)
       end
 
       it "renders a JSON response with the new marketplace_bid_no_bid_answer" do
 
-        post :create, params: {marketplace_bid_no_bid_answer: valid_attributes}, session: valid_session
+        post :create, params: {marketplace_bid_no_bid_answer => valid_attributes}, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
         expect(response.location).to eq(marketplace_bid_no_bid_answer_url(Marketplace::BidNoBidAnswer.last))
@@ -77,7 +77,7 @@ RSpec.describe Marketplace::BidNoBidAnswersController, type: :controller do
     context "with invalid params" do
       it "renders a JSON response with errors for the new marketplace_bid_no_bid_answer" do
 
-        post :create, params: {marketplace_bid_no_bid_answer: invalid_attributes}, session: valid_session
+        post :create, params: {marketplace_bid_no_bid_answer => invalid_attributes}, session: valid_session
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
