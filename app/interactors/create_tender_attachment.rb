@@ -13,8 +13,8 @@ class CreateTenderAttachment
     end
 
     if attachment_params
-      attachment_params.each do |file|
-        attachment = Attachment.new(file: file)
+      attachment_params[:files].each do |k,v|
+        attachment = Attachment.new(file: v)
         context.fail! errors: attachment.errors, code: :unprocessable_entity unless attachment.save
         context.tender.attachments << attachment
       end
@@ -24,6 +24,6 @@ class CreateTenderAttachment
   private
 
   def attachment_params
-    context.params[:files]
+    context.params.permit(files: {})
   end
 end

@@ -51,7 +51,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_award_criteria_section
-      @marketplace_tender_award_criteria_section = Marketplace::TenderAwardCriteriaSection.find(params[:id])
+      @marketplace_tender_award_criteria_section = ::Marketplace::TenderAwardCriteriaSection.find(params[:id])
     end
 
     def set_tender

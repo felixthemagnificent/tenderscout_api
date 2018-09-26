@@ -8,8 +8,10 @@ class V1::Dictionaries::IndustryCodesController < ApplicationController
 
   def all_codes
     if codes_params[:codes]
-      codes = IndustryCode.search_codes(codes_params[:codes])
-      render json: codes, each_serializer: CodeSerializer
+      results = IndustryCode.search_codes(codes_params[:codes])
+      count = results.count
+      results = results.objects.page(paginate_params[:page]).per(paginate_params[:page_size])
+      render json: {data: results, count: count}
     else
       render json: nil
     end

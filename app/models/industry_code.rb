@@ -3,6 +3,6 @@ class IndustryCode < ApplicationRecord
   belongs_to :industry
 
   def self.search_codes(code)
-    TenderCodesIndex.query(match:{ code: code} ).objects
+    TenderCodesIndex.query(match:{ code: code} )
   end
 end

@@ -16,10 +16,10 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # POST /marketplace/tender_award_criteria
   def create
-    @marketplace_tender_award_criterium = Marketplace::TenderAwardCriterium.new(marketplace_tender_award_criterium_params)
+    @marketplace_tender_award_criterium = @tender.award_criteries.new(marketplace_tender_award_criterium_params)
 
     if @marketplace_tender_award_criterium.save
-      render json: @marketplace_tender_award_criterium, status: :created, location: @marketplace_tender_award_criterium
+      render json: @marketplace_tender_award_criterium, status: :created
     else
       render json: @marketplace_tender_award_criterium.errors, status: :unprocessable_entity
     end
@@ -45,11 +45,11 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_award_criterium
-      @marketplace_tender_award_criterium = Marketplace::TenderAwardCriterium.find(params[:id])
+      @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_award_criterium_params
-      params.require(:marketplace_tender_award_criterium).permit(:order, :title, :description, :tender_award_criteria_section_id)
+      params.permit(:order, :title, :description, :section_id)
     end
 end

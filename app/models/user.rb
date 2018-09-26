@@ -23,4 +23,38 @@ class User < ApplicationRecord
     self.role ||= :user
   end
 
+  def self.search(search_field)
+    result = nil
+    if search_field
+      matches = []
+      matches << { 
+        match: { 
+          fullname:{
+            query: search_field,
+            analyzer: :fullname_search,
+            operator: :and,
+            # prefix: 1
+          } 
+        }
+      }
+      matches << { 
+        match: { 
+          email: {
+            query: search_field,
+            analyzer: :fullname,
+            operator: :and,
+            # prefix: 1
+          } 
+        }
+      }
+
+      result = UsersIndex.query(
+        bool: 
+        { 
+          should: matches 
+        }
+      )
+    end
+    result
+  end
 end

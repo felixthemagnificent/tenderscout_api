@@ -4,7 +4,7 @@ class BulkCreateAwardCriteriaSections
   def call
     Marketplace::TenderAwardCriteriaSection.transaction do
       marketplace_tender_criteria_sections.each do |section|
-        section = context.tender.criteria_sections.new(section)
+        section = context.tender.award_criteria_sections.new(section)
         section.save!
 
         create_criteries(params: context.params.to_unsafe_h, section: section, parent: nil)
@@ -20,6 +20,7 @@ class BulkCreateAwardCriteriaSections
       criteria = section.criteries.new(
         order: e[:order],
         title: e[:title],
+        weight: e[:weight],
         parent: parent
         )
       criteria.save!
@@ -32,11 +33,11 @@ class BulkCreateAwardCriteriaSections
   end
 
   def marketplace_tender_criteria_section_params
-    context.params.permit(:order, :title)
+    context.params.permit(:order, :title, :weight)
   end
 
   def marketplace_tender_criteria_params
-    context.params.permit(:order, :title, :tender_id, criteries: [])
+    context.params.permit(:order, :title, :weight, :tender_id, criteries: [])
   end
 
 

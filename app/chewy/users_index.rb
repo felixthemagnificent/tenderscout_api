@@ -30,11 +30,6 @@ class UsersIndex < Chewy::Index
           "([^-@]+)"
         ]
       },
-      phone: {
-        type:     :ngram,
-        min_gram: 4,
-        max_gram: 10
-      },
       fullname: {
         type:     :ngram,
         min_gram: 3,
@@ -45,14 +40,6 @@ class UsersIndex < Chewy::Index
       split_tokens: {
         tokenizer: :letter,
         filter: [:lowercase],
-      },
-      email: {
-        tokenizer: :uax_url_email,
-        filter: [
-          :email,
-          :lowercase,
-          :unique
-        ]
       },
       fullname: {
         tokenizer: :customNgram,
@@ -70,8 +57,8 @@ class UsersIndex < Chewy::Index
     }
   }
   define_type User.all do
-    # field :title, value: -> (tender) { tender.title }
-    # field :description, value: -> (tender) { tender.description.gsub(/[^0-9A-Za-z \t]/i, '').gsub(/\t/,' ') }
+    field :email, value: -> (user) { user.email }, analyzer: :fullname
+    field :fullname, value: -> (user) { user.profiles.try(:first).try(:fullname) }, analyzer: :fullname
     # field :created_at, type: 'date', value: ->{ created_at } 
     # field :country_id, value: ->(tender) { tender.try(:country).try(:id) }
     # field :low_value, value: ->(tender) { tender.estimated_low_value.to_i }, type: :integer
