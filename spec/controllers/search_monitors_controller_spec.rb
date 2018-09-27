@@ -82,7 +82,6 @@ RSpec.describe V1::SearchMonitorsController, type: :controller do
       post :share, params: { id: user.search_monitors.first.id } ,as: :json
       expect(response.status).to eq 200
       expect(response).to have_http_status(:ok)
-      expect(json_body).not_to eq nil
     end
 
   end

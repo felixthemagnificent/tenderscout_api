@@ -16,9 +16,10 @@ class TenderSerializer < ActiveModel::Serializer
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
               :retender_status, :status
 
-  attribute(:country) { CountrySerializer.new(object.try(:organization).try(:country)) if object.organization }
-  attribute(:contact_email) { object.organization.email rescue nil }
-  attribute(:contact_phone) { object.organization.phone rescue nil }
+  attribute(:country) { CountrySerializer.new(object.organization.try(:country)) if object.organization }
+  attribute(:city) { object.try(:organization).try(:city_name) }
+  attribute(:contact_email) { object.try(:organization).try(:email) }
+  attribute(:contact_phone) { object.try(:organization).try(:phone) }
   attribute(:classification) { object.try(:classification).try(:description) }
 
   has_many :naicses, serializer: Core::NaicsSerializer

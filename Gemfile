@@ -42,7 +42,7 @@ group :development, :test do
   gem 'shoulda-matchers', '~> 3.1'
   #SimpleCov is a code coverage analysis tool for Ruby.
   gem 'simplecov', require: false
-  gem 'jwt'
+  gem 'rubocop-rspec'
 end
 
 group :development do
@@ -54,7 +54,7 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
+gem 'jwt'
 gem 'devise'
 gem 'devise-doorkeeper'
 gem 'active_model_serializers'
