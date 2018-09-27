@@ -51,7 +51,7 @@ Rails.application.routes.draw do
         resources :bid_no_bid_questions
       
         resources :collaboration_interests
-        resources :tender_committees, path: 'committees'
+        resources :tender_collaborators, path: 'collaborators'
         resources :tender_criteria, path: 'criteries' do
           resources :tender_criteria_answer, path: 'answers' do
             collection do

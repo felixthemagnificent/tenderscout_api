@@ -73,8 +73,8 @@ class PublishTender
       ).deliver_now
     end
 
-    unless context.tender.committees.present?
-      context.tender.committees.each do |user|
+    unless context.tender.collaborators.present?
+      context.tender.collaborators.each do |user|
         profile = user.profiles.find_by(profile_type: :consultant)
         model['user_name'] = profile.fullname if profile.present?
         unless profile.present?

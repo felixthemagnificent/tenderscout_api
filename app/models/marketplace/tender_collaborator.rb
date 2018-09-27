@@ -1,4 +1,4 @@
-class Marketplace::TenderCommittee < ApplicationRecord
+class Marketplace::TenderCollaborator < ApplicationRecord
   belongs_to :tender, class_name: 'Core::Tender'
   belongs_to :user
 
