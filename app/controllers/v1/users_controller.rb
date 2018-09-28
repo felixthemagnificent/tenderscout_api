@@ -27,12 +27,15 @@ class V1::UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-    @user.profiles.new(profile_params)
-
-    if @user.save && @user.profiles.save
-      render json: @user, status: :created, location: @user
+    if @user.save
+      profile = @user.profiles.create(profile_params)
+      if 
+        render json: @user, status: :created
+      else
+        render json: @user.profile.errors.full_messages, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors.merge(@user.profiles.errors), status: :unprocessable_entity
+      render json: @user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
