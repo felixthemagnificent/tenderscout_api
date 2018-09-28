@@ -1,4 +1,4 @@
-class CreateCriteriaAnswer
+class CreateAwardCriteriaAnswer
   include Interactor
 
   def call
@@ -11,9 +11,9 @@ class CreateCriteriaAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
-    criteria = tender.criteries.where(id: criteria_params[:tender_criterium_id]).first
-    unless criteria.present?
-      context.fail! errors: { error: :unprocessable_entity, error_description: 'Criteria not found'},
+    award_criteria = tender.award_criteries.where(id: award_criteria_params[:tender_award_criateria_id]).first
+    unless award_criteria.present?
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Award criteria not found'},
                     code: :unprocessable_entity
     end
 
@@ -22,12 +22,12 @@ class CreateCriteriaAnswer
                     code: :unprocessable_entity
     end
 
-    if criteria.answers.exists?(closed: true)
+    if award_criteria.answers.exists?(closed: true)
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Answer is already closed'},
                     code: :unprocessable_entity
     end
 
-    context.answer = criteria.answers.new(answer_params)
+    context.answer = award_criteria.answers.new(answer_params)
     context.answer.user = context.user
 
     unless context.answer.save
@@ -42,8 +42,8 @@ class CreateCriteriaAnswer
 
   private
 
-  def criteria_params
-    context.params.permit(:tender_criterium_id)
+  def award_criteria_params
+    context.params.permit(:tender_award_criateria_id)
   end
 
   def answer_params

@@ -10,15 +10,82 @@ class User < ApplicationRecord
   has_many :search_monitors
   has_many :favourite_monitors
   has_many :tender_collaborators, class_name: 'Marketplace::TenderCollaborator'
-  has_many :tenders, through: :tender_collaborators
+  has_many :tenders, through: :tender_collaborators, source: :tender, class_name: 'Core::Tender'
   has_many :comments, class_name: 'CompeteComment'
   has_many :collaboration_interests
+  has_many :tender_task_answers
+  has_many :tender_award_criteria_answers
 
   enum role: [:admin, :user]
 
   after_initialize :set_default_role, :if => :new_record?
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
+
+  def collaboration_tenders_statistic
+    percent_array_result = []
+    result = {}
+    tenders.each do |tender|
+     task_count = tender.tasks_count
+     criteria_count = tender.award_criteries_count
+     all_tender_task_answer_count = tender_task_answer_completed_count(tender)
+     all_tender_award_criteria_answer_count = tender_award_criteria_answer_comleted_count(tender)
+     tender_comlete_percent = calculate_tender_comlete_percent(task_count,criteria_count,
+                                                               all_tender_task_answer_count,
+                                                               all_tender_award_criteria_answer_count)
+     (tender_comlete_percent)
+      percent_array_result<<tender_comlete_percent
+     result = user_tender_statuses(percent_array_result)
+    end
+    result
+  end
+
+
+  def tender_task_answer_completed_count(tender)
+    self.tender_task_answers.where(tender_id: tender.id).where("pass_fail = ? or score IS NOT ?",TRUE, nil ).count
+  end
+
+  def tender_award_criteria_answer_comleted_count(tender)
+    self.tender_award_criteria_answers.where(tender_id: tender.id).where("pass_fail = ? or score IS NOT ?",TRUE, nil ).count
+  end
+
+  def calculate_tender_comlete_percent(task_count,criteria_count,
+                                       all_tender_task_answer_count,
+                                       all_tender_award_criteria_answer_count)
+    tender_comlete_percent = 0
+    needed_requirement = task_count + criteria_count
+    done_requirement = all_tender_task_answer_count + all_tender_award_criteria_answer_count
+    if needed_requirement == 0
+      tender_comlete_percent = 0
+    else
+      tender_comlete_percent = (done_requirement.to_f/needed_requirement.to_f * 100).round(0)
+    end
+    tender_comlete_percent
+  end
+
+  def user_tender_statuses(percent_array_result)
+    count_all = percent_array_result.count
+    more_61  = []
+    more_31 = []
+    less_30 = []
+    done = []
+    status_result = {}
+    percent_array_result.each do |tender|
+      if tender == 100
+        done<<tender
+      elsif tender > 61
+        more_61<<tender
+      elsif (31..60).include?(tender)
+        more_31<<tender
+      elsif  (0..30).include?(tender)
+        less_30<<tender
+      end
+    end
+     status_result = { total: count_all, complete: done.count,
+                        complete_61: more_61.count, complete_31: more_31.count,
+                        complete_less_31: less_30.count}
+  end
+
 
   def set_default_role
     self.role ||= :user

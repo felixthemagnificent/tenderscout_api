@@ -40,5 +40,9 @@ class TenderSerializer < ActiveModel::Serializer
     end
 
     result
+    end
+
+  attribute(:complete_status) do
+  CollaboratorTenderStatus.score(user: current_user, tender: object)
   end
 end

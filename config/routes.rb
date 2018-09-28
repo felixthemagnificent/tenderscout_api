@@ -53,7 +53,7 @@ Rails.application.routes.draw do
         resources :collaboration_interests
         resources :tender_collaborators, path: 'collaborators'
         resources :tender_criteria, path: 'criteries' do
-          resources :tender_criteria_answer, path: 'answers' do
+          resources :tender_award_criteria_answer, path: 'answers' do
             collection do
               put :close
             end
@@ -96,7 +96,7 @@ Rails.application.routes.draw do
       end
     end
     put :update_password, to: 'users#update_password', path: 'users/password/update'
-
+    get :user_tender_statistic, to: 'users#user_tender_statistic'
     resources :assistances
     resources :users do
       collection do

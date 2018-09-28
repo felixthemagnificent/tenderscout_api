@@ -24,6 +24,11 @@ class V1::UsersController < ApplicationController
     render json: {data: results, count: count}
   end
 
+  def user_tender_statistic
+    result = current_user.collaboration_tenders_statistic
+    render json: { user_id: current_user.id, data: result }
+  end
+
   # POST /users
   def create
     result = true

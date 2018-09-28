@@ -1,10 +1,10 @@
-class V1::Marketplace::TenderCriteriaAnswerController < ApplicationController
+class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationController
   def index
-    render json: TenderCriteriaAnswer.where(tender_criteria_id: params[:tender_criterium_id]).where(user: current_user)
+    render json: TenderAwardCriteriaAnswer.where(tender_criteria_id: params[:tender_award_criateria_id]).where(user: current_user)
   end
 
   def create
-    result = CreateCriteriaAnswer.call(params: answer_params, user: current_user)
+    result = CreateAwardCriteriaAnswer.call(params: answer_params, user: current_user)
     if result.success?
       render json: result.answer, status: :created
     else
@@ -13,7 +13,7 @@ class V1::Marketplace::TenderCriteriaAnswerController < ApplicationController
   end
 
   def close
-    result = CloseCriteriaAnswer.call(params: close_params, user: current_user)
+    result = CloseAwardCriteriaAnswer.call(params: close_params, user: current_user)
     if result.success?
       render json: result.answer, status: :created
     else
@@ -27,10 +27,10 @@ class V1::Marketplace::TenderCriteriaAnswerController < ApplicationController
   end
 
   def answer_params
-    params.permit(:tender_criterium_id, :tender_id, :pass_fail, :score, :closed)
+    params.permit(:tender_award_criateria_id, :tender_id, :pass_fail, :score, :closed)
   end
 
   def close_params
-    params.permit(:tender_criterium_id, :tender_id, :closed)
+    params.permit(:tender_award_criateria_id, :tender_id, :closed)
   end
 end
