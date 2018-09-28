@@ -9,7 +9,8 @@ class User < ApplicationRecord
   has_many :profiles
   has_many :search_monitors
   has_many :favourite_monitors
-  has_many :tenders, through: :tender_committees
+  has_many :tender_collaborators, class_name: 'Marketplace::TenderCollaborator'
+  has_many :tenders, through: :tender_collaborators
   has_many :comments, class_name: 'CompeteComment'
   has_many :collaboration_interests
 

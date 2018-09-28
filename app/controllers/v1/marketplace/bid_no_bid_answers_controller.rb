@@ -1,4 +1,4 @@
-class Marketplace::BidNoBidAnswersController < ApplicationController
+class V1::Marketplace::BidNoBidAnswersController < ApplicationController
   before_action :set_marketplace_bid_no_bid_answer, only: [:show, :update, :destroy]
 
   # GET /marketplace/bid_no_bid_answers

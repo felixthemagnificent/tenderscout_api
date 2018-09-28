@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180924151321) do
+ActiveRecord::Schema.define(version: 20180927074646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -767,13 +767,13 @@ ActiveRecord::Schema.define(version: 20180924151321) do
     t.index ["tender_id"], name: "index_marketplace_tender_award_criteria_sections_on_tender_id"
   end
 
-  create_table "marketplace_tender_committees", force: :cascade do |t|
+  create_table "marketplace_tender_collaborators", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_marketplace_tender_committees_on_tender_id"
-    t.index ["user_id"], name: "index_marketplace_tender_committees_on_user_id"
+    t.index ["tender_id"], name: "index_marketplace_tender_collaborators_on_tender_id"
+    t.index ["user_id"], name: "index_marketplace_tender_collaborators_on_user_id"
   end
 
   create_table "marketplace_tender_criteria", force: :cascade do |t|
@@ -1102,7 +1102,7 @@ ActiveRecord::Schema.define(version: 20180924151321) do
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria", "marketplace_tender_award_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
-  add_foreign_key "marketplace_tender_committees", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_collaborators", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
