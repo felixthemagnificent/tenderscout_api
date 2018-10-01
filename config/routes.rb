@@ -117,6 +117,8 @@ Rails.application.routes.draw do
       end
     end
     get :user_tender_statistic, to: 'users#user_tender_statistic'
+    resources :comments
+    resources :notes
     resources :profiles, path: 'my/profiles'
     resources :search_monitors, path: 'bidder/monitor' do
       member do
