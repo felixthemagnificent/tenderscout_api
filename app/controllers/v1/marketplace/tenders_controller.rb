@@ -48,7 +48,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
-    result = UpdateTender.call(tender: @tender, params: tender_params, user: current_user)
+    result = UpdateTender.call(tender: @tender, params: params, user: current_user)
     if result.success?
       render json: result.tender, current_user: current_user
     else

@@ -29,4 +29,15 @@ class TenderSerializer < ActiveModel::Serializer
     current_user ||= @instance_options[:current_user] || @instance_options[:scope]
     Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
   end
+  attribute(:bid_no_bid) do
+    result = []
+    current_user ||= @instance_options[:current_user] || @instance_options[:scope]
+    Marketplace::BidNoBidQuestion.all.each do |question|
+      result << question.as_json
+      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:first).try(:bid_no_bid_answer)
+      result.last[:answer] = answer
+    end
+
+    result
+  end
 end
