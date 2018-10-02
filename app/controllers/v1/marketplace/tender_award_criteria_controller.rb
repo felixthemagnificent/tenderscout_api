@@ -1,5 +1,5 @@
 class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
-  before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy]
+  before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy, :tender_award_criteria_comments]
   before_action :set_tender
 
   # GET /marketplace/tender_award_criteria
@@ -37,6 +37,12 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # DELETE /marketplace/tender_award_criteria/1
   def destroy
     @marketplace_tender_award_criterium.destroy
+  end
+
+  # Comments for TenderAwardCriteries
+  def tender_award_criteria_comments
+    result = @marketplace_tender_award_criterium.comments
+    render json: result
   end
 
   private

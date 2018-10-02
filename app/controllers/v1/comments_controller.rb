@@ -1,5 +1,5 @@
 class V1::CommentsController < ApplicationController
-  before_action :set_comment, only: [:update, :destroy]
+  before_action :set_comment, only: [:update, :destroy, :comment_childrens]
   COMMENT_MODEL= {
       'tender_task' => 'Marketplace::TenderTask',
       'award_criterium' => 'Marketplace::TenderAwardCriterium',
@@ -37,6 +37,11 @@ class V1::CommentsController < ApplicationController
     @comment.destroy
   end
 
+  def comment_childrens
+   result =  @comment.childrens
+    render json: result
+  end
+
   private
 
   def set_comment
@@ -44,7 +49,7 @@ class V1::CommentsController < ApplicationController
   end
 
   def comment_params
-    params.permit(:body, :commentable_id, :commentable_type )
+    params.permit(:body, :commentable_id, :commentable_type, :parent_id )
   end
 
 end

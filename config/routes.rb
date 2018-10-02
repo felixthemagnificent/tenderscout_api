@@ -60,6 +60,9 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_tasks, path: 'tasks' do
+          member do
+            get :tender_task_comments, to: 'tender_tasks#tender_task_comments'
+          end
           resources :tender_task_answers, path: 'answers' do
             collection do
               put :close
@@ -117,7 +120,11 @@ Rails.application.routes.draw do
       end
     end
     get :user_tender_statistic, to: 'users#user_tender_statistic'
-    resources :comments
+    resources :comments do
+      member do
+        get :childrens, to: 'comments#comment_childrens'
+      end
+    end
     resources :notes
     resources :profiles, path: 'my/profiles'
     resources :search_monitors, path: 'bidder/monitor' do
