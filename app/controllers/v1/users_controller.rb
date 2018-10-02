@@ -24,15 +24,25 @@ class V1::UsersController < ApplicationController
     render json: {data: results, count: count}
   end
 
+  def user_tender_statistic
+    result = current_user.collaboration_tenders_statistic
+    render json: { user_id: current_user.id, data: result }
+  end
+
   # POST /users
   def create
+    result = true
     @user = User.new(user_params)
-    @user.profiles.new(profile_params)
-
-    if @user.save && @user.profiles.save
-      render json: @user, status: :created, location: @user
+    if @user.save
+      profile = @user.profiles.new(profile_params)
+      if profile.save
+        render json: @user, status: :created
+      else
+        @user.destroy
+        render json: profile.errors.full_messages, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors.merge(@user.profiles.errors), status: :unprocessable_entity
+      render json: @user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
