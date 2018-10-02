@@ -33,7 +33,11 @@ Rails.application.routes.draw do
       #   resources :bid_no_bid_answers
       # end
       resources :bid_no_bid_answers
-      resources :bid_no_bid_questions
+      resources :bid_no_bid_questions do
+      member do
+        get :bid_no_bid_question_comments, to: 'bid_no_bid_questions#bid_no_bid_question_comments'
+      end
+      end
       
       resources :tenders do
         member do
@@ -79,7 +83,11 @@ Rails.application.routes.draw do
             post :bulk_create
           end
         end
-        resources :tender_award_criteria, path: 'award_criteria'
+        resources :tender_award_criteria, path: 'award_criteria' do
+          member do
+            get :tender_award_criteria_comments, to: 'tender_award_criteria#tender_award_criteria_comments'
+          end
+        end
         resources :tender_attachments
         resources :tender_task_sections, path: 'task_sections' do
           collection do
