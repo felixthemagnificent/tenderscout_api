@@ -1,6 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
   include Pageable
+  update_index('tenders#tender') { self } 
 
   self.table_name = "core_tenders"
 
