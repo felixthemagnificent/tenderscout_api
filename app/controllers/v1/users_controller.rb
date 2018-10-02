@@ -26,13 +26,15 @@ class V1::UsersController < ApplicationController
 
   # POST /users
   def create
+    result = true
     @user = User.new(user_params)
     if @user.save
-      profile = @user.profiles.create(profile_params)
-      if 
+      profile = @user.profiles.new(profile_params)
+      if profile.save
         render json: @user, status: :created
       else
-        render json: @user.profile.errors.full_messages, status: :unprocessable_entity
+        @user.destroy
+        render json: profile.errors.full_messages, status: :unprocessable_entity
       end
     else
       render json: @user.errors.full_messages, status: :unprocessable_entity

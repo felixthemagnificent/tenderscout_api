@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180927074646) do
+ActiveRecord::Schema.define(version: 20181002080148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -817,6 +817,7 @@ ActiveRecord::Schema.define(version: 20180927074646) do
     t.datetime "updated_at", null: false
     t.bigint "tender_id"
     t.bigint "section_id"
+    t.text "description"
     t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
