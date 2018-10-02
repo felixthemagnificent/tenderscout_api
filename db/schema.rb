@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180927074646) do
+ActiveRecord::Schema.define(version: 20181002080148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -817,6 +817,7 @@ ActiveRecord::Schema.define(version: 20180927074646) do
     t.datetime "updated_at", null: false
     t.bigint "tender_id"
     t.bigint "section_id"
+    t.text "description"
     t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
@@ -974,18 +975,18 @@ ActiveRecord::Schema.define(version: 20180927074646) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
-  create_table "tender_criteria_answers", force: :cascade do |t|
+  create_table "tender_award_criteria_answers", force: :cascade do |t|
     t.boolean "pass_fail"
     t.integer "score"
     t.boolean "closed", default: false, null: false
     t.bigint "user_id"
-    t.bigint "tender_criteria_id"
+    t.bigint "tender_award_criteria_id"
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tender_criteria_id"], name: "index_tender_criteria_answers_on_tender_criteria_id"
-    t.index ["tender_id"], name: "index_tender_criteria_answers_on_tender_id"
-    t.index ["user_id"], name: "index_tender_criteria_answers_on_user_id"
+    t.index ["tender_award_criteria_id"], name: "index_tender_award_criteria_answers_on_tender_award_criteria_id"
+    t.index ["tender_id"], name: "index_tender_award_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_tender_award_criteria_answers_on_user_id"
   end
 
   create_table "tender_task_answers", force: :cascade do |t|
@@ -1119,9 +1120,9 @@ ActiveRecord::Schema.define(version: 20180927074646) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
-  add_foreign_key "tender_criteria_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "tender_criteria_answers", "marketplace_tender_criteria", column: "tender_criteria_id"
-  add_foreign_key "tender_criteria_answers", "users"
+  add_foreign_key "tender_award_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
+  add_foreign_key "tender_award_criteria_answers", "users"
   add_foreign_key "tender_task_answers", "core_tenders", column: "tender_id"
   add_foreign_key "tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
   add_foreign_key "tender_task_answers", "users"

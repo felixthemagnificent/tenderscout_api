@@ -18,6 +18,7 @@ class GetCollaborations
 
     if index_params[:match] and index_params[:match] == 'true'
       profiles = BidsenseResult.where(tender: tender).where('average_score >= ?', 0.6).map(&:profile) & profiles
+      profiles = Profile.where(id: profiles.map(&:id))
     end
 
     if index_params[:type] and index_params[:type] != 'all'

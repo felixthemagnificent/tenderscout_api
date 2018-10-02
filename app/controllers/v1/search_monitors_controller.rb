@@ -18,7 +18,7 @@ class V1::SearchMonitorsController < ApplicationController
     render json: {
       data: data,
       count: count
-    }
+    }, current_user: current_user
   end
 
   def all_results
@@ -26,7 +26,7 @@ class V1::SearchMonitorsController < ApplicationController
     render json: {
       data: data,
       count: count
-    }
+    }, current_user: current_user
   end
 
   def share
@@ -59,7 +59,7 @@ class V1::SearchMonitorsController < ApplicationController
     render json: {
       data: data,
       count: count
-    }
+    }, current_user: current_user
   end
 
   # POST /search_monitors

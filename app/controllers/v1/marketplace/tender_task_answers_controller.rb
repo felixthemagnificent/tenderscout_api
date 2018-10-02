@@ -1,5 +1,5 @@
 class V1::Marketplace::TenderTaskAnswersController < ApplicationController
-  def index
+  def index #TODO move TenderTask model Marketplace::TenderTask
     render json: TenderTaskAnswer.where(tender_task_id: params[:tender_task_id]).where(user: current_user)
   end
 

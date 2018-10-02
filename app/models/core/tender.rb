@@ -1,6 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
   include Pageable
+  update_index('tenders#tender') { self } 
 
   self.table_name = "core_tenders"
 
@@ -67,6 +68,14 @@ class Core::Tender < ApplicationRecord
 
   def matched_competitor_bidsense
     self.bidsense_results.where('average_score > ?', 0.6)
+  end
+
+  def tasks_count
+    self.tasks.count
+  end
+
+  def award_criteries_count
+    self.award_criteries.count
   end
 
   def create_qa
