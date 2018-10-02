@@ -21,7 +21,8 @@ class TenderSerializer < ActiveModel::Serializer
   attribute(:contact_email) { object.try(:organization).try(:email) }
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
   attribute(:classification) { object.try(:classification).try(:description) }
-
+  # attribute(:creator) { object.try(:creator)}
+  has_one :creator, serializer: UserSerializer
   has_many :naicses, serializer: Core::NaicsSerializer
   
   attribute(:bidsense) do

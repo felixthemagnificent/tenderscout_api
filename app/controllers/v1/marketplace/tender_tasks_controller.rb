@@ -51,6 +51,6 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_task_params
-      params.permit(:order, :title, :weight, :section_id)
+      params.permit(:order, :title, :weight,:description, :section_id)
     end
 end
