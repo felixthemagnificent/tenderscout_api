@@ -11,7 +11,7 @@ class CreateAwardCriteriaAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
-    award_criteria = tender.award_criteries.where(id: award_criteria_params[:tender_award_criateria_id]).first
+    award_criteria = tender.award_criteries.where(id: award_criteria_params[:tender_award_criteria_id]).first
     unless award_criteria.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Award criteria not found'},
                     code: :unprocessable_entity
@@ -43,7 +43,7 @@ class CreateAwardCriteriaAnswer
   private
 
   def award_criteria_params
-    context.params.permit(:tender_award_criateria_id)
+    context.params.permit(:tender_award_criteria_id)
   end
 
   def answer_params

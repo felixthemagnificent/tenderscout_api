@@ -15,31 +15,40 @@ ActiveRecord::Schema.define(version: 20181002080148) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  create_table "aliases", id: :serial, force: :cascade do |t|
+    t.string "original_name", limit: 255, null: false
+    t.string "alias_name", limit: 255, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean "regexp", default: false, null: false
+    t.string "type", limit: 255, null: false
+    t.index ["alias_name"], name: "index_aliases_on_alias_name"
+    t.index ["original_name"], name: "index_aliases_on_original_name"
   end
 
-  create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.bigint "byte_size", null: false
-    t.string "checksum", null: false
+  create_table "analyzed_notices", id: :serial, force: :cascade do |t|
+    t.integer "notice_id", null: false
+    t.integer "reduced_notice_id"
+    t.string "title", limit: 4096, null: false
+    t.string "authority_name", limit: 4096, null: false
+    t.string "authority_email", limit: 255
+    t.string "country_name", limit: 255, null: false
+    t.string "status_name", limit: 255
+    t.text "analyzed_attributes", null: false
     t.datetime "created_at", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
-  create_table "african_codes", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "description", default: "", null: false
-    t.index ["code"], name: "index_african_codes_on_code"
+    t.datetime "updated_at", null: false
+    t.boolean "is_merged", default: false, null: false
+    t.datetime "merged_at"
+    t.string "type_name", limit: 255, null: false
+    t.boolean "disabled", default: false, null: false
+    t.string "error_messages", limit: 4096
+    t.string "file_reference_number", limit: 255
+    t.index ["authority_email"], name: "index_analyzed_notices_on_authority_email"
+    t.index ["authority_name"], name: "index_analyzed_notices_on_authority_name"
+    t.index ["country_name"], name: "index_analyzed_notices_on_country_name"
+    t.index ["notice_id"], name: "index_analyzed_notices_on_notice_id"
+    t.index ["reduced_notice_id"], name: "index_analyzed_notices_on_reduced_notice_id"
+    t.index ["title"], name: "index_analyzed_notices_on_title"
   end
 
   create_table "assistances", force: :cascade do |t|
@@ -81,6 +90,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "result"
     t.float "average_score"
     t.index ["profile_id"], name: "index_bidsense_results_on_profile_id"
     t.index ["tender_id"], name: "index_bidsense_results_on_tender_id"
@@ -113,12 +123,6 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["industry_code_id"], name: "index_case_studies_industry_codes_on_industry_code_id"
   end
 
-  create_table "classification_codes", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "description", default: "", null: false
-    t.index ["code"], name: "index_classification_codes_on_code"
-  end
-
   create_table "collaboration_interests", force: :cascade do |t|
     t.text "message"
     t.boolean "is_public"
@@ -143,6 +147,16 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.datetime "updated_at", null: false
     t.index ["collaboration_id"], name: "index_collaborators_on_collaboration_id"
     t.index ["user_id"], name: "index_collaborators_on_user_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.string "commentable_type"
+    t.integer "commentable_id"
+    t.integer "user_id"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "parent_id"
   end
 
   create_table "compete_answers", force: :cascade do |t|
@@ -173,10 +187,9 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.bigint "profile_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["profile_id"], name: "index_contacts_on_profile_id"
   end
 
-  create_table "core_additional_information", force: :cascade do |t|
+  create_table "core_additional_information", id: :serial, force: :cascade do |t|
     t.string "title", limit: 255, null: false
     t.string "url", limit: 4096, null: false
     t.integer "tender_id", null: false
@@ -186,7 +199,38 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["title"], name: "index_core_additional_information_on_title"
   end
 
-  create_table "core_awards", force: :cascade do |t|
+  create_table "core_affiliate_feed_trackers", id: :serial, force: :cascade do |t|
+    t.integer "tender_id", null: false
+    t.integer "search_id", null: false
+    t.integer "ref_id", null: false
+    t.string "ip_address", limit: 255, null: false
+    t.string "remote_url", limit: 255, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["ref_id"], name: "index_core_affiliate_feed_trackers_on_ref_id"
+    t.index ["search_id"], name: "index_core_affiliate_feed_trackers_on_search_id"
+    t.index ["tender_id"], name: "index_core_affiliate_feed_trackers_on_tender_id"
+  end
+
+  create_table "core_african_codes", id: :serial, force: :cascade do |t|
+    t.string "code", limit: 255, null: false
+    t.string "description", limit: 255, null: false
+    t.index ["code"], name: "index_core_african_codes_on_code"
+  end
+
+  create_table "core_analyzed_tenders", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "tender_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "core_api_credentials", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "token", limit: 255, null: false
+  end
+
+  create_table "core_awards", id: :serial, force: :cascade do |t|
     t.string "lot_title", limit: 4096, null: false
     t.string "lot_number", limit: 255
     t.date "awarded_on", null: false
@@ -201,13 +245,43 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_awards_on_tender_id"
   end
 
-  create_table "core_categories", force: :cascade do |t|
+  create_table "core_bid_question_templates", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.boolean "disabled", default: false, null: false
+    t.boolean "default", default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_core_bid_question_templates_on_name", unique: true
+  end
+
+  create_table "core_bid_questions", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.string "description", limit: 255, null: false
+    t.string "category", limit: 255, null: false
+    t.integer "template_id", null: false
+    t.boolean "disabled", default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_core_bid_questions_on_name"
+    t.index ["template_id", "name"], name: "index_core_bid_questions_on_template_id_and_name", unique: true
+  end
+
+  create_table "core_campaigns", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255
+    t.string "owner", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "records_exported", limit: 255
+    t.string "industry", limit: 255
+  end
+
+  create_table "core_categories", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_categories_on_code"
   end
 
-  create_table "core_cities", force: :cascade do |t|
+  create_table "core_cities", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.integer "country_id"
     t.datetime "created_at"
@@ -216,13 +290,13 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["name"], name: "index_core_cities_on_name"
   end
 
-  create_table "core_classification_codes", force: :cascade do |t|
+  create_table "core_classification_codes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_classification_codes_on_code"
   end
 
-  create_table "core_comments", force: :cascade do |t|
+  create_table "core_comments", id: :serial, force: :cascade do |t|
     t.text "commentary", null: false
     t.integer "creator_id", null: false
     t.integer "analyzed_tender_id", null: false
@@ -230,7 +304,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.datetime "updated_at"
   end
 
-  create_table "core_contacts", force: :cascade do |t|
+  create_table "core_contacts", id: :serial, force: :cascade do |t|
     t.string "phone", limit: 255
     t.string "fax", limit: 255
     t.string "address", limit: 4096
@@ -266,13 +340,13 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["region_id"], name: "index_core_contacts_on_region_id"
   end
 
-  create_table "core_countries", force: :cascade do |t|
+  create_table "core_countries", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255
     t.string "number", limit: 255, null: false
     t.string "alpha2code", limit: 255, null: false
     t.string "alpha3code", limit: 255, null: false
     t.string "name", limit: 255, null: false
-    t.string "world_region", limit: 255, null: false
+    t.string "world_region", limit: 255
     t.string "world_subregion", limit: 255, null: false
     t.string "other_names", limit: 255, default: [], array: true
     t.integer "currency_id"
@@ -296,13 +370,13 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["profile_id"], name: "index_core_countries_profiles_on_profile_id"
   end
 
-  create_table "core_cpvs", force: :cascade do |t|
+  create_table "core_cpvs", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_cpvs_on_code"
   end
 
-  create_table "core_currencies", force: :cascade do |t|
+  create_table "core_currencies", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255, null: false
     t.string "code", limit: 255, null: false
     t.string "unit", limit: 255
@@ -310,7 +384,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["name"], name: "index_core_currencies_on_name"
   end
 
-  create_table "core_documents", force: :cascade do |t|
+  create_table "core_documents", id: :serial, force: :cascade do |t|
     t.string "title", limit: 255, null: false
     t.string "url", limit: 4096, null: false
     t.integer "tender_id", null: false
@@ -320,37 +394,105 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["title"], name: "index_core_documents_on_title"
   end
 
-  create_table "core_gsin_codes", force: :cascade do |t|
+  create_table "core_feed_requests", id: :serial, force: :cascade do |t|
+    t.integer "creator_id", null: false
+    t.integer "search_id", null: false
+    t.integer "opportunities_count", default: 0
+    t.string "ip_address", limit: 255, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["created_at"], name: "index_core_feed_requests_on_created_at"
+    t.index ["creator_id"], name: "index_core_feed_requests_on_creator_id"
+    t.index ["search_id"], name: "index_core_feed_requests_on_search_id"
+  end
+
+  create_table "core_groups", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, default: "", null: false
+    t.string "domain", limit: 255, default: "", null: false
+    t.integer "organization_id"
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "category_id"
+    t.index ["domain"], name: "index_core_groups_on_domain", unique: true
+    t.index ["name"], name: "index_core_groups_on_name", unique: true
+  end
+
+  create_table "core_gsin_codes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_gsin_codes_on_code"
   end
 
-  create_table "core_naicses", force: :cascade do |t|
+  create_table "core_guest_users", id: :serial, force: :cascade do |t|
+    t.string "first_name", limit: 255, null: false
+    t.string "last_name", limit: 255, null: false
+    t.string "job_title", limit: 255, null: false
+    t.string "company", limit: 255, null: false
+    t.string "email", limit: 255, null: false
+    t.string "phone", limit: 255, null: false
+    t.string "type", limit: 255
+  end
+
+  create_table "core_languages", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255
+    t.string "iso_639_2", limit: 255, null: false
+    t.index ["id"], name: "index_core_languages_on_id"
+  end
+
+  create_table "core_lots", id: :serial, force: :cascade do |t|
+    t.string "title", limit: 4096, null: false
+    t.string "number", limit: 255
+    t.decimal "estimated_value", precision: 16, scale: 2
+    t.decimal "estimated_low_value", precision: 16, scale: 2
+    t.decimal "estimated_high_value", precision: 16, scale: 2
+    t.integer "tender_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["tender_id"], name: "index_core_lots_on_tender_id"
+  end
+
+  create_table "core_naicses", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_naicses_on_code"
   end
 
-  create_table "core_ngip_codes", force: :cascade do |t|
+  create_table "core_ngip_codes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_ngip_codes_on_code"
   end
 
-  create_table "core_nhs_e_classes", force: :cascade do |t|
+  create_table "core_nhs_e_classes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 300, null: false
     t.index ["code"], name: "index_core_nhs_e_classes_on_code"
   end
 
-  create_table "core_nigp_codes", force: :cascade do |t|
+  create_table "core_nigp_codes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_nigp_codes_on_code"
   end
 
-  create_table "core_organizations", force: :cascade do |t|
+  create_table "core_organization_profiles", id: :serial, force: :cascade do |t|
+    t.integer "organization_id", null: false
+    t.string "phone", limit: 255
+    t.string "fax", limit: 255
+    t.string "email", limit: 255
+    t.string "address", limit: 255
+    t.string "postcode", limit: 255
+    t.integer "city_id"
+    t.integer "region_id"
+    t.integer "published_tenders_count"
+    t.integer "awarded_tenders_count"
+    t.index ["city_id"], name: "index_core_organization_profiles_on_city_id"
+    t.index ["organization_id"], name: "index_core_organization_profiles_on_organization_id", unique: true
+    t.index ["region_id"], name: "index_core_organization_profiles_on_region_id"
+  end
+
+  create_table "core_organizations", id: :serial, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.string "profile_url", limit: 4096
@@ -392,24 +534,257 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["web_url"], name: "index_core_web_url"
   end
 
-  create_table "core_pro_classes", force: :cascade do |t|
+  create_table "core_organizations_cpvs", id: :serial, force: :cascade do |t|
+    t.integer "organization_id", null: false
+    t.integer "cpv_id", null: false
+    t.index ["cpv_id", "organization_id"], name: "index_core_organizations_cpvs_on_cpv_id_and_organization_id", unique: true
+    t.index ["cpv_id"], name: "index_core_organizations_cpvs_on_cpv_id"
+    t.index ["organization_id", "cpv_id"], name: "index_core_organizations_cpvs_on_organization_id_and_cpv_id", unique: true
+    t.index ["organization_id"], name: "index_core_organizations_cpvs_on_organization_id"
+  end
+
+  create_table "core_organizations_naicses", id: :serial, force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.integer "naics_id", null: false
+    t.index ["company_id", "naics_id"], name: "index_core_organizations_naicses_on_company_id_and_naics_id", unique: true
+    t.index ["company_id"], name: "index_core_organizations_naicses_on_company_id"
+    t.index ["naics_id", "company_id"], name: "index_core_organizations_naicses_on_naics_id_and_company_id", unique: true
+    t.index ["naics_id"], name: "index_core_organizations_naicses_on_naics_id"
+  end
+
+  create_table "core_organizations_unspsces", id: :serial, force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.integer "unspsc_id", null: false
+    t.index ["company_id", "unspsc_id"], name: "index_core_organizations_unspsces_on_company_id_and_unspsc_id", unique: true
+    t.index ["company_id"], name: "index_core_organizations_unspsces_on_company_id"
+    t.index ["unspsc_id", "company_id"], name: "index_core_organizations_unspsces_on_unspsc_id_and_company_id", unique: true
+    t.index ["unspsc_id"], name: "index_core_organizations_unspsces_on_unspsc_id"
+    t.index ["unspsc_id"], name: "index_core_unspsc_id"
+  end
+
+  create_table "core_pinned_items", id: :serial, force: :cascade do |t|
+    t.string "type", limit: 255
+    t.integer "user_id"
+    t.integer "resource_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "core_pins", id: :serial, force: :cascade do |t|
+    t.integer "pinnable_id"
+    t.string "pinnable_type", limit: 255
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "core_posts", id: :serial, force: :cascade do |t|
+    t.string "title", limit: 255
+    t.string "subtitle", limit: 255
+    t.text "content"
+    t.string "files", limit: 255, default: [], array: true
+    t.string "tags", limit: 255, default: [], array: true
+    t.boolean "published"
+    t.datetime "published_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["files"], name: "index_core_posts_on_files", using: :gin
+    t.index ["tags"], name: "index_core_posts_on_tags", using: :gin
+  end
+
+  create_table "core_pro_classes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 300, null: false
     t.index ["code"], name: "index_core_pro_classes_on_code"
   end
 
-  create_table "core_procedures", force: :cascade do |t|
+  create_table "core_procedures", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255, null: false
     t.index ["name"], name: "index_core_procedures_on_name", unique: true
   end
 
-  create_table "core_sfgov_codes", force: :cascade do |t|
+  create_table "core_questionaire", id: :serial, force: :cascade do |t|
+    t.integer "score", default: 0
+    t.integer "status_cd", default: 0
+    t.integer "template_id", null: false
+    t.integer "creator_id", null: false
+    t.integer "tender_id", null: false
+    t.integer "question_id", null: false
+    t.text "note"
+    t.index ["creator_id"], name: "index_core_questionaire_on_creator_id"
+    t.index ["question_id"], name: "index_core_questionaire_on_question_id"
+    t.index ["template_id"], name: "index_core_questionaire_on_template_id"
+    t.index ["tender_id"], name: "index_core_questionaire_on_tender_id"
+  end
+
+  create_table "core_regions", id: :serial, force: :cascade do |t|
+    t.integer "country_id", null: false
+    t.string "code", limit: 255
+    t.string "region_type", limit: 255, null: false
+    t.string "name", limit: 255, null: false
+    t.string "other_names", limit: 255, default: [], array: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["code"], name: "index_core_regions_on_code"
+    t.index ["country_id", "name"], name: "index_core_regions_on_country_id_and_name", unique: true
+    t.index ["country_id"], name: "index_core_regions_on_country_id"
+    t.index ["name"], name: "index_core_regions_on_name"
+    t.index ["other_names"], name: "index_core_regions_on_other_names", using: :gin
+  end
+
+  create_table "core_request_categories", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, default: "", null: false
+    t.string "description", limit: 255
+    t.string "category_type", limit: 255
+    t.string "ancestry", limit: 255
+    t.decimal "threshold"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "creator_id"
+    t.boolean "default", default: false
+  end
+
+  create_table "core_requested_award_initiator_details", id: :serial, force: :cascade do |t|
+    t.integer "tender_id", null: false
+    t.integer "initiator_id", null: false
+    t.string "subject", limit: 255
+    t.string "contacted_email", limit: 255
+    t.boolean "tender_contact_available", default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "core_requests", id: :serial, force: :cascade do |t|
+    t.text "comment"
+    t.integer "category_id"
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "type", limit: 255
+    t.integer "resource_id"
+    t.integer "status_cd", default: 0, null: false
+    t.integer "importance_cd", default: 0, null: false
+    t.integer "urgency_cd", default: 0, null: false
+    t.integer "confidentiality_cd", default: 0, null: false
+    t.string "document_file_name", limit: 255
+    t.string "document_content_type", limit: 255
+    t.integer "document_file_size"
+    t.datetime "document_updated_at"
+    t.text "comment_response"
+  end
+
+  create_table "core_responses", id: :serial, force: :cascade do |t|
+    t.text "comment"
+    t.text "comment_clarify"
+    t.string "document_file_name", limit: 255
+    t.string "document_content_type", limit: 255
+    t.integer "document_file_size"
+    t.datetime "document_updated_at"
+    t.integer "status_cd", default: 0, null: false
+    t.integer "request_id"
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "document_name", limit: 255
+  end
+
+  create_table "core_roles", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.string "description", limit: 255, null: false
+    t.integer "number", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_core_roles_on_name", unique: true
+  end
+
+  create_table "core_saved_searches", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.text "description", null: false
+    t.text "web_path", null: false
+    t.text "options", null: false
+    t.boolean "subscribed", default: false, null: false
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "search_type", limit: 255, null: false
+    t.boolean "default_search", default: false
+    t.integer "search_execution_count", default: 0
+    t.boolean "send_awards_mail", default: false
+    t.boolean "send_weekly_emails_only", default: false
+    t.index ["name", "user_id"], name: "index_core_saved_searches_on_name_and_user_id", unique: true
+    t.index ["user_id"], name: "index_core_saved_searches_on_user_id"
+  end
+
+  create_table "core_sent_emails", id: :serial, force: :cascade do |t|
+    t.string "mail_to", limit: 255
+    t.string "domain_to", limit: 255
+    t.string "mail_from", limit: 255
+    t.string "type", limit: 255
+    t.integer "relation_id"
+    t.integer "status_cd", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "core_sessions", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "searches_execution_count", default: 0
+    t.datetime "sign_in_at"
+    t.datetime "sign_out_at"
+    t.index ["sign_in_at"], name: "index_core_sessions_on_sign_in_at"
+    t.index ["sign_out_at"], name: "index_core_sessions_on_sign_out_at"
+    t.index ["user_id"], name: "index_core_sessions_on_user_id"
+  end
+
+  create_table "core_sfgov_codes", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_sfgov_codes_on_code"
   end
 
-  create_table "core_tenders", force: :cascade do |t|
+  create_table "core_system_email_subjects", id: :serial, force: :cascade do |t|
+    t.string "subject", limit: 255, null: false
+    t.integer "mail_from_id"
+    t.boolean "mail_from_disabled", default: false
+    t.integer "mail_to_id"
+    t.boolean "mail_to_disabled", default: false
+    t.integer "mail_cc_id"
+    t.boolean "mail_cc_disabled", default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["mail_cc_id"], name: "index_core_system_email_subjects_on_mail_cc_id"
+    t.index ["mail_from_id"], name: "index_core_system_email_subjects_on_mail_from_id"
+    t.index ["mail_to_id"], name: "index_core_system_email_subjects_on_mail_to_id"
+  end
+
+  create_table "core_system_emails", id: :serial, force: :cascade do |t|
+    t.string "email", limit: 255, null: false
+    t.string "environment", limit: 255, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "core_tender_bids_templates", id: :serial, force: :cascade do |t|
+    t.integer "creator_id", null: false
+    t.boolean "selected", default: false
+    t.integer "template_id", null: false
+    t.integer "tender_id", null: false
+    t.integer "threshold", default: 0
+    t.index ["creator_id"], name: "index_core_tender_bids_templates_on_creator_id"
+    t.index ["template_id"], name: "index_core_tender_bids_templates_on_template_id"
+    t.index ["tender_id"], name: "index_core_tender_bids_templates_on_tender_id"
+  end
+
+  create_table "core_tender_personalized_requests", id: :serial, force: :cascade do |t|
+    t.integer "creator_id", null: false
+    t.integer "tender_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["creator_id"], name: "index_core_tender_personalized_requests_on_creator_id"
+    t.index ["tender_id"], name: "index_core_tender_personalized_requests_on_tender_id"
+  end
+
+  create_table "core_tenders", id: :serial, force: :cascade do |t|
     t.string "title", limit: 4096, null: false
     t.text "description"
     t.datetime "published_on"
@@ -504,7 +879,16 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["updated_at"], name: "index_core_updated_at"
   end
 
-  create_table "core_tenders_categories", force: :cascade do |t|
+  create_table "core_tenders_african_codes", id: :serial, force: :cascade do |t|
+    t.integer "tender_id", null: false
+    t.integer "afr_code_id", null: false
+    t.index ["afr_code_id", "tender_id"], name: "index_core_tenders_african_codes_on_afr_code_id_and_tender_id", unique: true
+    t.index ["afr_code_id"], name: "index_core_tenders_african_codes_on_afr_code_id"
+    t.index ["tender_id", "afr_code_id"], name: "index_core_tenders_african_codes_on_tender_id_and_afr_code_id", unique: true
+    t.index ["tender_id"], name: "index_core_tenders_african_codes_on_tender_id"
+  end
+
+  create_table "core_tenders_categories", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "category_id", null: false
     t.index ["category_id", "tender_id"], name: "index_core_tenders_categories_on_category_id_and_tender_id", unique: true
@@ -513,7 +897,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_categories_on_tender_id"
   end
 
-  create_table "core_tenders_contacts", force: :cascade do |t|
+  create_table "core_tenders_contacts", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "contact_id", null: false
     t.index ["contact_id", "tender_id"], name: "index_core_tenders_contacts_on_contact_id_and_tender_id", unique: true
@@ -522,7 +906,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_contacts_on_tender_id"
   end
 
-  create_table "core_tenders_cpvs", force: :cascade do |t|
+  create_table "core_tenders_cpvs", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "cpv_id", null: false
     t.index ["cpv_id", "tender_id"], name: "index_core_tenders_cpvs_on_cpv_id_and_tender_id", unique: true
@@ -531,7 +915,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_cpvs_on_tender_id"
   end
 
-  create_table "core_tenders_gsin_codes", force: :cascade do |t|
+  create_table "core_tenders_gsin_codes", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "gsin_id", null: false
     t.index ["gsin_id", "tender_id"], name: "index_core_tenders_gsin_codes_on_gsin_id_and_tender_id", unique: true
@@ -540,7 +924,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_gsin_codes_on_tender_id"
   end
 
-  create_table "core_tenders_naicses", force: :cascade do |t|
+  create_table "core_tenders_naicses", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "naics_id", null: false
     t.index ["naics_id", "tender_id"], name: "index_core_tenders_naicses_on_naics_id_and_tender_id", unique: true
@@ -549,7 +933,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_naicses_on_tender_id"
   end
 
-  create_table "core_tenders_ngip_codes", force: :cascade do |t|
+  create_table "core_tenders_ngip_codes", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "ngip_code_id", null: false
     t.index ["ngip_code_id", "tender_id"], name: "index_core_tenders_ngip_codes_on_ngip_code_id_and_tender_id", unique: true
@@ -558,7 +942,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_ngip_codes_on_tender_id"
   end
 
-  create_table "core_tenders_nhs_e_classes", force: :cascade do |t|
+  create_table "core_tenders_nhs_e_classes", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "nhs_eclass_id", null: false
     t.index ["nhs_eclass_id", "tender_id"], name: "index_core_tenders_nhs_e_classes_on_nhs_eclass_id_and_tender_id", unique: true
@@ -567,7 +951,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_nhs_e_classes_on_tender_id"
   end
 
-  create_table "core_tenders_nigp_codes", force: :cascade do |t|
+  create_table "core_tenders_nigp_codes", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "nigp_code_id", null: false
     t.index ["nigp_code_id", "tender_id"], name: "index_core_tenders_nigp_codes_on_nigp_code_id_and_tender_id", unique: true
@@ -576,7 +960,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_nigp_codes_on_tender_id"
   end
 
-  create_table "core_tenders_pro_classes", force: :cascade do |t|
+  create_table "core_tenders_pro_classes", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "pro_class_id", null: false
     t.index ["pro_class_id", "tender_id"], name: "index_core_tenders_pro_classes_on_pro_class_id_and_tender_id", unique: true
@@ -585,7 +969,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_pro_classes_on_tender_id"
   end
 
-  create_table "core_tenders_sfgov_codes", force: :cascade do |t|
+  create_table "core_tenders_sfgov_codes", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "sfgov_id", null: false
     t.index ["sfgov_id", "tender_id"], name: "index_core_tenders_sfgov_codes_on_sfgov_id_and_tender_id", unique: true
@@ -594,7 +978,7 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_core_tenders_sfgov_codes_on_tender_id"
   end
 
-  create_table "core_tenders_unspsces", force: :cascade do |t|
+  create_table "core_tenders_unspsces", id: :serial, force: :cascade do |t|
     t.integer "tender_id", null: false
     t.integer "unspsc_id", null: false
     t.index ["tender_id", "unspsc_id"], name: "index_core_tenders_unspsces_on_tender_id_and_unspsc_id", unique: true
@@ -610,49 +994,140 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["user_id"], name: "index_core_tenders_users_on_user_id"
   end
 
-  create_table "core_unspsces", force: :cascade do |t|
+  create_table "core_unspsces", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "description", limit: 255, null: false
     t.index ["code"], name: "index_core_unspsces_on_code"
   end
 
-  create_table "core_user_countries", force: :cascade do |t|
+  create_table "core_user_countries", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "country_id", null: false
     t.integer "number_of_occurrences", default: 0
+    t.index ["country_id"], name: "index_core_user_countries_on_country_id"
+    t.index ["user_id"], name: "index_core_user_countries_on_user_id"
   end
 
-  create_table "core_world_regions", force: :cascade do |t|
+  create_table "core_user_cpvs", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "cpv_id", null: false
+    t.integer "number_of_occurrences", default: 0
+    t.index ["cpv_id"], name: "index_core_user_cpvs_on_cpv_id"
+    t.index ["user_id"], name: "index_core_user_cpvs_on_user_id"
+  end
+
+  create_table "core_user_naics", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "naics_id", null: false
+    t.integer "number_of_occurrences", default: 0
+    t.index ["naics_id"], name: "index_core_user_naics_on_naics_id"
+    t.index ["user_id"], name: "index_core_user_naics_on_user_id"
+  end
+
+  create_table "core_users", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, default: "", null: false
+    t.string "email", limit: 255, default: "", null: false
+    t.string "encrypted_password", limit: 255, default: "", null: false
+    t.string "reset_password_token", limit: 255
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip", limit: 255
+    t.string "last_sign_in_ip", limit: 255
+    t.string "confirmation_token", limit: 255
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email", limit: 255
+    t.string "authentication_token", limit: 255
+    t.integer "role_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "stripe_id", limit: 255
+    t.string "plan_id", limit: 255
+    t.date "end_subscription_date"
+    t.boolean "enable_newsletters", default: true, null: false
+    t.integer "group_id"
+    t.integer "security_level_cd", default: 0, null: false
+    t.string "temporary_token", limit: 255
+    t.string "temporary_token_end_at", limit: 255
+    t.boolean "schedule_for_follow_up", default: false
+    t.string "service_delivery_manager", limit: 255
+    t.date "date_of_last_follow_up"
+    t.boolean "show_tenders", default: false
+    t.boolean "show_contacts", default: false
+    t.string "first_name", limit: 255
+    t.string "last_name", limit: 255
+    t.string "company_name", limit: 255
+    t.string "job_title", limit: 255
+    t.string "company_size", limit: 255
+    t.boolean "subscribe_newsletter", default: false
+    t.string "keywords", limit: 255
+    t.text "countries"
+    t.string "plan", limit: 255
+    t.string "phone", limit: 255
+    t.string "vat_number", limit: 255
+    t.integer "vat_percent", default: 0
+    t.decimal "vat_amount", default: "0.0"
+    t.integer "home_country_id"
+    t.date "expiry_date"
+    t.string "feed_path", limit: 255
+    t.boolean "affiliate", default: false
+    t.integer "referer_id"
+    t.boolean "sign_up_email_sent", default: false
+    t.boolean "send_weekly_emails", default: true
+    t.integer "language_id"
+    t.index ["authentication_token"], name: "index_core_users_on_authentication_token", unique: true
+    t.index ["confirmation_token"], name: "index_core_users_on_confirmation_token", unique: true
+    t.index ["email"], name: "index_core_users_on_email", unique: true
+    t.index ["language_id"], name: "index_core_users_on_language_id"
+    t.index ["name"], name: "index_core_users_on_name"
+    t.index ["referer_id"], name: "index_core_users_on_referer_id"
+    t.index ["reset_password_token"], name: "index_core_users_on_reset_password_token", unique: true
+  end
+
+  create_table "core_users_oust_tenders", id: :serial, force: :cascade do |t|
+    t.integer "tender_id", null: false
+    t.integer "user_id", null: false
+    t.index ["tender_id"], name: "index_core_users_oust_tenders_on_tender_id"
+    t.index ["user_id"], name: "index_core_users_oust_tenders_on_user_id"
+  end
+
+  create_table "core_world_regions", id: :serial, force: :cascade do |t|
     t.string "code", limit: 255, null: false
     t.string "name", limit: 255, null: false
   end
 
-  create_table "countries", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "number", default: "", null: false
-    t.string "alpha2code", default: "", null: false
-    t.string "alpha3code", default: "", null: false
-    t.string "name", default: "", null: false
-    t.string "world_region", default: "", null: false
-    t.string "world_subregion", default: "", null: false
-    t.jsonb "other_names", default: {}, null: false
-    t.bigint "currencies_id"
-    t.bigint "world_regions_id"
-    t.index ["alpha2code"], name: "index_countries_on_alpha2code", unique: true
-    t.index ["alpha3code"], name: "index_countries_on_alpha3code", unique: true
-    t.index ["code"], name: "index_countries_on_code", unique: true
-    t.index ["currencies_id"], name: "index_countries_on_currencies_id"
-    t.index ["name"], name: "index_countries_on_name"
-    t.index ["number"], name: "index_countries_on_number"
-    t.index ["world_regions_id"], name: "index_countries_on_world_regions_id"
+  create_table "delayed_jobs", id: :serial, force: :cascade do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", null: false
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by", limit: 255
+    t.string "queue", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "currencies", force: :cascade do |t|
-    t.string "name", default: "", null: false
-    t.string "code", default: "", null: false
-    t.string "unit"
-    t.index ["code"], name: "index_currencies_on_code"
-    t.index ["name"], name: "index_currencies_on_name"
+  create_table "documents", id: :serial, force: :cascade do |t|
+    t.string "type_name", limit: 255, null: false
+    t.string "type_code", limit: 255, null: false
+    t.string "storage_key", limit: 255, null: false
+    t.string "mime_type", limit: 255, null: false
+    t.integer "content_length", null: false
+    t.string "url", limit: 4096
+    t.boolean "is_valid", default: true, null: false
+    t.integer "notice_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notice_id", "type_name", "type_code"], name: "index_documents_on_notice_id_and_type_name_and_type_code", unique: true
+    t.index ["notice_id"], name: "index_documents_on_notice_id"
+    t.index ["storage_key"], name: "index_documents_on_storage_key"
   end
 
   create_table "favourite_monitors", force: :cascade do |t|
@@ -664,23 +1139,8 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["user_id"], name: "index_favourite_monitors_on_user_id"
   end
 
-  create_table "favourite_tenders", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "tender_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_favourite_tenders_on_tender_id"
-    t.index ["user_id"], name: "index_favourite_tenders_on_user_id"
-  end
-
   create_table "galleries", force: :cascade do |t|
     t.string "image"
-  end
-
-  create_table "gsin_codes", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "description", default: "", null: false
-    t.index ["code"], name: "index_gsin_codes_on_code"
   end
 
   create_table "industries", force: :cascade do |t|
@@ -699,6 +1159,12 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.integer "entity_code_id", default: 0, null: false
     t.bigint "industry_id"
     t.index ["industry_id"], name: "index_industry_codes_on_industry_id"
+  end
+
+  create_table "key_values", id: :serial, force: :cascade do |t|
+    t.string "key", limit: 512, null: false
+    t.text "value"
+    t.index ["key"], name: "index_key_values_on_key", unique: true
   end
 
   create_table "keywords", force: :cascade do |t|
@@ -822,16 +1288,33 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
 
-  create_table "ngip_codes", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "description", default: "", null: false
-    t.index ["code"], name: "index_ngip_codes_on_code"
+  create_table "notes", force: :cascade do |t|
+    t.string "notable_type"
+    t.integer "notable_id"
+    t.integer "user_id"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "nigp_codes", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "description", default: "", null: false
-    t.index ["code"], name: "index_nigp_codes_on_code"
+  create_table "notices", id: :serial, force: :cascade do |t|
+    t.text "previous_id"
+    t.text "title", null: false
+    t.string "url", limit: 4096, null: false
+    t.string "source_id", limit: 255, null: false
+    t.string "source", limit: 255, null: false
+    t.boolean "is_analyzed", default: false, null: false
+    t.datetime "published_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "unique_key", limit: 255, null: false
+    t.boolean "disabled", default: false, null: false
+    t.string "error_messages", limit: 4096
+    t.index ["previous_id"], name: "index_notices_on_previous_id"
+    t.index ["source"], name: "index_notices_on_source"
+    t.index ["source_id"], name: "index_notices_on_source_id"
+    t.index ["title"], name: "index_notices_on_title"
+    t.index ["unique_key"], name: "index_notices_on_unique_key", unique: true
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -902,6 +1385,30 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "reduced_notices", id: :serial, force: :cascade do |t|
+    t.string "title", limit: 4096, null: false
+    t.string "authority_name", limit: 4096, null: false
+    t.string "authority_email", limit: 255
+    t.string "country_name", limit: 255, null: false
+    t.string "status_name", limit: 255, null: false
+    t.text "reduced_attributes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "synchronized_at"
+    t.string "deleted_merge_ids", limit: 255, default: [], null: false, array: true
+    t.boolean "is_synchronized", default: false, null: false
+    t.datetime "submission_datetime"
+    t.boolean "disabled", default: false, null: false
+    t.string "error_messages", limit: 4096
+    t.text "edit_diff", default: "--- {}\n", null: false
+    t.string "file_reference_number", limit: 255
+    t.index ["authority_email"], name: "index_reduced_notices_on_authority_email"
+    t.index ["authority_name"], name: "index_reduced_notices_on_authority_name"
+    t.index ["country_name"], name: "index_reduced_notices_on_country_name"
+    t.index ["status_name"], name: "index_reduced_notices_on_status_name"
+    t.index ["title"], name: "index_reduced_notices_on_title"
+  end
+
   create_table "registration_requests", force: :cascade do |t|
     t.string "fullname", default: "", null: false
     t.string "company", default: "", null: false
@@ -959,10 +1466,12 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 
-  create_table "sfgov_codes", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "description", default: "", null: false
-    t.index ["code"], name: "index_sfgov_codes_on_code"
+  create_table "simple_captcha_data", id: :serial, force: :cascade do |t|
+    t.string "key", limit: 40
+    t.string "value", limit: 6
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["key"], name: "idx_key"
   end
 
   create_table "suppliers", force: :cascade do |t|
@@ -975,18 +1484,18 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
-  create_table "tender_criteria_answers", force: :cascade do |t|
+  create_table "tender_award_criteria_answers", force: :cascade do |t|
     t.boolean "pass_fail"
     t.integer "score"
     t.boolean "closed", default: false, null: false
     t.bigint "user_id"
-    t.bigint "tender_criteria_id"
+    t.bigint "tender_award_criteria_id"
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tender_criteria_id"], name: "index_tender_criteria_answers_on_tender_criteria_id"
-    t.index ["tender_id"], name: "index_tender_criteria_answers_on_tender_id"
-    t.index ["user_id"], name: "index_tender_criteria_answers_on_user_id"
+    t.index ["tender_award_criteria_id"], name: "index_tender_award_criteria_answers_on_tender_award_criteria_id"
+    t.index ["tender_id"], name: "index_tender_award_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_tender_award_criteria_answers_on_user_id"
   end
 
   create_table "tender_task_answers", force: :cascade do |t|
@@ -1025,11 +1534,8 @@ ActiveRecord::Schema.define(version: 20181002080148) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "world_regions", force: :cascade do |t|
-    t.string "code", default: "", null: false
-    t.string "name", default: "", null: false
-  end
-
+  add_foreign_key "analyzed_notices", "notices", name: "analyzed_notices_notice_id_fk"
+  add_foreign_key "analyzed_notices", "reduced_notices", name: "analyzed_notices_reduced_notice_id_fk", on_delete: :nullify
   add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
@@ -1052,16 +1558,31 @@ ActiveRecord::Schema.define(version: 20181002080148) do
   add_foreign_key "core_additional_information", "core_tenders", column: "tender_id", name: "core_additional_information_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_awards", "core_organizations", column: "organization_id", name: "core_awards_organization_id_fk", on_delete: :cascade
   add_foreign_key "core_awards", "core_tenders", column: "tender_id", name: "core_awards_tender_id_fk", on_delete: :cascade
+  add_foreign_key "core_bid_questions", "core_bid_question_templates", column: "template_id", name: "core_bid_questions_template_id_fk", on_delete: :cascade
+  add_foreign_key "core_cities", "core_countries", column: "country_id", name: "core_cities_country_id_fk"
   add_foreign_key "core_contacts", "core_organizations", column: "organization_id", name: "core_contacts_organization_id_fk", on_delete: :cascade
+  add_foreign_key "core_contacts", "core_regions", column: "region_id", name: "core_contacts_region_id_fk", on_delete: :nullify
   add_foreign_key "core_countries", "core_currencies", column: "currency_id", name: "core_countries_currency_id_fk", on_delete: :nullify
   add_foreign_key "core_countries_profiles", "core_countries", column: "country_id"
   add_foreign_key "core_countries_profiles", "profiles"
   add_foreign_key "core_documents", "core_tenders", column: "tender_id", name: "core_documents_tender_id_fk", on_delete: :cascade
+  add_foreign_key "core_lots", "core_tenders", column: "tender_id", name: "core_lots_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_organizations", "core_countries", column: "country_id", name: "core_organizations_country_id_fk"
+  add_foreign_key "core_organizations", "core_regions", column: "region_id", name: "core_organizations_region_id_fk", on_delete: :nullify
+  add_foreign_key "core_organizations_cpvs", "core_cpvs", column: "cpv_id", name: "core_organizations_cpvs_cpv_id_fk", on_delete: :cascade
+  add_foreign_key "core_organizations_cpvs", "core_organizations", column: "organization_id", name: "core_organizations_cpvs_organization_id_fk", on_delete: :cascade
+  add_foreign_key "core_organizations_naicses", "core_naicses", column: "naics_id", name: "core_organizations_naicses_naics_id_fk", on_delete: :cascade
+  add_foreign_key "core_organizations_naicses", "core_organizations", column: "company_id", name: "core_organizations_naicses_company_id_fk", on_delete: :cascade
+  add_foreign_key "core_organizations_unspsces", "core_organizations", column: "company_id", name: "core_organizations_unspsces_company_id_fk", on_delete: :cascade
+  add_foreign_key "core_organizations_unspsces", "core_unspsces", column: "unspsc_id", name: "core_organizations_unspsces_unspsc_id_fk", on_delete: :cascade
+  add_foreign_key "core_regions", "core_countries", column: "country_id", name: "core_regions_country_id_fk", on_delete: :cascade
+  add_foreign_key "core_saved_searches", "core_users", column: "user_id", name: "core_saved_searches_user_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders", "core_currencies", column: "currency_id", name: "core_tenders_currency_id_fk"
   add_foreign_key "core_tenders", "core_organizations", column: "organization_id", name: "core_tenders_organization_id_fk"
   add_foreign_key "core_tenders", "core_procedures", column: "procedure_id", name: "core_tenders_procedure_id_fk"
   add_foreign_key "core_tenders", "industries"
+  add_foreign_key "core_tenders_african_codes", "core_african_codes", column: "afr_code_id", name: "core_tenders_african_codes_afr_code_id_fk", on_delete: :cascade
+  add_foreign_key "core_tenders_african_codes", "core_tenders", column: "tender_id", name: "core_tenders_african_codes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_categories", column: "category_id", name: "core_tenders_categories_category_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_categories", "core_tenders", column: "tender_id", name: "core_tenders_categories_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_contacts", "core_contacts", column: "contact_id", name: "core_tenders_contacts_contact_id_fk", on_delete: :cascade
@@ -1080,16 +1601,15 @@ ActiveRecord::Schema.define(version: 20181002080148) do
   add_foreign_key "core_tenders_nigp_codes", "core_tenders", column: "tender_id", name: "core_tenders_nigp_codes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_pro_classes", "core_pro_classes", column: "pro_class_id", name: "core_tenders_pro_classes_pro_class_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_pro_classes", "core_tenders", column: "tender_id", name: "core_tenders_pro_classes_tender_id_fk", on_delete: :cascade
+  add_foreign_key "core_tenders_sfgov_codes", "core_sfgov_codes", column: "sfgov_id", name: "core_tenders_sfgov_codes_sfgov_id_fk", on_delete: :cascade
+  add_foreign_key "core_tenders_sfgov_codes", "core_tenders", column: "tender_id", name: "core_tenders_sfgov_codes_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_unspsces", "core_tenders", column: "tender_id", name: "core_tenders_unspsces_tender_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_unspsces", "core_unspsces", column: "unspsc_id", name: "core_tenders_unspsces_unspsc_id_fk", on_delete: :cascade
   add_foreign_key "core_tenders_users", "core_tenders", column: "tender_id"
   add_foreign_key "core_tenders_users", "users"
-  add_foreign_key "countries", "currencies", column: "currencies_id"
-  add_foreign_key "countries", "world_regions", column: "world_regions_id"
+  add_foreign_key "documents", "notices", name: "documents_notice_id_fk"
   add_foreign_key "favourite_monitors", "search_monitors"
   add_foreign_key "favourite_monitors", "users"
-  add_foreign_key "favourite_tenders", "core_tenders", column: "tender_id"
-  add_foreign_key "favourite_tenders", "users"
   add_foreign_key "industries_profiles", "industries"
   add_foreign_key "industries_profiles", "profiles"
   add_foreign_key "industry_codes", "industries"
@@ -1120,9 +1640,9 @@ ActiveRecord::Schema.define(version: 20181002080148) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
-  add_foreign_key "tender_criteria_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "tender_criteria_answers", "marketplace_tender_criteria", column: "tender_criteria_id"
-  add_foreign_key "tender_criteria_answers", "users"
+  add_foreign_key "tender_award_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
+  add_foreign_key "tender_award_criteria_answers", "users"
   add_foreign_key "tender_task_answers", "core_tenders", column: "tender_id"
   add_foreign_key "tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
   add_foreign_key "tender_task_answers", "users"

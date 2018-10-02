@@ -96,7 +96,6 @@ Rails.application.routes.draw do
       end
     end
     put :update_password, to: 'users#update_password', path: 'users/password/update'
-    get :user_tender_statistic, to: 'users#user_tender_statistic'
     resources :assistances
     resources :users do
       collection do
@@ -117,6 +116,7 @@ Rails.application.routes.draw do
         end
       end
     end
+    get :user_tender_statistic, to: 'users#user_tender_statistic'
     resources :profiles, path: 'my/profiles'
     resources :search_monitors, path: 'bidder/monitor' do
       member do

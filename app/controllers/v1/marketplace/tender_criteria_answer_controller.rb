@@ -1,6 +1,6 @@
 class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationController
   def index
-    render json: TenderAwardCriteriaAnswer.where(tender_criteria_id: params[:tender_award_criateria_id]).where(user: current_user)
+    render json: TenderAwardCriteriaAnswer.where(tender_criteria_id: params[:tender_award_criteria_id]).where(user: current_user)
   end
 
   def create
@@ -27,10 +27,10 @@ class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationControll
   end
 
   def answer_params
-    params.permit(:tender_award_criateria_id, :tender_id, :pass_fail, :score, :closed)
+    params.permit(:tender_award_criteria_id, :tender_id, :pass_fail, :score, :closed)
   end
 
   def close_params
-    params.permit(:tender_award_criateria_id, :tender_id, :closed)
+    params.permit(:tender_award_criteria_id, :tender_id, :closed)
   end
 end
