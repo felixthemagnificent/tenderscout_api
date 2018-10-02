@@ -26,7 +26,7 @@ class TenderSerializer < ActiveModel::Serializer
   
   attribute(:bidsense) do
     # byebug
-    current_user ||= @instance_options[:current_user] || @instance_options[:scope]
-    Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
+    tender_current_user = @instance_options[:current_user] || @instance_options[:scope]
+    Bidsense.score(profile: tender_current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
   end
 end
