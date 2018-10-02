@@ -9,20 +9,20 @@ class TenderSerializer < ActiveModel::Serializer
               :framework_duration_in_days, :framework_duration_in_months, :framework_duration_in_years, 
               :framework_estimated_value, :framework_estimated_low_value, :framework_estimated_high_value, 
               :keywords, :created_at, :updated_at, :award_published_on, :potential_retender_date, :tender_urls, 
-              :award_urls, :spider_id, :delta, :file_reference_number, :creator_id, :naics_code_id, 
+              :award_urls, :spider_id, :delta, :file_reference_number, :naics_code_id, 
               :classification_code_id, :salesforce_id, :expected_revenue, :forecast_category, :last_modified_by, 
               :lead_source, :next_step, :private, :probability, :quantity, :stage, :salesforce_type, :industry, 
               :partner, :primary, :role, :competitor, :strengths, :weaknesses, :set_aside, :archiving_policy, 
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
               :retender_status, :status, :dispatch_date
 
+  attribute(:creator) { UserSerializer.new(object.creator) if object.creator }
   attribute(:country) { CountrySerializer.new(object.organization.try(:country)) if object.organization }
   attribute(:city) { object.try(:organization).try(:city_name) }
   attribute(:contact_email) { object.try(:organization).try(:email) }
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
   attribute(:classification) { object.try(:classification).try(:description) }
   # attribute(:creator) { object.try(:creator)}
-  has_one :creator, serializer: UserSerializer
   has_many :naicses, serializer: Core::NaicsSerializer
   
   attribute(:bidsense) do

@@ -3,7 +3,7 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
 
   # GET /marketplace/bid_no_bid_questions
   def index
-    @marketplace_bid_no_bid_questions = Marketplace::BidNoBidQuestion.all
+    @marketplace_bid_no_bid_questions = ::Marketplace::BidNoBidQuestion.all
 
     render json: @marketplace_bid_no_bid_questions
   end
