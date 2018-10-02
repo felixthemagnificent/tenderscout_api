@@ -69,6 +69,14 @@ class Core::Tender < ApplicationRecord
     self.bidsense_results.where('average_score > ?', 0.6)
   end
 
+  def tasks_count
+    self.tasks.count
+  end
+
+  def award_criteries_count
+    self.award_criteries.count
+  end
+
   def create_qa
     if self.bid_no_bid_questions.count == 0
       ActiveRecord::Base.transaction do

@@ -1,4 +1,4 @@
-class CloseCriteriaAnswer
+class CloseAwardCriteriaAnswer
   include Interactor
 
   def call
@@ -11,13 +11,13 @@ class CloseCriteriaAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
-    criteria = tender.criteries.where(criteria_params[:tender_criterium_id]).first
-    unless criteria.present?
+    award_criteria = tender.award_criteries.where(criteria_params[:tender_award_criteria_id]).first
+    unless award_criteria.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Criteria not found'},
                     code: :unprocessable_entity
     end
 
-    context.answer = criteria.answers.new(closed: true)
+    context.answer = award_criteria.answers.new(closed: true)
     context.answer.user = context.user
 
     unless context.answer.save
@@ -29,7 +29,7 @@ class CloseCriteriaAnswer
   private
 
   def criteria_params
-    context.params.permit(:tender_criterium_id)
+    context.params.permit(:tender_award_criteria_id)
   end
 
   def answer_params
