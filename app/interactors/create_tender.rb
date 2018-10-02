@@ -9,11 +9,12 @@ class CreateTender
       context.tender = Core::Tender.new(tender_params)
       context.tender.estimated_low_value = context.params[:value_from] if context.params[:value_from]
       context.tender.estimated_high_value = context.params[:value_to] if context.params[:value_to]
-      context.tender.industry = Industry.find_by_id(industry_params[:industry]) if industry_params
-      context.tender.country = Core::Country.find_by_id(geography_params[:geography]) if geography_params
+      context.tender.industry = Industry.find_by_id(industry_params[:industry]) if industry_params[:industry]
+      context.tender.country = Core::Country.find_by_id(geography_params[:geography]) if geography_params[:geography]
+      context.tender.creator = context.user
       context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.save
 
-      if contact_params
+      if contact_params and contact_params[:person] and contact_params[:email]
         contact = context.tender.contacts.new
         contact.contact_point = contact_params[:person]
         contact.email = contact_params[:email]

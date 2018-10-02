@@ -14,6 +14,14 @@ class V1::Marketplace::TenderCriteriaSectionsController < ApplicationController
     render json: @marketplace_tender_criteria_section
   end
 
+  def bulk_create
+    result = BulkCreateCriteriaSections.call(params: params, tender: @tender)
+    if result.success?
+      render json: nil, status: :created
+    else
+      render json: result.errors, status: result.code
+    end
+  end
   # POST /marketplace/tender_criteria_sections
   def create
     @marketplace_tender_criteria_section = @tender.criteria_sections.new(marketplace_tender_criteria_section_params)

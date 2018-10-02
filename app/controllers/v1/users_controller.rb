@@ -16,15 +16,33 @@ class V1::UsersController < ApplicationController
     render json: @user
   end
 
+  def search
+    search_field = params[:query]
+    results = User.search(search_field)
+    count = results.count
+    results = results.objects.page(paginate_params[:page]).per(paginate_params[:page_size])
+    render json: {data: results, count: count}
+  end
+
+  def user_tender_statistic
+    result = current_user.collaboration_tenders_statistic
+    render json: { user_id: current_user.id, data: result }
+  end
+
   # POST /users
   def create
+    result = true
     @user = User.new(user_params)
-    @user.profiles.new(profile_params)
-
-    if @user.save && @user.profiles.save
-      render json: @user, status: :created, location: @user
+    if @user.save
+      profile = @user.profiles.new(profile_params)
+      if profile.save
+        render json: @user, status: :created
+      else
+        @user.destroy
+        render json: profile.errors.full_messages, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors.merge(@user.profiles.errors), status: :unprocessable_entity
+      render json: @user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -42,20 +60,36 @@ class V1::UsersController < ApplicationController
     @user.destroy
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
+  def update_password
+    result = UpdateProfilePassword.call(params: password_params, user: current_user)
+    if result.success?
+      render status: :ok
+    else
+      render json: result.errors, status: result.code
     end
-    def paginate_params
-      params.permit(:page, :page_size)
-    end
-    # Only allow a trusted parameter "white list" through.
-    def profile_params
-      params.permit(:fullname, :display_name, :timezone)
-    end
+  end
 
-    def user_params
-      params.permit(:email, :password)
-    end
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def paginate_params
+    params.permit(:page, :page_size)
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def profile_params
+    params.permit(:fullname, :display_name, :timezone)
+  end
+
+  def user_params
+    params.permit(:email, :password)
+  end
+
+  def password_params
+    params.permit(:password, :password_confirmation, :current_password)
+  end
 end

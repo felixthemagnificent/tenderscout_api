@@ -24,6 +24,12 @@ class CreateProfile
         context.profile.keywords << keyword
       }
     end
+
+    if value_params
+      context.profile.valueFrom = value_params.first
+      context.profile.valueTo = value_params.second
+    end
+
     if country_params
       context.profile.countries.destroy_all
       country_params.each { |e|
@@ -38,21 +44,33 @@ class CreateProfile
         context.profile.industries << industry if industry.present?
       }
     end
+    if user_email_params
+      context.user.email = user_email_params
+      context.user.save
+    end
   end
 
   private
 
   def profile_params
     context.params.permit(
-        :fullname, :display_name, :profile_type, :city, :timezone,
-        :do_marketplace_available, :company, :company_size, :turnover,
-        :valueFrom, :valueTo, :tender_level, :number_public_contracts,
-        :industry_id, :country_id
+      :fullname, :display_name, :profile_type, :city, :timezone,
+      :do_marketplace_available, :company, :company_size, :turnover,
+      :valueFrom, :valueTo, :tender_level, :number_public_contracts, :description,
+      :industry_id, :country_id, values: []
     )
+  end
+
+  def user_email_params
+    context.params[:email]
   end
 
   def contact_params
     context.params[:contacts]
+  end
+
+  def value_params
+    context.params[:values]
   end
 
   def keyword_params

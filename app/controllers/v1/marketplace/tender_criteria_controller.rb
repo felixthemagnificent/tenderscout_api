@@ -42,7 +42,7 @@ class V1::Marketplace::TenderCriteriaController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_criterium
-      @marketplace_tender_criterium = Marketplace::TenderCriterium.find(params[:id])
+      @marketplace_tender_criterium = ::Marketplace::TenderCriterium.find(params[:id])
     end
 
     def set_tender
@@ -51,6 +51,6 @@ class V1::Marketplace::TenderCriteriaController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_criterium_params
-      params.require(:marketplace_tender_criterium).permit(:order, :title)
+      params.permit(:order, :title, :description, :section_id, :parent_id)
     end
 end

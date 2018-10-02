@@ -1,18 +1,18 @@
-class V1::Marketplace::TenderCommitteesController < ApplicationController
+class V1::Marketplace::TenderCollaboratorsController < ApplicationController
   before_action :set_tender
   before_action :set_user, only: [:create, :destroy]
   # GET /marketplace/tender_committees
   def index
-    @marketplace_tender_committees = @tender.committees.all
+    @marketplace_tender_collaborators = @tender.committees.all
 
-    render json: @marketplace_tender_committees, each_serializer: Marketplace::TenderCommitteeSerializer
+    render json: @marketplace_tender_collaborators, each_serializer: Marketplace::TenderCollaboratorSerializer
   end
 
   # POST /marketplace/tender_committees
   def create
     @tender.transaction do 
-      @tender.committees << @user
-      render json: @marketplace_tender_committees, status: :created
+      @tender.collaborators << @user
+      render json: @marketplace_tender_collaborators, status: :created
     end
   rescue ActiveRecord::RecordInvalid => e
     render json: { error: e.message }, status: :unprocessable_entity
@@ -20,7 +20,7 @@ class V1::Marketplace::TenderCommitteesController < ApplicationController
 
   # DELETE /marketplace/tender_committees/1
   def destroy
-    @tender.committees.delete(@user)
+    @tender.collaborators.delete(@user)
   end
 
   private

@@ -18,7 +18,7 @@ class V1::SearchMonitorsController < ApplicationController
     render json: {
       data: data,
       count: count
-    }
+    }, current_user: current_user
   end
 
   def all_results
@@ -26,7 +26,7 @@ class V1::SearchMonitorsController < ApplicationController
     render json: {
       data: data,
       count: count
-    }
+    }, current_user: current_user
   end
 
   def share
@@ -59,7 +59,7 @@ class V1::SearchMonitorsController < ApplicationController
     render json: {
       data: data,
       count: count
-    }
+    }, current_user: current_user
   end
 
   # POST /search_monitors
@@ -106,7 +106,11 @@ class V1::SearchMonitorsController < ApplicationController
         tender_value_to: tender_value_to,
         tender_countries: tender_countries
         )
-      tenders = results.page(cur_page).per(page_size).objects.map { |tender| TenderSerializer.new(tender).attributes }
+      tenders = results.page(cur_page).per(page_size).objects.map do |tender| 
+        # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }
+        # ActiveModelSerializers::SerializableResource.new(tender, options).serializer.attributes
+        TenderSerializer.new(tender, current_user: current_user, search_monitor: @search_monitor).attributes 
+      end
       return tenders, results.count
     end
     # Use callbacks to share common setup or constraints between actions.

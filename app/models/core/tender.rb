@@ -1,6 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
   include Pageable
+  update_index('tenders#tender') { self } 
 
   self.table_name = "core_tenders"
 
@@ -31,24 +32,99 @@ class Core::Tender < ApplicationRecord
   has_many :nhs_e_classes, through: :tender_nhs_e_classes
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
-  has_many :tender_committees, class_name: 'Marketplace::TenderCommittee'
-  has_many :committees, through: :tender_committees, source: :user, class_name: 'User'
+  has_many :tender_collaborators, class_name: 'Marketplace::TenderCollaborator'
+  has_and_belongs_to_many :attachments
+  has_many :team_members, through: :tender_committees, source: :user, class_name: 'User'
   has_many :task_sections, class_name: 'Marketplace::TenderTaskSection'
   has_many :tasks, class_name: 'Marketplace::TenderTask'
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
+  has_many :award_criteria_sections, class_name: 'Marketplace::TenderAwardCriteriaSection'
+  has_many :award_criteries, class_name: 'Marketplace::TenderAwardCriterium', through: :award_criteria_sections
+  has_many :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidQuestion'
+  has_many :bid_no_bid_answers, through: :bid_no_bid_questions, class_name: 'Marketplace::BidNoBidAnswer'
+  has_many :bid_no_bid_compete_answers, class_name: 'Marketplace::Compete::BidNoBidAnswer'
+  has_many :bidsense_results
+  has_many :collaboration_interests
   belongs_to :industry, optional: true
+  belongs_to :creator, class_name: 'User', optional: true
+  has_and_belongs_to_many :buyers, class_name: 'User'
+
+  enum status: [:created, :open, :archived]
 
   scope :active, -> { active_on(DateTime.now) }
   scope :active_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].gt(date)) }
   scope :inactive, -> { inactive_on(DateTime.now) }
   scope :inactive_on, ->(date) { where(Core::Tender.arel_table[:submission_datetime].lt(date)) }
-  
+
+  after_save :recalculate_bidsense
+
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
     includes(relations).references(*relations)
+  end
+
+  def matched_competitor_bidsense
+    self.bidsense_results.where('average_score > ?', 0.6)
+  end
+
+  def tasks_count
+    self.tasks.count
+  end
+
+  def award_criteries_count
+    self.award_criteries.count
+  end
+
+  def create_qa
+    if self.bid_no_bid_questions.count == 0
+      ActiveRecord::Base.transaction do
+        (1..8).each do |question_num|
+          question_name = "Question #{question_num}"
+          question = self.bid_no_bid_questions.create!({question_text: question_name, position: question_num})
+          (1..5).each do |ans_num|
+            answer_name = "Answer #{ans_num}"
+            question.bid_no_bid_answers.create!({ answer_text: answer_name, position: ans_num } )
+          end 
+        end
+      end
+    end
+  end
+
+  def get_bnb_data
+    data = []
+    Marketplace::BidNoBidQuestion.all.each do |question|
+      _tmp = {}
+      answers = question.bid_no_bid_answers.map do |e|
+        {
+          id: e.id,
+          answer_text: e.answer_text,
+          order: e.order
+        }
+      end
+      answered = self.bid_no_bid_compete_answers.where(bid_no_bid_question: question).map do |e| 
+        { 
+          id: e.id, 
+          user_id: e.user.id, 
+          answer_id: e.bid_no_bid_answer.id
+        } 
+      end
+      _tmp[:question] = {
+        id: question.id,
+        question_text: question.question_text,
+        available_answers: answers,
+        answered: answered
+      }
+      data << _tmp
+    end
+    data
+  end
+
+  def process_bnb_data(params, current_user)
+    # byebug
+
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
@@ -115,6 +191,10 @@ class Core::Tender < ApplicationRecord
       }
     end
     TendersIndex.query(matches).order(created_at: { order: :desc })
+  end
+
+  def owner?(current_user)
+    creator == current_user
   end
 
   ####################################################################################################
@@ -199,5 +279,10 @@ class Core::Tender < ApplicationRecord
                                [contract_duration_in_months, 'months'],
                                [contract_duration_in_years, 'years']].find{ |d| !d[0].nil? }
     }
+  end
+
+  private
+  def recalculate_bidsense
+    Bidsense::RecalculateScoreJob.perform_later tender: self
   end
 end

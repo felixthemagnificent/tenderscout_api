@@ -14,6 +14,15 @@ class V1::Marketplace::TenderTaskSectionsController < ApplicationController
     render json: @marketplace_tender_task_section
   end
 
+  def bulk_create
+    result = BulkCreateTaskSections.call(params: params, tender: @tender)
+    if result.success?
+      render json: nil, status: :created
+    else
+      render json: result.errors, status: result.code
+    end
+  end
+
   # POST /marketplace/tender_task_sections
   def create
     @marketplace_tender_task_section = @tender.task_sections.new(marketplace_tender_task_section_params)
