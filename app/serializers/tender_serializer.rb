@@ -26,13 +26,12 @@ class TenderSerializer < ActiveModel::Serializer
   has_many :naicses, serializer: Core::NaicsSerializer
   
   attribute(:bidsense) do
-    # byebug
-    tender_current_user = @instance_options[:current_user] || @instance_options[:scope]
-    Bidsense.score(profile: tender_current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
+    current_user ||= @instance_options[:current_user] || @instance_options[:scope]
+    Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
   end
   attribute(:bid_no_bid) do
-    result = []
     current_user ||= @instance_options[:current_user] || @instance_options[:scope]
+    result = []
     Marketplace::BidNoBidQuestion.all.each do |question|
       result << question.as_json
       answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:first).try(:bid_no_bid_answer)
@@ -43,6 +42,7 @@ class TenderSerializer < ActiveModel::Serializer
     end
 
   attribute(:complete_status) do
-  CollaboratorTenderStatus.score(user: current_user, tender: object)
+    current_user ||= @instance_options[:current_user] || @instance_options[:scope]
+    CollaboratorTenderStatus.score(user: current_user, tender: object)
   end
 end
