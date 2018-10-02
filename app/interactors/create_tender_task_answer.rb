@@ -7,7 +7,7 @@ class CreateTenderTaskAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Tender not found'},
                     code: :unprocessable_entity
     end
-    if tender.collaborators.exists?(context.user.id)
+    if tender.tender_collaborators.exists?(context.user.id)
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
