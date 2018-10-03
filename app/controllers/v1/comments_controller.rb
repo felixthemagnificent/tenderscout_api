@@ -1,21 +1,15 @@
 class V1::CommentsController < ApplicationController
   before_action :set_comment, only: [:update, :destroy, :comment_childrens]
-  COMMENT_MODEL= {
-      'tender_task' => 'Marketplace::TenderTask',
-      'award_criterium' => 'Marketplace::TenderAwardCriterium',
-      'bnb_question' => 'Marketplace::BidNoBidQuestion'
-  }
-
 
   def create
-    if COMMENT_MODEL.key?(params[:commentable_type])
-      coment_model = COMMENT_MODEL[params[:commentable_type]]
+    if Comment::COMMENT_MODEL.key?(params[:commentable_type])
+      comment_model = Comment::COMMENT_MODEL[params[:commentable_type]]
     else
       render json: {error: 'Unvalid commentable type'}
       return false
     end
     @comment = Comment.new(comment_params)
-    @comment.commentable_type = coment_model
+    @comment.commentable_type = comment_model
     @comment.user_id = current_user.id
     if @comment.save
       render json: @comment, status: :created
