@@ -10,12 +10,13 @@ class UpdateTender
       context.tender.industry = Industry.find_by_id(industry_params[:industry]) if industry_params[:industry]
       context.tender.country = Core::Country.find_by_id(geography_params[:geography]) if geography_params[:geography]
       context.fail! errors: context.tender.errors, code: :unprocessable_entity unless context.tender.update(tender_params)
-
+      byebug
       if contact_params and contact_params[:person] and contact_params[:email]
         contact = context.tender.contacts.first_or_initialize
         contact.contact_point = contact_params[:person]
         contact.email = contact_params[:email]
         context.fail! errors: contact.errors, code: :unprocessable_entity unless contact.save
+        context.tender.tender_contacts.create! contact: contact
       end
     end
   end
