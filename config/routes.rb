@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       resources :bid_no_bid_questions do
       member do
         get :bid_no_bid_question_comments, to: 'bid_no_bid_questions#bid_no_bid_question_comments'
+        get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
       end
       end
       
@@ -66,6 +67,7 @@ Rails.application.routes.draw do
         resources :tender_tasks, path: 'tasks' do
           member do
             get :tender_task_comments, to: 'tender_tasks#tender_task_comments'
+            get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
           end
           resources :tender_task_answers, path: 'answers' do
             collection do
@@ -86,6 +88,7 @@ Rails.application.routes.draw do
         resources :tender_award_criteria, path: 'award_criteria' do
           member do
             get :tender_award_criteria_comments, to: 'tender_award_criteria#tender_award_criteria_comments'
+            get :tender_award_criteria_notes, to: 'tender_award_criteria#tender_award_criteria_notes'
           end
         end
         resources :tender_attachments
