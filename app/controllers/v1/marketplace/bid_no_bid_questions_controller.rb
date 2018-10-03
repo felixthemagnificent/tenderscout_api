@@ -1,5 +1,5 @@
 class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
-  before_action :set_marketplace_bid_no_bid_question, only: [:show, :update, :destroy]
+  before_action :set_marketplace_bid_no_bid_question, only: [:show, :update, :destroy, :bid_no_bid_question_comments]
 
   # GET /marketplace/bid_no_bid_questions
   def index
@@ -36,6 +36,12 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   # DELETE /marketplace/bid_no_bid_questions/1
   def destroy
     @marketplace_bid_no_bid_question.destroy
+  end
+
+  # Comments for TenderTask
+  def bid_no_bid_question_comments
+    result = @marketplace_bid_no_bid_question.comments
+    render json: result
   end
 
   private

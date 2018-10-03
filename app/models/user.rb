@@ -15,7 +15,8 @@ class User < ApplicationRecord
   has_many :collaboration_interests
   has_many :tender_task_answers
   has_many :tender_award_criteria_answers
-
+  has_many :comments
+  has_many :notes
   enum role: [:admin, :user]
 
   after_initialize :set_default_role, :if => :new_record?
