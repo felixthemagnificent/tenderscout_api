@@ -18,7 +18,8 @@ class CreateTender
         contact = context.tender.contacts.new
         contact.contact_point = contact_params[:person]
         contact.email = contact_params[:email]
-          context.fail! errors: contact.errors, code: :unprocessable_entity unless contact.save
+        context.fail! errors: contact.errors, code: :unprocessable_entity unless contact.save
+        context.tender.tender_contacts.create! contact: contact
       end
     end
   end
