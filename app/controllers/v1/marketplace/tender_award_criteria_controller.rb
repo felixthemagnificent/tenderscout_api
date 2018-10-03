@@ -1,5 +1,6 @@
 class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
-  before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy]
+  before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy, :tender_award_criteria_comments,
+                                                                :tender_award_criteria_notes]
   before_action :set_tender
 
   # GET /marketplace/tender_award_criteria
@@ -39,17 +40,31 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
     @marketplace_tender_award_criterium.destroy
   end
 
-  private
-    def set_tender
-      @tender = Core::Tender.find_by_id params[:tender_id]
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_marketplace_tender_award_criterium
-      @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(params[:id])
-    end
+  # Comments for TenderAwardCriteries
+  def tender_award_criteria_comments
+    profiles = @marketplace_tender_award_criterium.comments.map(&:profile).uniq
+    comments = @marketplace_tender_award_criterium.comments
+    render json: { comments: comments, profiles: profiles }
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def marketplace_tender_award_criterium_params
-      params.permit(:order, :title, :description, :weight, :section_id)
-    end
+  # Notes for TenderAwardCriteries
+  def tender_award_criteria_notes
+    profiles = @marketplace_tender_award_criterium.notes.map(&:profile).uniq
+    notes = @marketplace_tender_award_criterium.notes
+    render json: { notes: notes, profiles: profiles }
+  end
+
+  private
+  def set_tender
+    @tender = Core::Tender.find_by_id params[:tender_id]
+  end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_marketplace_tender_award_criterium
+    @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def marketplace_tender_award_criterium_params
+    params.permit(:order, :title, :description, :weight, :section_id)
+  end
 end

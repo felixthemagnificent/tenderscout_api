@@ -1,5 +1,5 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
-  before_action :set_marketplace_tender_task, only: [:show, :update, :destroy]
+  before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments, :tender_task_notes]
   before_action :set_tender
   # GET /marketplace/tender_tasks
   def index
@@ -38,10 +38,24 @@ class V1::Marketplace::TenderTasksController < ApplicationController
     @marketplace_tender_task.destroy
   end
 
+  # Comments for TenderTask
+  def tender_task_comments
+    profiles = @marketplace_tender_task.comments.map(&:profile).uniq
+    comments = @marketplace_tender_task.comments
+    render json: { comments: comments, profiles: profiles }
+  end
+
+  # Notes for TenderTask
+  def tender_task_notes
+    profiles = @marketplace_tender_task.notes.map(&:profile).uniq
+    notes = @marketplace_tender_task.notes
+    render json: { comments: notes, profiles: profiles }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_task
-      @marketplace_tender_task = Marketplace::TenderTask.find(params[:id])
+      @marketplace_tender_task = ::Marketplace::TenderTask.find(params[:id])
     end
 
 
