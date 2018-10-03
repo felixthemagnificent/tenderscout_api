@@ -32,7 +32,6 @@ class Core::Tender < ApplicationRecord
   has_many :nhs_e_classes, through: :tender_nhs_e_classes
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
-  has_many :tender_collaborators, class_name: 'Marketplace::TenderCollaborator'
   has_and_belongs_to_many :attachments
   has_many :team_members, through: :tender_committees, source: :user, class_name: 'User'
   has_many :task_sections, class_name: 'Marketplace::TenderTaskSection'
@@ -46,6 +45,8 @@ class Core::Tender < ApplicationRecord
   has_many :bid_no_bid_compete_answers, class_name: 'Marketplace::Compete::BidNoBidAnswer'
   has_many :bidsense_results
   has_many :collaboration_interests
+  has_many :collaborations, class_name: 'Marketplace::Collaboration'
+  has_many :tender_collaborators, through: :collaborations, class_name: 'Marketplace::TenderCollaborator'
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
