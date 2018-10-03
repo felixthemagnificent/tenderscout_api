@@ -1,4 +1,4 @@
 class Marketplace::TenderTaskSerializer < ActiveModel::Serializer
-  attributes :id, :order, :title, :weight, :description, :parent_id
+  attributes :id, :order, :title, :weight, :description
   has_many :answers
 end
