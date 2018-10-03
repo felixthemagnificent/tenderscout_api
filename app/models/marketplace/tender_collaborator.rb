@@ -1,5 +1,5 @@
 class Marketplace::TenderCollaborator < ApplicationRecord
-  belongs_to :tender, class_name: 'Core::Tender'
+  belongs_to :collaboration, class_name: 'Marketplace::Collaboration'
   belongs_to :user
 
   validates :user, uniqueness: true
