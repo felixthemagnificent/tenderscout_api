@@ -57,7 +57,7 @@ Rails.application.routes.draw do
 
         resources :collaboration_interests
         resources :tender_collaborators, path: 'collaborators'
-        resources :tender_criteria, path: 'criteries' do
+        resources :tender_award_criteria, path: 'award_criteries' do
           resources :tender_award_criteria_answer, path: 'answers' do
             collection do
               put :close
