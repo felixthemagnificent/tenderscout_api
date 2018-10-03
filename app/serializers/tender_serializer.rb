@@ -21,6 +21,7 @@ class TenderSerializer < ActiveModel::Serializer
   attribute(:city) { object.try(:organization).try(:city_name) }
   attribute(:contact_email) { object.try(:organization).try(:email) }
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
+  has_many :contacts, serializer: ContactSerializer
   attribute(:classification) { object.try(:classification).try(:description) }
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
