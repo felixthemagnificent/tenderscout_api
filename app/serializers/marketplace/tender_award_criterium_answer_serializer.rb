@@ -1,4 +1,4 @@
-class Marketplace::TenderAwardCriteriaAnswerSerializer < ActiveModel::Serializer
+class Marketplace::TenderAwardCriteriumAnswerSerializer < ActiveModel::Serializer
   # attributes :id, :order, :title
   # has_many :award_criteries, serializer: Marketplace::TenderAwardCriteriumSerializer
   attributes :id, :pass_fail, :score, :closed

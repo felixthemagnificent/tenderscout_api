@@ -2,6 +2,8 @@ class Profile < ApplicationRecord
   has_many :contacts
   has_many :case_studies
   has_many :bidsense_results
+  has_many :comments
+  has_many :notes
 
   has_and_belongs_to_many :keywords
   has_and_belongs_to_many :countries, class_name: 'Core::Country'
