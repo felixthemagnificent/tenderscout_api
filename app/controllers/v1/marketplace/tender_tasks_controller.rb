@@ -1,5 +1,5 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
-  before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments]
+  before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments, :tender_task_notes]
   before_action :set_tender
   # GET /marketplace/tender_tasks
   def index
@@ -41,6 +41,12 @@ class V1::Marketplace::TenderTasksController < ApplicationController
   # Comments for TenderTask
   def tender_task_comments
     result = @marketplace_tender_task.comments
+    render json: result
+  end
+
+  # Notes for TenderTask
+  def tender_task_notes
+    result = @marketplace_tender_task.notes
     render json: result
   end
 
