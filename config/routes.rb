@@ -54,8 +54,10 @@ Rails.application.routes.draw do
           end
         end
         resources :collaborations, only: [:index] do
-          post :apply
-          post :remove
+          collection do
+            post :apply
+            post :remove
+          end
         end
         resources :collaboration_interests  
         resources :tender_collaborators, path: 'collaborators'
