@@ -1,6 +1,6 @@
 class Note < ApplicationRecord
   belongs_to :notable, polymorphic: true
-  belongs_to :user
+  belongs_to :profile
 
   NOTES_MODEL= {
       'tender_task' => 'Marketplace::TenderTask',

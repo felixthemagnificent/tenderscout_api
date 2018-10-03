@@ -10,7 +10,7 @@ class V1::NotesController < ApplicationController
     end
     @note = Note.new(note_params)
     @note.notable_type = notes_model
-    @note.user_id = current_user.id
+    @note.profile_id = current_user.profiles.first.id
     if @note.save
       render json: @note, status: :created
     else

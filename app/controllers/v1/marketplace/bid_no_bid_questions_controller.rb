@@ -41,14 +41,16 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
 
   # Comments for TenderTask
   def bid_no_bid_question_comments
-    result = @marketplace_bid_no_bid_question.comments
-    render json: result
+    profiles = @marketplace_bid_no_bid_question.comments.map(&:profile).uniq
+    comments = @marketplace_bid_no_bid_question.comments
+    render json: { comments: comments, profiles: profiles }
   end
 
   # Notes for TenderTask
   def bid_no_bid_question_notes
-    result = @marketplace_bid_no_bid_question.notes
-    render json: result
+    profiles = @marketplace_bid_no_bid_question.notes.map(&:profile).uniq
+    notes = @marketplace_bid_no_bid_question.notes
+    render json: { notes: notes, profiles: profiles }
   end
 
   private
