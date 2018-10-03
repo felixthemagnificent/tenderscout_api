@@ -40,14 +40,16 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
   # Comments for TenderTask
   def tender_task_comments
-    result = @marketplace_tender_task.comments
-    render json: result
+    profiles = @marketplace_tender_task.comments.map(&:profile).uniq
+    comments = @marketplace_tender_task.comments
+    render json: { comments: comments, profiles: profiles }
   end
 
   # Notes for TenderTask
   def tender_task_notes
-    result = @marketplace_tender_task.notes
-    render json: result
+    profiles = @marketplace_tender_task.notes.map(&:profile).uniq
+    notes = @marketplace_tender_task.notes
+    render json: { comments: notes, profiles: profiles }
   end
 
   private

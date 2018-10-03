@@ -1,3 +1,3 @@
 class NoteSerializer < ActiveModel::Serializer
-  attributes :id, :user_id, :body, :created_at, :updated_at
+  attributes :id, :profile_id, :body, :created_at, :updated_at
 end

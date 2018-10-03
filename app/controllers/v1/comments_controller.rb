@@ -10,7 +10,7 @@ class V1::CommentsController < ApplicationController
     end
     @comment = Comment.new(comment_params)
     @comment.commentable_type = comment_model
-    @comment.user_id = current_user.id
+    @comment.profile_id = current_user.profiles.first.id
     if @comment.save
       render json: @comment, status: :created
     else
