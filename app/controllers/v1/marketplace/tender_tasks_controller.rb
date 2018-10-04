@@ -1,4 +1,5 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
+  include ActionController::Serialization
   before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments, :tender_task_notes]
   before_action :set_tender
   # GET /marketplace/tender_tasks
@@ -42,7 +43,7 @@ class V1::Marketplace::TenderTasksController < ApplicationController
   def tender_task_comments
     profiles = @marketplace_tender_task.comments.map(&:profile).uniq
     comments = @marketplace_tender_task.comments
-    render json: { comments: comments, profiles: profiles }
+    render json: { comments: comments, profiles: profiles }, each_serializer: CommentSerializer
   end
 
   # Notes for TenderTask
