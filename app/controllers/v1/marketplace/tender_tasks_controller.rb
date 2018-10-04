@@ -42,14 +42,16 @@ class V1::Marketplace::TenderTasksController < ApplicationController
   # Comments for TenderTask
   def tender_task_comments
     profiles = @marketplace_tender_task.comments.map(&:profile).uniq
-    comments = @marketplace_tender_task.comments
-    render json: { comments: comments, profiles: profiles }, each_serializer: CommentSerializer
+    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_task.comments,
+                                                                 each_serializer: CommentSerializer)
+    render json: { comments: comments, profiles: profiles }
   end
 
   # Notes for TenderTask
   def tender_task_notes
     profiles = @marketplace_tender_task.notes.map(&:profile).uniq
-    notes = @marketplace_tender_task.notes
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_task.notes,
+                                                              each_serializer: NoteSerializer)
     render json: { comments: notes, profiles: profiles }
   end
 
