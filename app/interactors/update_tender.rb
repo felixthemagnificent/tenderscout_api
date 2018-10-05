@@ -25,8 +25,8 @@ class UpdateTender
 
   def tender_params
     context.params.permit(
-      :title, :description, :submission_date, :dispatch_date, :questioning_dedline,
-      :answering_dedline, keywords: []
+      :title, :description, :submission_date, :dispatch_date, :questioning_deadline,
+      :answering_deadline, keywords: []
     )
   end
 

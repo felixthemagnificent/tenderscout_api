@@ -290,16 +290,16 @@ class Core::Tender < ApplicationRecord
   end
 
   def q_and_a_dedlines
-    if questioning_dedline.present? && answering_dedline.present?
-      if questioning_dedline > answering_dedline
+    if questioning_deadline.present? && answering_deadline.present?
+      if questioning_deadline > answering_deadline
         errors.add(:error, 'Questioning deadline must be earlier Answering deadline')
       end
     end
   end
 
   def q_and_a_later_dispatch
-    if questioning_dedline.present? && answering_dedline.present? && dispatch_date.present?
-      if questioning_dedline > dispatch_date && answering_dedline > dispatch_date
+    if questioning_deadline.present? && answering_deadline.present? && dispatch_date.present?
+      if questioning_deadline > dispatch_date && answering_deadline > dispatch_date
       errors.add(:error, 'Questioning and  Answering deadlines must be earlier Dispatch date')
       end
     end

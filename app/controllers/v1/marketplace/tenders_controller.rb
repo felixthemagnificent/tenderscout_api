@@ -116,8 +116,8 @@ class V1::Marketplace::TendersController < ApplicationController
   def tender_params
     params.permit(
       :title, :description, :industry, :geography, :value_from,
-      :value_to, :keywords, :submission_date, :dispatch_date, :questioning_dedline,
-      :answering_dedline, contact_info: []
+      :value_to, :keywords, :submission_date, :dispatch_date, :questioning_deadline,
+      :answering_deadline, contact_info: []
     )
   end
 
