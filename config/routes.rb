@@ -61,11 +61,10 @@ Rails.application.routes.draw do
         end
         resources :collaboration_interests  
         resources :tender_collaborators, path: 'collaborators'
-        resources :tender_award_criteria, path: 'award_criteries' do
-          resources :tender_award_criteria_answer, path: 'answers' do
-            collection do
-              put :close
-            end
+        resources :tender_award_criteria, path: 'award_criteries'
+        resources :tender_award_criteria_answer, path: 'answers' do
+          member do
+            put :close
           end
         end
         resources :tender_tasks, path: 'tasks' do

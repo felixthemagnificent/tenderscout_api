@@ -15,7 +15,7 @@ class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationControll
   def close
     result = CloseAwardCriteriaAnswer.call(params: close_params, user: current_user)
     if result.success?
-      render json: result.answer, status: :created
+      render json: result.answer, status: :updated
     else
       render json: result.errors, status: result.code
     end
@@ -31,6 +31,6 @@ class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationControll
   end
 
   def close_params
-    params.permit(:tender_award_criterium_id, :tender_id, :closed)
+    params.permit(:id, :tender_id, :closed)
   end
 end
