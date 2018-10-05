@@ -14,8 +14,8 @@ class User < ApplicationRecord
   has_many :tenders, through: :collaborations, source: :tender, class_name: 'Core::Tender'
   has_many :comments, class_name: 'CompeteComment'
   has_many :collaboration_interests
-  has_many :tender_task_answers
-  has_many :tender_award_criteria_answers
+  has_many :tender_task_answers, class_name: 'Marketplace::TenderTask'
+  has_many :tender_award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
   enum role: [:admin, :user]
 
   after_initialize :set_default_role, :if => :new_record?

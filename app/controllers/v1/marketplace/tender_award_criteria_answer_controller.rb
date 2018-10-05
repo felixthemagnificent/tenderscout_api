@@ -1,6 +1,6 @@
 class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationController
   def index
-    render json: TenderAwardCriteriaAnswer.where(tender_award_criteria_id: params[:tender_award_criterium_id]).where(user: current_user)
+    render json: ::Marketplace::TenderAwardCriteriaAnswer.where(tender_award_criteria_id: params[:tender_award_criterium_id]).where(user: current_user)
   end
 
   def create
