@@ -1,7 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
   include Pageable
-  update_index('tenders#tender') { self } 
+  update_index('tenders#tender') { self }
 
   self.table_name = "core_tenders"
 
@@ -61,7 +61,9 @@ class Core::Tender < ApplicationRecord
   after_save :recalculate_bidsense
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
-
+  #validates
+  validate :q_and_a_dedlines
+  validate :q_and_a_later_dispatch
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
     includes(relations).references(*relations)
@@ -88,7 +90,7 @@ class Core::Tender < ApplicationRecord
           (1..5).each do |ans_num|
             answer_name = "Answer #{ans_num}"
             question.bid_no_bid_answers.create!({ answer_text: answer_name, position: ans_num } )
-          end 
+          end
         end
       end
     end
@@ -105,12 +107,12 @@ class Core::Tender < ApplicationRecord
           order: e.order
         }
       end
-      answered = self.bid_no_bid_compete_answers.where(bid_no_bid_question: question).map do |e| 
-        { 
-          id: e.id, 
-          user_id: e.user.id, 
+      answered = self.bid_no_bid_compete_answers.where(bid_no_bid_question: question).map do |e|
+        {
+          id: e.id,
+          user_id: e.user.id,
           answer_id: e.bid_no_bid_answer.id
-        } 
+        }
       end
       _tmp[:question] = {
         id: question.id,
@@ -128,7 +130,7 @@ class Core::Tender < ApplicationRecord
 
   end
 
-  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
+  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil,
                   tender_countries: nil)
 
     matches = []
@@ -159,9 +161,9 @@ class Core::Tender < ApplicationRecord
                   }
                 } unless tender_title.blank?
 
-    if tender_keywords 
+    if tender_keywords
       match_keywords = []
-      tender_keywords.each do |e| 
+      tender_keywords.each do |e|
         match_keywords << {
           match:
           {
@@ -170,14 +172,14 @@ class Core::Tender < ApplicationRecord
         }
       end
       matches << {
-        bool: { 
+        bool: {
             should: match_keywords
           }
       }
     end
-    if tender_countries 
+    if tender_countries
       match_countries = []
-      tender_countries.each do |e| 
+      tender_countries.each do |e|
         match_countries << {
           match:
           {
@@ -186,7 +188,7 @@ class Core::Tender < ApplicationRecord
         }
       end
       matches << {
-        bool: { 
+        bool: {
             should: match_countries
           }
       }
@@ -235,7 +237,7 @@ class Core::Tender < ApplicationRecord
   def world_region
       self.organization.country.world_region rescue nil
   end
-  
+
   def world_subregion
       self.organization.country.world_subregion rescue nil
   end
@@ -285,5 +287,21 @@ class Core::Tender < ApplicationRecord
   private
   def recalculate_bidsense
     Bidsense::RecalculateScoreJob.perform_later tender: self
+  end
+
+  def q_and_a_dedlines
+    if questioning_dedline.present? && answering_dedline.present?
+      if questioning_dedline > answering_dedline
+        errors.add(:error, 'Questioning deadline must be earlier Answering deadline')
+      end
+    end
+  end
+
+  def q_and_a_later_dispatch
+    if questioning_dedline.present? && answering_dedline.present? && dispatch_date.present?
+      if questioning_dedline > dispatch_date && answering_dedline > dispatch_date
+      errors.add(:error, 'Questioning and  Answering deadlines must be earlier Dispatch date')
+      end
+    end
   end
 end

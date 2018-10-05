@@ -28,7 +28,7 @@ class CreateTender
 
   def tender_params
     context.params.permit(
-      :title, :description, :submission_date, :dispatch_date, keywords: []
+        :title, :description, :submission_date, :dispatch_date, :questioning_dedline, :answering_dedline, keywords: []
     )
   end
 
