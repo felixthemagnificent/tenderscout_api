@@ -52,7 +52,7 @@ class V1::Marketplace::TenderTasksController < ApplicationController
     profiles = @marketplace_tender_task.notes.map(&:profile).uniq
     notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_task.notes,
                                                               each_serializer: NoteSerializer)
-    render json: { comments: notes, profiles: profiles }
+    render json: { notes: notes, profiles: profiles }
   end
 
   private
