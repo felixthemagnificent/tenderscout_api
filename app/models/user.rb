@@ -39,7 +39,14 @@ class User < ApplicationRecord
     result
   end
 
+  def paid?
+    self.standart? || self.admin? || self.basic?
+  end
 
+  def has_collaboration_on_tender?(tender)
+    self.tender_collaborators.map(&:collaboration).map(&:tender).include?(tender)
+  end
+  
   def tender_task_answer_completed_count(tender)
     self.tender_task_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
   end

@@ -2,9 +2,11 @@ class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list]
-
+  after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish, :get_bnb_data,
+                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list]
   # GET /profiles
   def index
+    authorize Core::Tender
     tenders = Core::Tender.all
     # byebug
     @tenders = tenders.my_paginate(paginate_params)
@@ -33,11 +35,13 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # GET /profiles/1
   def show
+    authorize @tender
     render json: @tender
   end
 
   # POST /profiles
   def create
+    authorize Core::Tender
     result = CreateTender.call(params: params, user: current_user)
     if result.success?
       render json: result.tender, status: :created
@@ -48,6 +52,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
+    authorize @tender
     result = UpdateTender.call(tender: @tender, params: params, user: current_user)
     if result.success?
       render json: result.tender, current_user: current_user

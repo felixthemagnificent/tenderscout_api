@@ -1,4 +1,5 @@
 class V1::Marketplace::TenderTaskAnswersController < ApplicationController
+  after_action :verify_authorized
   def index #TODO move TenderTask model Marketplace::TenderTask
     render json: ::Marketplace::TenderTaskAnswer.where(tender_task_id: params[:tender_task_id]).where(user: current_user)
   end

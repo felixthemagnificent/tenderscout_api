@@ -1,15 +1,19 @@
 class V1::AssistancesController < ApplicationController
   before_action :set_assistance, only: [:show]
+  after_action :verify_authorized
 
   def index
+    authorize Assistance
     render json: Assistance.all
   end
 
   def show
+    authorize @assistance
     render json: @assistance
   end
 
   def create
+    authorize Assistance
     result = CreateAssistanceRequest.call(params: assistance_params, user: current_user)
     if result.success?
       render json: result.assistance, status: :created

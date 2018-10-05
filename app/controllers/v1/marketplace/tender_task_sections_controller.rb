@@ -1,9 +1,11 @@
 class V1::Marketplace::TenderTaskSectionsController < ApplicationController
   before_action :set_marketplace_tender_task_section, only: [:show, :update, :destroy]
   before_action :set_tender
+  after_action :verify_authorized
 
   # GET /marketplace/tender_task_sections
   def index
+    authorize Marketplace::TenderTaskSection
     @marketplace_tender_task_sections = @tender.task_sections
 
     render json: @marketplace_tender_task_sections
@@ -11,10 +13,12 @@ class V1::Marketplace::TenderTaskSectionsController < ApplicationController
 
   # GET /marketplace/tender_task_sections/1
   def show
+    authorize @marketplace_tender_task_section
     render json: @marketplace_tender_task_section
   end
 
   def bulk_create
+    authorize Marketplace::TenderTaskSection
     result = BulkCreateTaskSections.call(params: params, tender: @tender)
     if result.success?
       render json: nil, status: :created
@@ -26,7 +30,7 @@ class V1::Marketplace::TenderTaskSectionsController < ApplicationController
   # POST /marketplace/tender_task_sections
   def create
     @marketplace_tender_task_section = @tender.task_sections.new(marketplace_tender_task_section_params)
-
+    authorize @marketplace_tender_task_section
     if @marketplace_tender_task_section.save
       render json: @marketplace_tender_task_section, status: :created
     else
@@ -36,6 +40,7 @@ class V1::Marketplace::TenderTaskSectionsController < ApplicationController
 
   # PATCH/PUT /marketplace/tender_task_sections/1
   def update
+    authorize @marketplace_tender_task_section
     if @marketplace_tender_task_section.update(marketplace_tender_task_section_params)
       render json: @marketplace_tender_task_section
     else
@@ -45,6 +50,7 @@ class V1::Marketplace::TenderTaskSectionsController < ApplicationController
 
   # DELETE /marketplace/tender_task_sections/1
   def destroy
+    authorize @marketplace_tender_task_section
     @marketplace_tender_task_section.destroy
   end
 

@@ -3,8 +3,10 @@ class V1::Marketplace::TenderTasksController < ApplicationController
   before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments,
                                                      :tender_task_notes, :update_deadline]
   before_action :set_tender
+  after_action :verify_authorized
   # GET /marketplace/tender_tasks
   def index
+    authorize Marketplace::TenderTask
     @marketplace_tender_tasks = @tender.tasks.all
 
     render json: @marketplace_tender_tasks
@@ -12,11 +14,13 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
   # GET /marketplace/tender_tasks/1
   def show
+    authorize @marketplace_tender_task
     render json: @marketplace_tender_task
   end
 
   # POST /marketplace/tender_tasks
   def create
+    authorize Marketplace::TenderTask
     @marketplace_tender_task = @tender.tasks.new(marketplace_tender_task_params)
 
     if @marketplace_tender_task.save
@@ -28,6 +32,7 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
   # PATCH/PUT /marketplace/tender_tasks/1
   def update
+    authorize @marketplace_tender_task
     if @marketplace_tender_task.update(marketplace_tender_task_params)
       render json: @marketplace_tender_task
     else
@@ -37,6 +42,7 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
   # DELETE /marketplace/tender_tasks/1
   def destroy
+    authorize @marketplace_tender_task
     @marketplace_tender_task.destroy
   end
 

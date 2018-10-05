@@ -1,18 +1,19 @@
 class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
+  after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password]
 
   # GET /users
   def index
-
+    authorize User
     users = User.all
     @users = users.my_paginate(paginate_params)
-
     render json: {count: users.count, data: @users}
   end
 
   # GET /users/1
   def show
+    authorize @user
     render json: @user
   end
 
@@ -33,6 +34,7 @@ class V1::UsersController < ApplicationController
   def create
     result = true
     @user = User.new(user_params)
+    authorize @user
     if @user.save
       profile = @user.profiles.new(profile_params)
       if profile.save
@@ -48,6 +50,7 @@ class V1::UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
+    authorize @user
     if @user.update(user_params)
       render json: @user
     else
@@ -57,6 +60,7 @@ class V1::UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
+    authorize @user
     @user.destroy
   end
 

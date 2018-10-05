@@ -1,6 +1,7 @@
 class V1::Marketplace::TenderCollaboratorsController < ApplicationController
   before_action :set_tender
   before_action :set_user, only: [:create, :destroy]
+  
   # GET /marketplace/tender_committees
   def index
     @marketplace_tender_collaborators = @tender.committees.all

@@ -1,5 +1,6 @@
 class V1::Marketplace::CollaborationsController < ApplicationController
   before_action :set_tender
+  after_action :verify_authorized
   # before_action :set_marketplace_collaboration, only: [:show, :update, :destroy]
 
   # GET /marketplace/collaborations

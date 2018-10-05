@@ -68,6 +68,7 @@ gem "fog-aws"
 gem "mini_magick"
 gem 'sidekiq'
 gem "zendesk_api"
+gem 'pundit'
 
 group :development do
   gem 'capistrano'
