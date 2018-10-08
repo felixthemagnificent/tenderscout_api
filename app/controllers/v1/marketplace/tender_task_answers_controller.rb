@@ -1,6 +1,6 @@
 class V1::Marketplace::TenderTaskAnswersController < ApplicationController
   def index #TODO move TenderTask model Marketplace::TenderTask
-    render json: TenderTaskAnswer.where(tender_task_id: params[:tender_task_id]).where(user: current_user)
+    render json: ::Marketplace::TenderTaskAnswer.where(tender_task_id: params[:tender_task_id]).where(user: current_user)
   end
 
   def create
@@ -31,6 +31,6 @@ class V1::Marketplace::TenderTaskAnswersController < ApplicationController
   end
 
   def close_params
-    params.permit(:tender_task_id, :tender_id, :closed)
+    params.permit(:id, :tender_task_id, :tender_id, :closed)
   end
 end
