@@ -15,7 +15,7 @@ class V1::Marketplace::TenderTaskAnswersController < ApplicationController
   def close
     result = CloseTenderTaskAnswer.call(params: close_params, user: current_user)
     if result.success?
-      render json: result.answer, status: :created
+      render json: result.answer, status: :ok
     else
       render json: result.errors, status: result.code
     end

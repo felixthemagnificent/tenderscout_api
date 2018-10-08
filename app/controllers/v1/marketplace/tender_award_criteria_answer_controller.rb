@@ -15,7 +15,7 @@ class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationControll
   def close
     result = CloseAwardCriteriaAnswer.call(params: close_params, user: current_user)
     if result.success?
-      render json: result.answer, status: :updated
+      render json: result.answer, status: :ok
     else
       render json: result.errors, status: result.code
     end
