@@ -63,7 +63,7 @@ Rails.application.routes.draw do
         resources :tender_collaborators, path: 'collaborators'
         resources :tender_award_criteria, path: 'award_criteries' do
           resources :tender_award_criteria_answer, path: 'answers' do
-            collection do
+            member do
               put :close
             end
           end
@@ -74,7 +74,7 @@ Rails.application.routes.draw do
             get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
           end
           resources :tender_task_answers, path: 'answers' do
-            collection do
+            member do
               put :close
             end
           end
