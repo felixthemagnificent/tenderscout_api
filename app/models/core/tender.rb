@@ -155,19 +155,51 @@ class Core::Tender < ApplicationRecord
                 } if tender_value_from
 
     matches << {
-                  match:
+                  bool: 
                   {
-                    title: tender_title
+                    should:[
+                    { 
+                      term:
+                      {
+                        title: 
+                        {
+                          value: tender_title,
+                          boost: 2.0
+                        }
+                      }
+                    }, {
+                      match_phrase:
+                      {
+                        title: tender_title
+                      }
+                    },
+                    { 
+                      term:
+                      {
+                        description: 
+                        {
+                          value: tender_title,
+                          boost: 2.0
+                        }
+                      }
+                    }, {
+                      match_phrase:
+                      {
+                        description: tender_title
+                      }
+                    }]
                   }
                 } unless tender_title.blank?
-
     if tender_keywords
       match_keywords = []
       tender_keywords.each do |e|
         match_keywords << {
           match:
           {
-            description: e
+            description: {
+              value: e,
+              boost: 1.5
+            }
           }
         }
       end
