@@ -164,13 +164,16 @@ class Core::Tender < ApplicationRecord
                         title: 
                         {
                           value: tender_title,
-                          boost: 2.0
+                          boost: 2.5
                         }
                       }
                     }, {
                       match_phrase:
                       {
-                        title: tender_title
+                        title: {
+                          value: tender_title,
+                          boost: 1.8
+                        }
                       }
                     },
                     { 
@@ -185,7 +188,11 @@ class Core::Tender < ApplicationRecord
                     }, {
                       match_phrase:
                       {
-                        description: tender_title
+                        description: 
+                        {
+                          value: tender_title,
+                          boost: 1.7
+                        }
                       }
                     }]
                   }
