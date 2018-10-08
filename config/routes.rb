@@ -72,6 +72,7 @@ Rails.application.routes.draw do
           member do
             get :tender_task_comments, to: 'tender_tasks#tender_task_comments'
             get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
+            put :update_deadline
           end
           resources :tender_task_answers, path: 'answers' do
             member do
@@ -93,6 +94,7 @@ Rails.application.routes.draw do
           member do
             get :tender_award_criteria_comments, to: 'tender_award_criteria#tender_award_criteria_comments'
             get :tender_award_criteria_notes, to: 'tender_award_criteria#tender_award_criteria_notes'
+            put :update_deadline
           end
         end
         resources :tender_attachments

@@ -1,6 +1,7 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
   include ActionController::Serialization
-  before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments, :tender_task_notes]
+  before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments,
+                                                     :tender_task_notes, :update_deadline]
   before_action :set_tender
   # GET /marketplace/tender_tasks
   def index
@@ -55,6 +56,15 @@ class V1::Marketplace::TenderTasksController < ApplicationController
     render json: { notes: notes, profiles: profiles }
   end
 
+  #Update dedline
+  def update_deadline
+    if @marketplace_tender_task.update(deadline_params)
+      render json: @marketplace_tender_task
+    else
+      render json: @marketplace_tender_task.errors, status: :unprocessable_entity
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_task
@@ -70,4 +80,8 @@ class V1::Marketplace::TenderTasksController < ApplicationController
     def marketplace_tender_task_params
       params.permit(:order, :title, :weight,:description, :section_id)
     end
+
+  def deadline_params
+    params.permit(:deadline)
+  end
 end

@@ -1,6 +1,6 @@
 class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy, :tender_award_criteria_comments,
-                                                                :tender_award_criteria_notes]
+                                                                :tender_award_criteria_notes, :update_deadline]
   before_action :set_tender
 
   # GET /marketplace/tender_award_criteria
@@ -56,6 +56,15 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
     render json: { notes: notes, profiles: profiles }
   end
 
+  #Update dedline
+  def update_deadline
+    if @marketplace_tender_award_criterium.update(deadline_params)
+      render json: @marketplace_tender_award_criterium
+    else
+      render json: @marketplace_tender_award_criterium.errors, status: :unprocessable_entity
+    end
+  end
+
   private
   def set_tender
     @tender = Core::Tender.find_by_id params[:tender_id]
@@ -68,5 +77,9 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def marketplace_tender_award_criterium_params
     params.permit(:order, :title, :description, :weight, :section_id)
+  end
+
+  def deadline_params
+    params.permit(:deadline)
   end
 end
