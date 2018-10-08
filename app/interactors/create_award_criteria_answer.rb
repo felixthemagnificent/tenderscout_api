@@ -17,7 +17,7 @@ class CreateAwardCriteriaAnswer
                     code: :unprocessable_entity
     end
 
-    unless answer_params[:pass_fail].present? || answer_params[:score].present?
+    unless answer_params.keys.include?("pass_fail") || answer_params.keys.include?("score")
       context.fail! errors: { error: :unprocessable_entity, error_description: 'No answer provided'},
                     code: :unprocessable_entity
     end

@@ -14,13 +14,14 @@ class TenderSerializer < ActiveModel::Serializer
               :lead_source, :next_step, :private, :probability, :quantity, :stage, :salesforce_type, :industry, 
               :partner, :primary, :role, :competitor, :strengths, :weaknesses, :set_aside, :archiving_policy, 
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
-              :retender_status, :status, :dispatch_date
+              :retender_status, :status, :dispatch_date, :questioning_deadline, :answering_deadline
 
   attribute(:creator) { UserSerializer.new(object.creator) if object.creator }
   attribute(:country) { CountrySerializer.new(object.organization.try(:country)) if object.organization }
   attribute(:city) { object.try(:organization).try(:city_name) }
   attribute(:contact_email) { object.try(:organization).try(:email) }
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
+  has_many :contacts, serializer: Marketplace::ContactSerializer
   attribute(:classification) { object.try(:classification).try(:description) }
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer

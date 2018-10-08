@@ -3,6 +3,7 @@ class CloseAwardCriteriaAnswer
 
   def call
     tender = Core::Tender.find(answer_params[:tender_id])
+    award_criteria_answer = Marketplace::TenderAwardCriteriaAnswer.find(close_params[:id])
     unless tender.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Tender not found'},
                     code: :unprocessable_entity
@@ -11,14 +12,19 @@ class CloseAwardCriteriaAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
-    award_criteria = tender.award_criteries.where(id: criteria_params[:tender_award_criterium_id]).first
-    unless award_criteria.present?
-      context.fail! errors: { error: :unprocessable_entity, error_description: 'Criteria not found'},
+
+    unless award_criteria_answer.present?
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Award Criteria not found'},
                     code: :unprocessable_entity
     end
 
-    context.answer = award_criteria.answers.new(closed: true)
-    context.answer.user = context.user
+    if award_criteria_answer.closed
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'Award Criteria is closed'},
+                    code: :unprocessable_entity
+    end
+
+    context.answer = award_criteria_answer
+    context.answer.closed = true
 
     unless context.answer.save
       context.fail! errors: context.answer.errors,
@@ -28,8 +34,8 @@ class CloseAwardCriteriaAnswer
 
   private
 
-  def criteria_params
-    context.params.permit(:tender_award_criterium_id)
+  def close_params
+    context.params.permit( :id, :closed)
   end
 
   def answer_params

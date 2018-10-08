@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   # namespace :marketplace do
   #   resources :tender_criteria_sections
   # end
@@ -54,12 +53,17 @@ Rails.application.routes.draw do
             post :bid_no_bid_answer, to: 'tenders#process_bnb_data'
           end
         end
-
-        resources :collaboration_interests
+        resources :collaborations, only: [:index] do
+          collection do
+            post :apply
+            post :remove
+          end
+        end
+        resources :collaboration_interests  
         resources :tender_collaborators, path: 'collaborators'
         resources :tender_award_criteria, path: 'award_criteries' do
           resources :tender_award_criteria_answer, path: 'answers' do
-            collection do
+            member do
               put :close
             end
           end
@@ -70,7 +74,7 @@ Rails.application.routes.draw do
             get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
           end
           resources :tender_task_answers, path: 'answers' do
-            collection do
+            member do
               put :close
             end
           end

@@ -43,14 +43,16 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # Comments for TenderAwardCriteries
   def tender_award_criteria_comments
     profiles = @marketplace_tender_award_criterium.comments.map(&:profile).uniq
-    comments = @marketplace_tender_award_criterium.comments
+    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.comments,
+                                                                 each_serializer: CommentSerializer)
     render json: { comments: comments, profiles: profiles }
   end
 
   # Notes for TenderAwardCriteries
   def tender_award_criteria_notes
     profiles = @marketplace_tender_award_criterium.notes.map(&:profile).uniq
-    notes = @marketplace_tender_award_criterium.notes
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.notes,
+                                                              each_serializer: NoteSerializer)
     render json: { notes: notes, profiles: profiles }
   end
 

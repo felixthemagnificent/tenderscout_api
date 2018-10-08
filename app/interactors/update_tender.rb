@@ -16,6 +16,7 @@ class UpdateTender
         contact.contact_point = contact_params[:person]
         contact.email = contact_params[:email]
         context.fail! errors: contact.errors, code: :unprocessable_entity unless contact.save
+        context.tender.tender_contacts.create! contact: contact unless context.tender.tender_contacts.find_by(tender: context.tender, contact: contact)
       end
     end
   end
@@ -24,7 +25,8 @@ class UpdateTender
 
   def tender_params
     context.params.permit(
-      :title, :description, :submission_date, :dispatch_date, keywords: []
+      :title, :description, :submission_date, :dispatch_date, :questioning_deadline,
+      :answering_deadline, keywords: []
     )
   end
 
