@@ -776,7 +776,22 @@ ActiveRecord::Schema.define(version: 20181009082417) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "weight"
+    t.datetime "deadline"
     t.index ["section_id"], name: "index_marketplace_tender_award_criteria_on_section_id"
+  end
+
+  create_table "marketplace_tender_award_criteria_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_award_criteria_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_award_criteria_id"], name: "tender_award_criteria_answers_index"
+    t.index ["tender_id"], name: "index_marketplace_tender_award_criteria_answers_on_tender_id"
+    t.index ["user_id"], name: "index_marketplace_tender_award_criteria_answers_on_user_id"
   end
 
   create_table "marketplace_tender_award_criteria_sections", force: :cascade do |t|
@@ -822,6 +837,20 @@ ActiveRecord::Schema.define(version: 20181009082417) do
     t.index ["tender_id"], name: "index_marketplace_tender_criteria_sections_on_tender_id"
   end
 
+  create_table "marketplace_tender_task_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_task_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_task_answers_on_tender_id"
+    t.index ["tender_task_id"], name: "index_marketplace_tender_task_answers_on_tender_task_id"
+    t.index ["user_id"], name: "index_marketplace_tender_task_answers_on_user_id"
+  end
+
   create_table "marketplace_tender_task_sections", force: :cascade do |t|
     t.integer "order"
     t.string "title"
@@ -840,6 +869,7 @@ ActiveRecord::Schema.define(version: 20181009082417) do
     t.bigint "tender_id"
     t.bigint "section_id"
     t.text "description"
+    t.datetime "deadline"
     t.index ["section_id"], name: "index_marketplace_tender_tasks_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_tasks_on_tender_id"
   end
@@ -1006,34 +1036,6 @@ ActiveRecord::Schema.define(version: 20181009082417) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
-  create_table "tender_award_criteria_answers", force: :cascade do |t|
-    t.boolean "pass_fail"
-    t.integer "score"
-    t.boolean "closed", default: false, null: false
-    t.bigint "user_id"
-    t.bigint "tender_award_criteria_id"
-    t.bigint "tender_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tender_award_criteria_id"], name: "index_tender_award_criteria_answers_on_tender_award_criteria_id"
-    t.index ["tender_id"], name: "index_tender_award_criteria_answers_on_tender_id"
-    t.index ["user_id"], name: "index_tender_award_criteria_answers_on_user_id"
-  end
-
-  create_table "tender_task_answers", force: :cascade do |t|
-    t.boolean "pass_fail"
-    t.integer "score"
-    t.boolean "closed", default: false, null: false
-    t.bigint "user_id"
-    t.bigint "tender_task_id"
-    t.bigint "tender_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_tender_task_answers_on_tender_id"
-    t.index ["tender_task_id"], name: "index_tender_task_answers_on_tender_task_id"
-    t.index ["user_id"], name: "index_tender_task_answers_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -1135,10 +1137,16 @@ ActiveRecord::Schema.define(version: 20181009082417) do
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "marketplace_bid_no_bid_questions", column: "bid_no_bid_question_id", name: "index_compete_bnb_answers_on_bnb_question"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria", "marketplace_tender_award_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_award_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
+  add_foreign_key "marketplace_tender_award_criteria_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_task_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
+  add_foreign_key "marketplace_tender_task_answers", "users"
   add_foreign_key "marketplace_tender_task_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_tasks", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_tasks", "marketplace_tender_task_sections", column: "section_id"
@@ -1152,10 +1160,4 @@ ActiveRecord::Schema.define(version: 20181009082417) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
-  add_foreign_key "tender_award_criteria_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
-  add_foreign_key "tender_award_criteria_answers", "users"
-  add_foreign_key "tender_task_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "tender_task_answers", "marketplace_tender_tasks", column: "tender_task_id"
-  add_foreign_key "tender_task_answers", "users"
 end

@@ -1,6 +1,6 @@
 class V1::Marketplace::CollaborationInterestsController < ApplicationController
   include ActionController::Serialization
-  after_action :verify_authorized
+  # after_action :verify_authorized
   before_action :set_collaboration_interest, only: [:show, :destroy]
 
   def index
