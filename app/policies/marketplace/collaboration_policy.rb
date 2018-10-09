@@ -1,4 +1,19 @@
-class Marketplace::CollaborationPolicy < Marketplace::TenderPolicy
+class Marketplace::CollaborationPolicy < Core::TenderPolicy
+  attr_reader :user, :collaboration
+
+  def initialize(user, collaboration)
+    @user = user
+    @collaboration = collaboration
+  end
+  
+  def apply?
+    @collaboration.owner?
+  end
+
+  def remove?
+    apply?
+  end 
+
   class Scope
     attr_reader :user, :scope
 
