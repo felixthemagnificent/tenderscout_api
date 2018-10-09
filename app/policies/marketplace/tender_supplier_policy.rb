@@ -1,4 +1,4 @@
-class Marketplace::TenderSupplierPolicy < Marketplace::TenderPolicy
+class Marketplace::TenderSupplierPolicy < Core::TenderPolicy
   attr_reader :user, :tender
 
   class Scope
