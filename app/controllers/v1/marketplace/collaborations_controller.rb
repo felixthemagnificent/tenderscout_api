@@ -1,5 +1,6 @@
 class V1::Marketplace::CollaborationsController < ApplicationController
   before_action :set_tender
+  after_action :verify_authorized, except: [:index]
   # before_action :set_marketplace_collaboration, only: [:show, :update, :destroy]
 
   # GET /marketplace/collaborations
@@ -21,6 +22,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     end
 
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
+    authorize @marketplace_collaboration
     @marketplace_collaboration.tender_collaborators.create(user: user)
 
     if @marketplace_collaboration.save

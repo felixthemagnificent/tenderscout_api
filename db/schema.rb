@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181003190256) do
+ActiveRecord::Schema.define(version: 20181009082417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -501,6 +501,8 @@ ActiveRecord::Schema.define(version: 20181003190256) do
     t.datetime "dispatch_date"
     t.bigint "industry_id"
     t.integer "status", default: 0
+    t.datetime "questioning_deadline"
+    t.datetime "answering_deadline"
     t.index ["awarded_on"], name: "index_core_awarded_on"
     t.index ["created_at"], name: "index_core_created_at"
     t.index ["flagged_as_sme_friendly"], name: "index_core_flagged_as_sme_friendly"
@@ -791,6 +793,7 @@ ActiveRecord::Schema.define(version: 20181003190256) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "role"
     t.index ["collaboration_id"], name: "index_marketplace_tender_collaborators_on_collaboration_id"
     t.index ["user_id"], name: "index_marketplace_tender_collaborators_on_user_id"
   end

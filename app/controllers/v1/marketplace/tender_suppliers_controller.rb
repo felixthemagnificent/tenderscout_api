@@ -1,7 +1,8 @@
 class V1::Marketplace::TenderSuppliersController < ApplicationController
   before_action :set_tender
   before_action :set_supplier, only: [:destroy, :invite_approve]
-
+  after_action :verify_authorized
+  
   def index
     render json: Supplier.where(tender_id: params[:tender_id])
   end

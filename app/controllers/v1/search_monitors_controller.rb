@@ -1,19 +1,22 @@
 class V1::SearchMonitorsController < ApplicationController
   before_action :set_search_monitor, only: [:show, :update, :destroy, :result, :archive, :share, :add_favourite, :delete_favourite]
+  after_action :verify_authorized, except: [:delete_favourite, :add_favourite]
   respond_to :json
   # GET /search_monitors
   def index
     @search_monitors = current_user.search_monitors
-
+    authorize @search_monitors
     render json: @search_monitors
   end
 
   # GET /search_monitors/1
   def show
+    authorize @search_monitor
     render json: @search_monitor
   end
 
   def preview
+    authorize SearchMonitor
     data, count = process_search(search_monitor_params)
     render json: {
       data: data,
@@ -22,6 +25,7 @@ class V1::SearchMonitorsController < ApplicationController
   end
 
   def all_results
+    authorize SearchMonitor
     data, count = process_search({})
     render json: {
       data: data,
