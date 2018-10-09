@@ -23,7 +23,7 @@ class Marketplace::TenderCompetePolicy
   end
 
   def destroy?
-    @user.paid? || @user.has_collaboration_on_tender?(tender)?
+    @user.paid? || @user.has_collaboration_on_tender?(tender)
   end
 
   class Scope
