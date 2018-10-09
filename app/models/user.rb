@@ -16,7 +16,7 @@ class User < ApplicationRecord
   has_many :collaboration_interests
   has_many :tender_task_answers, class_name: 'Marketplace::TenderTask'
   has_many :tender_award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
-  enum role: [:admin, :user]
+  enum role: [:admin, :standart, :basic, :free]
 
   after_initialize :set_default_role, :if => :new_record?
 
