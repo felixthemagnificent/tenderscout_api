@@ -4,7 +4,8 @@ class V1::Marketplace::TenderTasksController < ApplicationController
                                                      :tender_task_notes, :update_deadline, :create_assign, :update_assign,
                                                      :delete_assign]
   before_action :set_tender
-  after_action :verify_authorized, except: [:tender_task_comments, :tender_task_notes, :update_deadline]
+  after_action :verify_authorized, except: [:tender_task_comments, :tender_task_notes, :update_deadline,
+                                            :create_assign, :update_assign, :delete_assign]
   # GET /marketplace/tender_tasks
   def index
     authorize Marketplace::TenderTask
