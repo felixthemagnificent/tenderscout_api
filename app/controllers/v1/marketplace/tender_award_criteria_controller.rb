@@ -72,6 +72,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_tender_award_criterium
     @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(params[:id])
+    @marketplace_tender_award_criterium.user_id = current_user
   end
 
   # Only allow a trusted parameter "white list" through.

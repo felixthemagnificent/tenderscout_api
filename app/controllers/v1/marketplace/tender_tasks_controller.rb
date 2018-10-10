@@ -75,8 +75,8 @@ class V1::Marketplace::TenderTasksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_task
       @marketplace_tender_task = ::Marketplace::TenderTask.find(params[:id])
+      @marketplace_tender_task.user_id = current_user.id
     end
-
 
     def set_tender
       @tender = Core::Tender.find(params[:tender_id])

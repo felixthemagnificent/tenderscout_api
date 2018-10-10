@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
+      resources :assignments
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
@@ -54,6 +55,7 @@ Rails.application.routes.draw do
           end
         end
         resources :collaborations, only: [:index] do
+          get :collaboration_assignments
           collection do
             post :apply
             post :remove
