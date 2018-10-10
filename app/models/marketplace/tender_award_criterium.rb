@@ -11,4 +11,10 @@ class Marketplace::TenderAwardCriterium < ApplicationRecord
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Collaboration.where(tender: section.tender.id), user: user_id).first.collaboration
     self.assignments.where(collaboration: collaboration).first.user.profiles.first
   end
+
+  def assignment
+    section = Marketplace::TenderAwardCriteriaSection.find_by(id: section_id)
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: section.tender.id), user: user_id).first.collaboration
+    self.assignments.where(collaboration: collaboration).first
+  end
 end

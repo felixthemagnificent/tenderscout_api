@@ -11,4 +11,10 @@ class Marketplace::TenderTask < ApplicationRecord
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Collaboration.where(tender: tender).ids, user: user_id).first.collaboration
     self.assignments.where(collaboration: collaboration).first.user.profiles.first
   end
+
+  def assignment
+    tender = Core::Tender.find_by(id: tender_id)
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender).ids, user: user_id).first.collaboration
+    self.assignments.where(collaboration: collaboration).first
+  end
 end

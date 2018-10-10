@@ -28,7 +28,6 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     namespace :marketplace do
-      resources :assignments
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
@@ -72,6 +71,9 @@ Rails.application.routes.draw do
         end
         resources :tender_tasks, path: 'tasks' do
           member do
+            post :assign, to: 'tender_tasks#create_assign'
+            patch :assign, to: 'tender_tasks#update_assign'
+            delete :assign, to: 'tender_tasks#delete_assign'
             get :tender_task_comments, to: 'tender_tasks#tender_task_comments'
             get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
             put :update_deadline
@@ -94,6 +96,9 @@ Rails.application.routes.draw do
         end
         resources :tender_award_criteria, path: 'award_criteria' do
           member do
+            post :assign, to: 'tender_award_criteria#create_assign'
+            patch :assign, to: 'tender_award_criteria#update_assign'
+            delete :assign, to: 'tender_award_criteria#delete_assign'
             get :tender_award_criteria_comments, to: 'tender_award_criteria#tender_award_criteria_comments'
             get :tender_award_criteria_notes, to: 'tender_award_criteria#tender_award_criteria_notes'
             put :update_deadline
