@@ -3,7 +3,7 @@ class V1::Marketplace::TendersController < ApplicationController
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list]
   after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish, :get_bnb_data,
-                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list]
+                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,:current_buyer_company_won_list]
   # GET /profiles
   def index
     authorize Core::Tender
