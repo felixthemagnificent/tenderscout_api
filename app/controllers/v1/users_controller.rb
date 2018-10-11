@@ -31,7 +31,7 @@ class V1::UsersController < ApplicationController
       result << {
         collaboration: collab,
         collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
-        tender: collab.tender
+        tender: collab.tender,
         role: current_user.role,
         status: :accepted
       }
@@ -44,9 +44,8 @@ class V1::UsersController < ApplicationController
     current_user.collaboration_interests.each do |collab|
       result << {
         collaboration: collab,
-        collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
-        tender: collab.tender
-        role: current_user.role
+        tender: collab.tender,
+        role: current_user.role,
         status: :pending
       }
     end
