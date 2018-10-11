@@ -51,6 +51,7 @@ class V1::UsersController < ApplicationController
     end
     render json: result
   end
+  
   def user_tender_statistic
     result = current_user.collaboration_tenders_statistic
     render json: { user_id: current_user.id, data: result }
