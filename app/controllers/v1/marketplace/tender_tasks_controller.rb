@@ -1,9 +1,11 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
   include ActionController::Serialization
   before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments,
-                                                     :tender_task_notes, :update_deadline]
+                                                     :tender_task_notes, :update_deadline, :create_assign, :update_assign,
+                                                     :delete_assign]
   before_action :set_tender
-  after_action :verify_authorized, except: [:tender_task_comments, :tender_task_notes, :update_deadline]
+  after_action :verify_authorized, except: [:tender_task_comments, :tender_task_notes, :update_deadline,
+                                            :create_assign, :update_assign, :delete_assign]
   # GET /marketplace/tender_tasks
   def index
     authorize Marketplace::TenderTask
@@ -71,12 +73,34 @@ class V1::Marketplace::TenderTasksController < ApplicationController
     end
   end
 
+  def create_assign
+    @assignment = @marketplace_tender_task.assignments.new(assignments_params)
+    if @assignment.save
+      render json: @assignment, status: :created
+    else
+      render json: @assignment.errors, status: :unprocessable_entity
+    end
+  end
+
+  def update_assign
+    @assignment = @marketplace_tender_task.assignment
+    if @assignment.update(assignments_params)
+      render json: @assignment
+    else
+      render json: @assignment.errors, status: :unprocessable_entity
+    end
+  end
+
+  def delete_assign
+    @marketplace_tender_task.assignment.destroy
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_task
       @marketplace_tender_task = ::Marketplace::TenderTask.find(params[:id])
+      @marketplace_tender_task.user_id = current_user.id
     end
-
 
     def set_tender
       @tender = Core::Tender.find(params[:tender_id])
@@ -89,5 +113,9 @@ class V1::Marketplace::TenderTasksController < ApplicationController
 
   def deadline_params
     params.permit(:deadline)
+  end
+
+  def assignments_params
+    params.permit( :user_id, :collaboration_id)
   end
 end

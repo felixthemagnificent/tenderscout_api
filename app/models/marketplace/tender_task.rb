@@ -3,4 +3,7 @@ class Marketplace::TenderTask < ApplicationRecord
   has_many :answers, class_name: 'Marketplace::TenderTaskAnswer', foreign_key: :tender_task_id, dependent: :destroy
   has_many :comments, as: :commentable
   has_many :notes, as: :notable
+  has_many :assignments, class_name: 'Marketplace::Assignment', as: :assignable
+  attr_accessor :user_id
+  include Assignable
 end
