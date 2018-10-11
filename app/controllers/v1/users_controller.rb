@@ -1,7 +1,7 @@
 class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
-  after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password]
+  after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests]
 
   # GET /users
   def index
@@ -25,6 +25,33 @@ class V1::UsersController < ApplicationController
     render json: {data: results, count: count}
   end
 
+  def invites
+    result = []
+    current_user.collaborations.each do |collab|
+      result << {
+        collaboration: collab,
+        collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
+        tender: collab.tender
+        role: current_user.role,
+        status: :accepted
+      }
+    end
+    render json: result
+  end
+
+  def requests
+    result = []
+    current_user.collaboration_interests.each do |collab|
+      result << {
+        collaboration: collab,
+        collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
+        tender: collab.tender
+        role: current_user.role
+        status: :pending
+      }
+    end
+    render json: result
+  end
   def user_tender_statistic
     result = current_user.collaboration_tenders_statistic
     render json: { user_id: current_user.id, data: result }
