@@ -62,7 +62,7 @@ class Core::Tender < ApplicationRecord
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
   #validates
-  validate :q_and_a_dedlines
+  validate :q_and_a_deadlines
   validate :q_and_a_later_dispatch
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
@@ -328,7 +328,7 @@ class Core::Tender < ApplicationRecord
     Bidsense::RecalculateScoreJob.perform_later tender: self
   end
 
-  def q_and_a_dedlines
+  def q_and_a_deadlines
     if questioning_deadline.present? && answering_deadline.present?
       if questioning_deadline > answering_deadline
         errors.add(:error, 'Questioning deadline must be earlier Answering deadline')
@@ -338,8 +338,8 @@ class Core::Tender < ApplicationRecord
 
   def q_and_a_later_dispatch
     if questioning_deadline.present? && answering_deadline.present? && dispatch_date.present?
-      if questioning_deadline > dispatch_date && answering_deadline > dispatch_date
-      errors.add(:error, 'Questioning and  Answering deadlines must be earlier Dispatch date')
+      if dispatch_date > questioning_deadline
+        errors.add(:error, 'Q&A deadlines must be earlier than dispatch date')
       end
     end
   end
