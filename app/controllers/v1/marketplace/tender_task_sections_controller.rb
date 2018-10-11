@@ -1,11 +1,11 @@
 class V1::Marketplace::TenderTaskSectionsController < ApplicationController
   before_action :set_marketplace_tender_task_section, only: [:show, :update, :destroy]
   before_action :set_tender
-  after_action :verify_authorized
+  after_action :verify_authorized, except: [:index]
 
   # GET /marketplace/tender_task_sections
   def index
-    authorize Marketplace::TenderTaskSection
+    authorize ::Marketplace::TenderTaskSection
     @marketplace_tender_task_sections = @tender.task_sections
 
     render json: @marketplace_tender_task_sections
