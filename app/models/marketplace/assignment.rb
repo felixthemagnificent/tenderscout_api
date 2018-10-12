@@ -3,12 +3,7 @@ class Marketplace::Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :collaboration, class_name: 'Marketplace::Collaboration'
   before_validation :check_available, on: :create
-
-  ASSIGNMENT_MODEL= {
-      'tender_task' => 'Marketplace::TenderTask',
-      'award_criterium' => 'Marketplace::TenderAwardCriterium'
-  }
-
+  
   private
 
   def check_available
