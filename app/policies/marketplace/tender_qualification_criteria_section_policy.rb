@@ -1,4 +1,4 @@
-class Marketplace::TenderTaskSectionPolicy < Marketplace::TenderCompetePolicy
+class Marketplace::TenderQualificationCriteriaSectionPolicy < Marketplace::TenderCompetePolicy
   class Scope
     attr_reader :user, :scope
 

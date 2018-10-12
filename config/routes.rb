@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   #   resources :tender_criteria
   # end
   # namespace :marketplace do
-  #   resources :tender_tasks
+  #   resources :tender_qualification_criterias
   # end
   resources :contacts
   # use_doorkeeper
@@ -71,16 +71,16 @@ Rails.application.routes.draw do
             end
           end
         end
-        resources :tender_tasks, path: 'tasks' do
+        resources :tender_qualification_criterias, path: 'qualification_criterias' do
           member do
-            post :assign, to: 'tender_tasks#create_assign'
-            patch :assign, to: 'tender_tasks#update_assign'
-            delete :assign, to: 'tender_tasks#delete_assign'
-            get :tender_task_comments, to: 'tender_tasks#tender_task_comments'
-            get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
+            post :assign, to: 'tender_qualification_criterias#create_assign'
+            patch :assign, to: 'tender_qualification_criterias#update_assign'
+            delete :assign, to: 'tender_qualification_criterias#delete_assign'
+            get :tender_qualification_criteria_comments, to: 'tender_qualification_criterias#tender_qualification_criteria_comments'
+            get :tender_qualification_criteria_notes, to: 'tender_qualification_criterias#tender_qualification_criteria_notes'
             put :update_deadline
           end
-          resources :tender_task_answers, path: 'answers' do
+          resources :tender_qualification_criteria_answers, path: 'answers' do
             member do
               put :close
             end
@@ -107,7 +107,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_attachments
-        resources :tender_task_sections, path: 'task_sections' do
+        resources :tender_qualification_criteria_sections, path: 'qualification_criteria_sections' do
           collection do
             post :bulk_create
           end
