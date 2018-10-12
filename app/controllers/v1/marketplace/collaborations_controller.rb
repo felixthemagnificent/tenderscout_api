@@ -13,16 +13,16 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # POST /marketplace/collaborations
   def apply
     user = User.find_by_id params[:user_id]
+    role = params[:role]
     ::Marketplace::Collaboration.all.each do |e|  
       e.tender_collaborators.where(user: user).destroy_all
     end
     ::Marketplace::Collaboration.all.each do |e|  
       e.destroy unless e.tender_collaborators.count > 0
     end
-
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
     authorize @marketplace_collaboration
-    @marketplace_collaboration.tender_collaborators.create(user: user)
+    @marketplace_collaboration.tender_collaborators.create(user: user, role: role)
 
     if @marketplace_collaboration.save
       render json: @marketplace_collaboration, status: :created

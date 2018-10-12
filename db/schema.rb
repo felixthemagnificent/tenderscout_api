@@ -727,6 +727,15 @@ ActiveRecord::Schema.define(version: 20181009082417) do
     t.index ["profile_id"], name: "index_keywords_profiles_on_profile_id"
   end
 
+  create_table "marketplace_assignments", force: :cascade do |t|
+    t.string "assignable_type"
+    t.integer "assignable_id"
+    t.integer "user_id"
+    t.string "collaboration_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "marketplace_bid_no_bid_answers", force: :cascade do |t|
     t.text "answer_text"
     t.integer "order"
