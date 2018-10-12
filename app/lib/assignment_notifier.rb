@@ -1,5 +1,4 @@
 module AssignmentNotifier
-  extend ActiveSupport::Concern
 
     def send_notice(assignment,criteria)
       user = User.find(assignment.user_id)
