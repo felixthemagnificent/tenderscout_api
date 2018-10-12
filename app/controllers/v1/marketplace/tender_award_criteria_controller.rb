@@ -1,4 +1,5 @@
 class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
+  include AssignmentNotifier
   before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy, :tender_award_criteria_comments,
                                                                 :tender_award_criteria_notes, :update_deadline,
                                                                 :create_assign, :update_assign, :delete_assign]
@@ -69,6 +70,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   def create_assign
     @assignment = @marketplace_tender_award_criterium.assignments.new(assignments_params)
     if @assignment.save
+      send_notice(@assignment, @marketplace_tender_award_criterium)
       render json: @assignment, status: :created
     else
       render json: @assignment.errors, status: :unprocessable_entity
@@ -78,6 +80,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   def update_assign
     @assignment = @marketplace_tender_award_criterium.assignment
     if @assignment.update(assignments_params)
+      send_notice(@assignment, @marketplace_tender_award_criterium)
       render json: @assignment
     else
       render json: @assignment.errors, status: :unprocessable_entity
