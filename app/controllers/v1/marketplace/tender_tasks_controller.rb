@@ -1,5 +1,6 @@
 class V1::Marketplace::TenderTasksController < ApplicationController
   include ActionController::Serialization
+  include AssignmentNotifier
   before_action :set_marketplace_tender_task, only: [:show, :update, :destroy, :tender_task_comments,
                                                      :tender_task_notes, :update_deadline, :create_assign, :update_assign,
                                                      :delete_assign]
@@ -36,6 +37,7 @@ class V1::Marketplace::TenderTasksController < ApplicationController
   def update
     authorize @marketplace_tender_task
     if @marketplace_tender_task.update(marketplace_tender_task_params)
+      send_notice(@assignment, @marketplace_tender_award_criterium)
       render json: @marketplace_tender_task
     else
       render json: @marketplace_tender_task.errors, status: :unprocessable_entity
@@ -76,6 +78,7 @@ class V1::Marketplace::TenderTasksController < ApplicationController
   def create_assign
     @assignment = @marketplace_tender_task.assignments.new(assignments_params)
     if @assignment.save
+      send_notice(@assignment, @marketplace_tender_task)
       render json: @assignment, status: :created
     else
       render json: @assignment.errors, status: :unprocessable_entity
