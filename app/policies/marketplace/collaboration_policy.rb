@@ -7,11 +7,7 @@ class Marketplace::CollaborationPolicy < Core::TenderPolicy
   end
   
   def apply?
-<<<<<<< HEAD
     true || @collaboration.tender.owner?(@user) || @collaboration.tender_collaborators.where(user: @user).try(:first).try(:role)
-=======
-    @collaboration.tender.owner?(@user) || @collaboration.tender_collaborators.where(user: @user).first.role
->>>>>>> wip;
   end
 
   def remove?
