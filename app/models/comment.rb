@@ -4,7 +4,7 @@ class Comment < ApplicationRecord
   has_many :childrens, class_name: 'Comment', foreign_key: "parent_id", dependent: :destroy
 
   COMMENT_MODEL= {
-      'tender_task' => 'Marketplace::TenderTask',
+      'tender_qualification_criteria' => 'Marketplace::TenderQualificationCriteria',
       'award_criterium' => 'Marketplace::TenderAwardCriterium',
       'bnb_question' => 'Marketplace::BidNoBidQuestion'
   }

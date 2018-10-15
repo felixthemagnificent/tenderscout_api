@@ -39,7 +39,7 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
     @marketplace_bid_no_bid_question.destroy
   end
 
-  # Comments for TenderTask
+  # Comments for TenderQualificationCriteria
   def bid_no_bid_question_comments
     profiles = @marketplace_bid_no_bid_question.comments.map(&:profile).uniq
     comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.comments,
@@ -47,7 +47,7 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
     render json: { comments: comments, profiles: profiles }
   end
 
-  # Notes for TenderTask
+  # Notes for TenderQualificationCriteria
   def bid_no_bid_question_notes
     profiles = @marketplace_bid_no_bid_question.notes.map(&:profile).uniq
     notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.notes,

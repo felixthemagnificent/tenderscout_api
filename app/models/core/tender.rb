@@ -34,8 +34,8 @@ class Core::Tender < ApplicationRecord
   has_many :pro_classes, through: :tender_pro_classes
   has_and_belongs_to_many :attachments
   has_many :team_members, through: :tender_committees, source: :user, class_name: 'User'
-  has_many :task_sections, class_name: 'Marketplace::TenderTaskSection'
-  has_many :tasks, class_name: 'Marketplace::TenderTask'
+  has_many :qualification_criteria_sections, class_name: 'Marketplace::TenderQualificationCriteriaSection'
+  has_many :qualification_criterias, class_name: 'Marketplace::TenderQualificationCriteria'
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   has_many :award_criteria_sections, class_name: 'Marketplace::TenderAwardCriteriaSection'
@@ -73,8 +73,8 @@ class Core::Tender < ApplicationRecord
     self.bidsense_results.where('average_score > ?', 0.6)
   end
 
-  def tasks_count
-    self.tasks.count
+  def qualification_criterias_count
+    self.qualification_criterias.count
   end
 
   def award_criteries_count

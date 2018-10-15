@@ -1,4 +1,4 @@
-class Marketplace::TenderTaskAnswerPolicy < Marketplace::TenderCompetePolicy
+class Marketplace::TenderQualificationCriteriaAnswerPolicy < Marketplace::TenderCompetePolicy
   attr_reader :user, :record
 
   def initialize(user, record)

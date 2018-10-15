@@ -1,4 +1,4 @@
-class CreateTenderTaskAnswer
+class CreateTenderQualificationCriteriaAnswer
   include Interactor
 
   def call
@@ -11,9 +11,9 @@ class CreateTenderTaskAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
-    task = tender.tasks.where(id: tasks_params[:tender_task_id]).first
-    unless task.present?
-      context.fail! errors: { error: :unprocessable_entity, error_description: 'Task not found'},
+    qualification_criteria = tender.qualification_criterias.where(id: qualification_criterias_params[:tender_qualification_criteria_id]).first
+    unless qualification_criteria.present?
+      context.fail! errors: { error: :unprocessable_entity, error_description: 'QualificationCriteria not found'},
                     code: :unprocessable_entity
     end
     unless answer_params.keys.include?("pass_fail") || answer_params.keys.include?("score")
@@ -21,12 +21,12 @@ class CreateTenderTaskAnswer
                     code: :unprocessable_entity
     end
 
-    if task.answers.exists?(closed: true)
+    if qualification_criteria.answers.exists?(closed: true)
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Answer is already closed'},
                     code: :unprocessable_entity
     end
 
-    context.answer = task.answers.new(answer_params)
+    context.answer = qualification_criteria.answers.new(answer_params)
     context.answer.user = context.user
 
     unless context.answer.save
@@ -41,8 +41,8 @@ class CreateTenderTaskAnswer
 
   private
 
-  def tasks_params
-    context.params.permit(:tender_task_id)
+  def qualification_criterias_params
+    context.params.permit(:tender_qualification_criteria_id)
   end
 
   def answer_params
