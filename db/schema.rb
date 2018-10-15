@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181015120657) do
+ActiveRecord::Schema.define(version: 20181015121957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -860,6 +860,20 @@ ActiveRecord::Schema.define(version: 20181015120657) do
     t.index ["tender_id"], name: "index_marketplace_tender_q_c_on_tender_id"
   end
 
+  create_table "marketplace_tender_qualification_criteria_answers", force: :cascade do |t|
+    t.boolean "pass_fail"
+    t.integer "score"
+    t.boolean "closed", default: false, null: false
+    t.bigint "user_id"
+    t.bigint "tender_qualification_criteria_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_marketplace_tender_q_c_answers_on_tender_id"
+    t.index ["tender_qualification_criteria_id"], name: "index_marketplace_tender_q_c_answers_on_tender_q_c_id"
+    t.index ["user_id"], name: "index_marketplace_tender_q_c_answers_on_user_id"
+  end
+
   create_table "marketplace_tender_qualification_criteria_sections", force: :cascade do |t|
     t.integer "order"
     t.string "title"
@@ -1031,20 +1045,6 @@ ActiveRecord::Schema.define(version: 20181015120657) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
-  create_table "tender_qualification_criteria_answers", force: :cascade do |t|
-    t.boolean "pass_fail"
-    t.integer "score"
-    t.boolean "closed", default: false, null: false
-    t.bigint "user_id"
-    t.bigint "tender_qualification_criteria_id"
-    t.bigint "tender_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_marketplace_tender_q_c_answers_on_tender_id"
-    t.index ["tender_qualification_criteria_id"], name: "index_marketplace_tender_q_c_answers_on_tender_q_c_id"
-    t.index ["user_id"], name: "index_marketplace_tender_q_c_answers_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -1154,6 +1154,8 @@ ActiveRecord::Schema.define(version: 20181015120657) do
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_qualification_criteria", "marketplace_tender_qualification_criteria_sections", column: "section_id"
+  add_foreign_key "marketplace_tender_qualification_criteria_answers", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_qualification_criteria_answers", "marketplace_tender_qualification_criteria", column: "tender_qualification_criteria_id"
   add_foreign_key "marketplace_tender_qualification_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -1165,6 +1167,4 @@ ActiveRecord::Schema.define(version: 20181015120657) do
   add_foreign_key "search_monitors", "users"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
-  add_foreign_key "tender_qualification_criteria_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "tender_qualification_criteria_answers", "marketplace_tender_qualification_criteria", column: "tender_qualification_criteria_id"
 end
