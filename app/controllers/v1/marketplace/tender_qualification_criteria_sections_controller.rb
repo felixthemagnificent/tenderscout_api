@@ -5,7 +5,7 @@ class V1::Marketplace::TenderQualificationCriteriaSectionsController < Applicati
 
   # GET /marketplace/tender_qualification_criteria_sections
   def index
-    authorize Marketplace::TenderQualificationCriteriaSection
+    authorize ::Marketplace::TenderQualificationCriteriaSection
     @marketplace_tender_qualification_criteria_sections = @tender.qualification_criteria_sections
 
     render json: @marketplace_tender_qualification_criteria_sections
@@ -18,7 +18,7 @@ class V1::Marketplace::TenderQualificationCriteriaSectionsController < Applicati
   end
 
   def bulk_create
-    authorize Marketplace::TenderQualificationCriteriaSection
+    authorize ::Marketplace::TenderQualificationCriteriaSection
     result = BulkCreateQualificationCriteriaSections.call(params: params, tender: @tender)
     if result.success?
       render json: nil, status: :created

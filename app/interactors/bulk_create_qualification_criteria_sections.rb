@@ -16,7 +16,7 @@ class BulkCreateQualificationCriteriaSections
 
   def create_criteries(params: nil, section: nil)
 
-    params[:qualification_criterias].each do |e|
+    params[:qualification_criteria].each do |e|
       criteria = section.qualification_criterias.new(
         order: e[:order],
         title: e[:title],
