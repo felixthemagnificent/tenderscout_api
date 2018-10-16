@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181015121957) do
+ActiveRecord::Schema.define(version: 20181016083910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -809,6 +809,8 @@ ActiveRecord::Schema.define(version: 20181015121957) do
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "collaboration_id"
+    t.index ["collaboration_id"], name: "mtac_collaboration"
     t.index ["tender_id"], name: "index_marketplace_tender_award_criteria_sections_on_tender_id"
   end
 
@@ -880,6 +882,8 @@ ActiveRecord::Schema.define(version: 20181015121957) do
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "collaboration_id"
+    t.index ["collaboration_id"], name: "mtqc_collaboration"
     t.index ["tender_id"], name: "index_marketplace_tender_q_c_sections_on_tender_id"
   end
 
@@ -1150,6 +1154,7 @@ ActiveRecord::Schema.define(version: 20181015121957) do
   add_foreign_key "marketplace_tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
   add_foreign_key "marketplace_tender_award_criteria_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_award_criteria_sections", "marketplace_collaborations", column: "collaboration_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
@@ -1157,6 +1162,7 @@ ActiveRecord::Schema.define(version: 20181015121957) do
   add_foreign_key "marketplace_tender_qualification_criteria_answers", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_qualification_criteria_answers", "marketplace_tender_qualification_criteria", column: "tender_qualification_criteria_id"
   add_foreign_key "marketplace_tender_qualification_criteria_sections", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_tender_qualification_criteria_sections", "marketplace_collaborations", column: "collaboration_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "core_countries", column: "country_id"

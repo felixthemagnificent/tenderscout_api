@@ -64,6 +64,6 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_award_criteria_section_params
-      params.permit(:order, :title, :tender_id)
+      params.permit(:order, :title, :tender_id, :collaboration_id)
     end
 end
