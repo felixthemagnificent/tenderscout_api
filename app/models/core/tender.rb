@@ -171,7 +171,7 @@ class Core::Tender < ApplicationRecord
                       match_phrase:
                       {
                         title: {
-                          value: tender_title,
+                          query: tender_title,
                           boost: 1.8
                         }
                       }
@@ -190,7 +190,7 @@ class Core::Tender < ApplicationRecord
                       {
                         description: 
                         {
-                          value: tender_title,
+                          query: tender_title,
                           boost: 1.7
                         }
                       }
