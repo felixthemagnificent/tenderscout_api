@@ -23,6 +23,7 @@ class TenderSerializer < ActiveModel::Serializer
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
   has_many :contacts, serializer: Marketplace::ContactSerializer
   attribute(:classification) { object.try(:classification).try(:description) }
+  attribute(:is_scrapped) { object.creator.blank? }
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
 
