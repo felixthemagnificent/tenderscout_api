@@ -95,7 +95,7 @@ class User < ApplicationRecord
 
 
   def set_default_role
-    self.role ||= :user
+    self.role ||= :free
   end
 
   def self.search(search_field)
