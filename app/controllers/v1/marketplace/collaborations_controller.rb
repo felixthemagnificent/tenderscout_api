@@ -32,6 +32,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     end
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
     authorize @marketplace_collaboration
+    
     @marketplace_collaboration.tender_collaborators.create(
       user: user, 
       role: role, 
@@ -41,6 +42,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     @marketplace_collaboration.valid?
     puts @marketplace_collaboration.errors.full_messages
     puts @marketplace_collaboration.tender_collaborators.first.errors.full_messages
+
     if @marketplace_collaboration.save
       CustomPostmarkMailer.template_email(
         context.supplier.user.email,

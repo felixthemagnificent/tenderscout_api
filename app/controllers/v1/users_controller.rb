@@ -28,7 +28,7 @@ class V1::UsersController < ApplicationController
 
   def invites
     result = []
-    current_user.collaborations.each do |collab|
+    current_user.collaborations.pending.each do |collab|
       result << {
         collaboration: collab,
         collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
