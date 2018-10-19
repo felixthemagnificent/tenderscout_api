@@ -23,7 +23,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
     authorize @marketplace_collaboration
     @marketplace_collaboration.tender_collaborators.create(user: user, role: role)
-    byebug
+
     if @marketplace_collaboration.save
       render json: @marketplace_collaboration, status: :created
     else
