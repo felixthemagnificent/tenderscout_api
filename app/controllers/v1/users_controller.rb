@@ -1,18 +1,20 @@
 class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
+  after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
+                                            :my_compete_tenders]
 
   # GET /users
   def index
-
+    authorize User
     users = User.all
     @users = users.my_paginate(paginate_params)
-
     render json: {count: users.count, data: @users}
   end
 
   # GET /users/1
   def show
+    authorize @user
     render json: @user
   end
 
@@ -24,6 +26,33 @@ class V1::UsersController < ApplicationController
     render json: {data: results, count: count}
   end
 
+  def invites
+    result = []
+    current_user.collaborations.each do |collab|
+      result << {
+        collaboration: collab,
+        collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
+        tender: collab.tender,
+        role: current_user.role,
+        status: :accepted
+      }
+    end
+    render json: result
+  end
+
+  def requests
+    result = []
+    current_user.collaboration_interests.each do |collab|
+      result << {
+        collaboration: collab,
+        tender: collab.tender,
+        role: current_user.role,
+        status: :pending
+      }
+    end
+    render json: result
+  end
+  
   def user_tender_statistic
     result = current_user.collaboration_tenders_statistic
     render json: { user_id: current_user.id, data: result }
@@ -33,6 +62,7 @@ class V1::UsersController < ApplicationController
   def create
     result = true
     @user = User.new(user_params)
+    authorize @user
     if @user.save
       profile = @user.profiles.new(profile_params)
       if profile.save
@@ -48,6 +78,7 @@ class V1::UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
+    authorize @user
     if @user.update(user_params)
       render json: @user
     else
@@ -57,6 +88,7 @@ class V1::UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
+    authorize @user
     @user.destroy
   end
 
@@ -67,6 +99,11 @@ class V1::UsersController < ApplicationController
     else
       render json: result.errors, status: result.code
     end
+  end
+
+  def my_compete_tenders
+    result = current_user.tenders
+    render json: result, status: :ok
   end
 
   private

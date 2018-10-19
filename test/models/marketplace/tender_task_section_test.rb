@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Marketplace::TenderTaskSectionTest < ActiveSupport::TestCase
+class Marketplace::TenderQualificationCriteriaSectionTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

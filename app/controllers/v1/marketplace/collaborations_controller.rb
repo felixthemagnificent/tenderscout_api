@@ -1,7 +1,7 @@
 class V1::Marketplace::CollaborationsController < ApplicationController
   before_action :set_tender
+  after_action :verify_authorized, except: [:index]
   # before_action :set_marketplace_collaboration, only: [:show, :update, :destroy]
-
   # GET /marketplace/collaborations
   def index
     @marketplace_collaborations = @tender.collaborations
@@ -13,16 +13,17 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # POST /marketplace/collaborations
   def apply
     user = User.find_by_id params[:user_id]
-    ::Marketplace::Collaboration.all.each do |e|  
+    role = params[:role]
+    ::Marketplace::Collaboration.where(tender: @tender).each do |e|  
       e.tender_collaborators.where(user: user).destroy_all
     end
-    ::Marketplace::Collaboration.all.each do |e|  
+    ::Marketplace::Collaboration.where(tender: @tender).each do |e|  
       e.destroy unless e.tender_collaborators.count > 0
     end
-
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
-    @marketplace_collaboration.tender_collaborators.create(user: user)
-
+    authorize @marketplace_collaboration
+    @marketplace_collaboration.tender_collaborators.create(user: user, role: role)
+    byebug
     if @marketplace_collaboration.save
       render json: @marketplace_collaboration, status: :created
     else
@@ -32,11 +33,11 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
   def remove
     user = User.find_by_id params[:user_id]
-    ::Marketplace::Collaboration.all.each do |e|  
+    ::Marketplace::Collaboration.where(tender: @tender).each do |e|  
       e.tender_collaborators.where(user: user).destroy_all
     end
 
-    ::Marketplace::Collaboration.all.each do |e|  
+    ::Marketplace::Collaboration.where(tender: @tender).each do |e|  
       e.destroy unless e.tender_collaborators.count > 0
     end
     render json: nil

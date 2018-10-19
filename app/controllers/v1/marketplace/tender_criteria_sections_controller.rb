@@ -1,7 +1,7 @@
 class V1::Marketplace::TenderCriteriaSectionsController < ApplicationController
   before_action :set_marketplace_tender_criteria_section, only: [:show, :update, :destroy]
   before_action :set_tender
-
+  after_action :verify_authorized
   # GET /marketplace/tender_criteria_sections
   def index
     @marketplace_tender_criteria_sections = @tender.criteria_sections

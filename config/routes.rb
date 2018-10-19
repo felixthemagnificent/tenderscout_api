@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   #   resources :tender_criteria
   # end
   # namespace :marketplace do
-  #   resources :tender_tasks
+  #   resources :tender_qualification_criterias
   # end
   resources :contacts
   # use_doorkeeper
@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
+      get :invites, to: 'users#invites'
+      get :requests, to: 'user#requests'
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
       member do
@@ -46,6 +48,7 @@ Rails.application.routes.draw do
           get :best_bidsense_profiles
           get :current_buyer_company_won_list
           get :complete_organization_tenders_list
+          get :similar_opportunities_tenders
         end
         member do
           scope :compete do
@@ -54,6 +57,7 @@ Rails.application.routes.draw do
           end
         end
         resources :collaborations, only: [:index] do
+          get :collaboration_assignments
           collection do
             post :apply
             post :remove
@@ -68,13 +72,16 @@ Rails.application.routes.draw do
             end
           end
         end
-        resources :tender_tasks, path: 'tasks' do
+        resources :tender_qualification_criterias, path: 'qualification_criterias' do
           member do
-            get :tender_task_comments, to: 'tender_tasks#tender_task_comments'
-            get :tender_task_notes, to: 'tender_tasks#tender_task_notes'
+            post :assign, to: 'tender_qualification_criterias#create_assign'
+            patch :assign, to: 'tender_qualification_criterias#update_assign'
+            delete :assign, to: 'tender_qualification_criterias#delete_assign'
+            get :tender_qualification_criteria_comments, to: 'tender_qualification_criterias#tender_qualification_criteria_comments'
+            get :tender_qualification_criteria_notes, to: 'tender_qualification_criterias#tender_qualification_criteria_notes'
             put :update_deadline
           end
-          resources :tender_task_answers, path: 'answers' do
+          resources :tender_qualification_criteria_answers, path: 'answers' do
             member do
               put :close
             end
@@ -92,13 +99,16 @@ Rails.application.routes.draw do
         end
         resources :tender_award_criteria, path: 'award_criteria' do
           member do
+            post :assign, to: 'tender_award_criteria#create_assign'
+            patch :assign, to: 'tender_award_criteria#update_assign'
+            delete :assign, to: 'tender_award_criteria#delete_assign'
             get :tender_award_criteria_comments, to: 'tender_award_criteria#tender_award_criteria_comments'
             get :tender_award_criteria_notes, to: 'tender_award_criteria#tender_award_criteria_notes'
             put :update_deadline
           end
         end
         resources :tender_attachments
-        resources :tender_task_sections, path: 'task_sections' do
+        resources :tender_qualification_criteria_sections, path: 'qualification_criteria_sections' do
           collection do
             post :bulk_create
           end
@@ -116,6 +126,7 @@ Rails.application.routes.draw do
       end
     end
     put :update_password, to: 'users#update_password', path: 'users/password/update'
+    get :my_compete_tenders, to: 'users#my_compete_tenders'
     resources :assistances
     resources :users do
       collection do

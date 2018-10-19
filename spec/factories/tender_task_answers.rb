@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :tender_task_answer do
+  factory :tender_qualification_criteria_answer do
     
   end
 end

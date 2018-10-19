@@ -1,23 +1,24 @@
 class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
   before_action :set_tender
   before_action :set_marketplace_tender_award_criteria_section, only: [:show, :update, :destroy]
-
+  after_action :verify_authorized, except: [:bulk_create]
   # GET /marketplace/tender_award_criteria_sections
   def index
     @marketplace_tender_award_criteria_sections = @tender.award_criteria_sections
-
+    authorize @marketplace_tender_award_criteria_sections
     render json: @marketplace_tender_award_criteria_sections
   end
 
   # GET /marketplace/tender_award_criteria_sections/1
   def show
+    authorize @marketplace_tender_award_criteria_section
     render json: @marketplace_tender_award_criteria_section
   end
 
   # POST /marketplace/tender_award_criteria_sections
   def create
     @marketplace_tender_award_criteria_section = @tender.award_criteria_sections.new(marketplace_tender_award_criteria_section_params)
-
+    authorize @marketplace_tender_award_criteria_section
     if @marketplace_tender_award_criteria_section.save
       render json: @marketplace_tender_award_criteria_section, status: :created
     else
@@ -36,6 +37,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
 
   # PATCH/PUT /marketplace/tender_award_criteria_sections/1
   def update
+    authorize @marketplace_tender_award_criteria_section
     if @marketplace_tender_award_criteria_section.update(marketplace_tender_award_criteria_section_params)
       render json: @marketplace_tender_award_criteria_section
     else
@@ -45,6 +47,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
 
   # DELETE /marketplace/tender_award_criteria_sections/1
   def destroy
+    authorize @marketplace_tender_award_criteria_section
     @marketplace_tender_award_criteria_section.destroy
   end
 
@@ -61,6 +64,6 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
 
     # Only allow a trusted parameter "white list" through.
     def marketplace_tender_award_criteria_section_params
-      params.permit(:order, :title, :tender_id)
+      params.permit(:order, :title, :tender_id, :collaboration_id)
     end
 end

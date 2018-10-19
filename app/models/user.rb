@@ -14,9 +14,10 @@ class User < ApplicationRecord
   has_many :tenders, through: :collaborations, source: :tender, class_name: 'Core::Tender'
   has_many :comments, class_name: 'CompeteComment'
   has_many :collaboration_interests
-  has_many :tender_task_answers, class_name: 'Marketplace::TenderTask'
+  has_many :tender_qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
   has_many :tender_award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
-  enum role: [:admin, :user]
+  has_many :assignments, :class_name => 'Marketplace::Assignment'
+  enum role: [:admin, :standart, :basic, :free]
 
   after_initialize :set_default_role, :if => :new_record?
 
@@ -26,12 +27,12 @@ class User < ApplicationRecord
     percent_array_result = []
     result = {}
     tenders.each do |tender|
-     task_count = tender.tasks_count
+     qualification_criteria_count = tender.qualification_criterias_count
      criteria_count = tender.award_criteries_count
-     all_tender_task_answer_count = tender_task_answer_completed_count(tender)
+     all_tender_qualification_criteria_answer_count = tender_qualification_criteria_answer_completed_count(tender)
      all_tender_award_criteria_answer_count = tender_award_criteria_answer_completed_count(tender)
-     tender_complete_percent = calculate_tender_complete_percent(task_count,criteria_count,
-                                                               all_tender_task_answer_count,
+     tender_complete_percent = calculate_tender_complete_percent(qualification_criteria_count,criteria_count,
+                                                               all_tender_qualification_criteria_answer_count,
                                                                all_tender_award_criteria_answer_count)
       percent_array_result<<tender_complete_percent
      result = user_tender_statuses(percent_array_result)
@@ -39,21 +40,28 @@ class User < ApplicationRecord
     result
   end
 
+  def paid?
+    self.standart? || self.admin? || self.basic?
+  end
 
-  def tender_task_answer_completed_count(tender)
-    self.tender_task_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
+  def has_collaboration_on_tender?(tender)
+    self.tender_collaborators.map(&:collaboration).map(&:tender).include?(tender)
+  end
+  
+  def tender_qualification_criteria_answer_completed_count(tender)
+    self.tender_qualification_criteria_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
   end
 
   def tender_award_criteria_answer_completed_count(tender)
     self.tender_award_criteria_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
   end
 
-  def calculate_tender_complete_percent(task_count,criteria_count,
-                                       all_tender_task_answer_count,
+  def calculate_tender_complete_percent(qualification_criteria_count,criteria_count,
+                                       all_tender_qualification_criteria_answer_count,
                                        all_tender_award_criteria_answer_count)
     tender_complete_percent = 0
-    needed_requirement = task_count + criteria_count
-    done_requirement = all_tender_task_answer_count + all_tender_award_criteria_answer_count
+    needed_requirement = qualification_criteria_count + criteria_count
+    done_requirement = all_tender_qualification_criteria_answer_count + all_tender_award_criteria_answer_count
     if needed_requirement == 0
       tender_complete_percent = 0
     else
@@ -87,7 +95,7 @@ class User < ApplicationRecord
 
 
   def set_default_role
-    self.role ||= :user
+    self.role ||= :free
   end
 
   def self.search(search_field)

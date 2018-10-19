@@ -23,8 +23,14 @@ class TenderSerializer < ActiveModel::Serializer
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
   has_many :contacts, serializer: Marketplace::ContactSerializer
   attribute(:classification) { object.try(:classification).try(:description) }
+  attribute(:is_scrapped) { object.creator.blank? }
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
+
+  attribute(:collaboration) do
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
+    Marketplace::CollaborationSerializer.new(collaboration) if collaboration
+  end
   
   attribute(:bidsense) do
     Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
