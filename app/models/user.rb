@@ -4,7 +4,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :doorkeeper
+         :doorkeeper, :confirmable
 
   has_many :profiles
   has_many :search_monitors
