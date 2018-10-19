@@ -4,5 +4,5 @@ class Marketplace::TenderCollaborator < ApplicationRecord
   enum role: [:owner, :admin, :editor, :viewer]
 
   validates :role, presence: true
-  validates :user, uniqueness: true
+  validates :user, uniqueness: { scope: [:collaboration_id] }
 end
