@@ -289,6 +289,161 @@ class Core::Tender < ApplicationRecord
       self.classification.description rescue nil
   end
 
+  def similar_opportunities
+    result = nil
+    matches = []
+    if self.estimated_high_value.present?
+      matches <<  {
+          range:
+              {
+                  high_value:
+                      {
+                          lte: estimated_high_value.to_i
+                      }
+              }
+      }
+    end
+    if self.estimated_low_value.present?
+      matches << {
+          range:
+              {
+                  low_value:
+                      {
+                          gte: self.estimated_low_value.to_i
+                      }
+              }
+      }
+    end
+    if self.country.present?
+      matches << {
+          match:{
+              country_id: self.country.id
+          }
+      }
+    end
+    if self.nuts_codes.present?
+      match_nuts = []
+      self.nuts_codes.each do |e|
+        match_nuts << {
+            match:{
+                ic_nuts_codes: e
+            }
+        }
+        matches << {
+            bool: {
+                should: match_nuts
+            }
+        }
+      end
+    end
+    if self.cpvs.present?
+      match_cpvs = []
+      self.cpvs.each do |e|
+        match_cpvs << {
+            match:{
+                ic_cpvs: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_cpvs
+            }
+        }
+      end
+    end
+    if self.naicses.present?
+      match_naicses = []
+      self.naicses.each do |e|
+        match_naicses << {
+            match:{
+                ic_naicses: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_naicses
+            }
+        }
+      end
+    end
+    if self.ngips.present?
+      match_ngips = []
+      self.ngips.each do |e|
+        match_ngips << {
+            match:{
+                ic_ngips: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_ngips
+            }
+        }
+      end
+    end
+    if self.unspsces.present?
+      match_unspsces = []
+      self.unspsces.each do |e|
+        match_unspsces << {
+            match:{
+                ic_unspsces: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_unspsces
+            }
+        }
+      end
+    end
+    if self.gsins.present?
+      match_gsins = []
+      self.gsins.each do |e|
+        match_gsins << {
+            match:{
+                ic_gsins: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_gsins
+            }
+        }
+      end
+    end
+    if self.nhs_e_classes.present?
+      match_nhs_e_classes = []
+      self.nhs_e_classes.each do |e|
+        match_nhs_e_classes << {
+            match:{
+                ic_nhs_e_classes: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_nhs_e_classes
+            }
+        }
+      end
+    end
+    if self.pro_classes.present?
+      match_pro_classes = []
+      self.pro_classes.each do |e|
+        match_pro_classes << {
+            match:{
+                ic_pro_classes: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_pro_classes
+            }
+        }
+      end
+    end
+    result = TendersIndex.query(matches)
+  end
+
   def format_fields
     {
       origin_id:              id,

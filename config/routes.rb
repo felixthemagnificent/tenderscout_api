@@ -48,6 +48,7 @@ Rails.application.routes.draw do
           get :best_bidsense_profiles
           get :current_buyer_company_won_list
           get :complete_organization_tenders_list
+          get :similar_opportunities_tenders
         end
         member do
           scope :compete do
