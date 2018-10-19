@@ -37,7 +37,7 @@ class V1::NotesController < ApplicationController
   end
 
   def note_params
-    params.permit(:body, :notable_id, :notable_type )
+    params.permit(:body, :notable_id, :notable_type, :tender_id )
   end
 
 end
