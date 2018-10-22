@@ -1,6 +1,7 @@
 class Marketplace::TenderCollaborator < ApplicationRecord
   belongs_to :collaboration, class_name: 'Marketplace::Collaboration'
   belongs_to :user
+  belongs_to :invited_by_user, class_name: 'User'
   enum role: [:owner, :admin, :editor, :viewer]
 
   validates :role, presence: true
