@@ -40,8 +40,8 @@ class V1::Marketplace::CollaborationsController < ApplicationController
       invited_by_user: current_user
     )
     @marketplace_collaboration.valid?
-    puts @marketplace_collaboration.errors.full_messages
-    puts @marketplace_collaboration.tender_collaborators.first.errors.full_messages
+    p @marketplace_collaboration.errors.full_messages
+    p @marketplace_collaboration.tender_collaborators.first.errors.full_messages
 
     if @marketplace_collaboration.save
       CustomPostmarkMailer.template_email(
