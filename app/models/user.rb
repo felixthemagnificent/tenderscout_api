@@ -21,6 +21,8 @@ class User < ApplicationRecord
 
   after_initialize :set_default_role, :if => :new_record?
 
+  after_create :send_postmark_confirmation, if: :confirmation_required?
+
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   def collaboration_tenders_statistic
@@ -91,6 +93,41 @@ class User < ApplicationRecord
      status_result = { total: count_all, complete: done,
                         complete_61: more_61, complete_31: more_31,
                         complete_less_31: less_30}
+  end
+
+  def send_confirmation_instructions
+    p('some text')
+    p(ActionController::Base::Rails.configuration)
+    p('some text')
+    unless @raw_confirmation_token
+      generate_confirmation_token!
+    end
+    p(@raw_confirmation_token)
+    p opts = pending_reconfirmation? ? { to: unconfirmed_email } : { }
+    #p unconfirmed_email
+    #send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
+    #http://braincode.tenderscout.xyz/users/confirmation?confirmation_token=dmxPxzcNxsKzamC_4GAE
+    #p(request.base_url)
+    confirmation_url = 'http://localhost:3000/users/confirmation?confirmation_token=' + @raw_confirmation_token
+    CustomPostmarkMailer.template_email(
+        self.email,
+        ActionController::Base::Rails.configuration.mailer['templates']['assignment_invite'],
+        {
+            tender_name: '',
+            product_url: confirmation_url,
+            user_name: '',
+            criteria_name: '',
+            compete_status_url: '',
+            support_url: '',
+            company_name: '',
+            company_address: ''
+        }
+    ).deliver_now
+  end
+
+  def send_postmark_confirmation
+  p 'some text'
+  p(@raw_confirmation_token)
   end
 
 
