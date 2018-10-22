@@ -3,7 +3,7 @@ class V1::ProfilesController < ApplicationController
 
   before_action :set_profile, only: [:show, :update, :destroy, :create_avatar, :destroy_avatar, :create_cover_img, :destroy_cover_img]
   before_action :set_user
-  after_action :verify_authorized
+  # after_action :verify_authorized
 
   # GET /profiles
   def index
