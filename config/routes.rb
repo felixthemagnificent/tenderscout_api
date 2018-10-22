@@ -128,6 +128,7 @@ Rails.application.routes.draw do
       end
     end
     put :update_password, to: 'users#update_password', path: 'users/password/update'
+    get :my_compete_tenders, to: 'users#my_compete_tenders'
     resources :assistances
     resources :users do
       collection do
