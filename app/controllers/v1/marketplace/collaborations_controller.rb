@@ -44,21 +44,21 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     p @marketplace_collaboration.tender_collaborators.first.errors.full_messages
 
     if @marketplace_collaboration.save
-      CustomPostmarkMailer.template_email(
-        user.email,
-        Rails.configuration.mailer['templates']['collaboration_invite'],
-        {
-          user_name: current_user.profiles.first.fullname,
-          tender_name: @tender.title,
-          tender_id: @tender.id,
-          tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
-          invite_link_url: '',
-          product_url: Rails.configuration.mailer['product_url'],
-          support_url: Rails.configuration.mailer['support'],
-          company_name: Rails.configuration.mailer['company_name'],
-          company_address: Rails.configuration.mailer['company_address']
-        }
-      ).deliver_now
+      # CustomPostmarkMailer.template_email(
+      #   user.email,
+      #   Rails.configuration.mailer['templates']['collaboration_invite'],
+      #   {
+      #     user_name: current_user.profiles.first.fullname,
+      #     tender_name: @tender.title,
+      #     tender_id: @tender.id,
+      #     tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
+      #     invite_link_url: '',
+      #     product_url: Rails.configuration.mailer['product_url'],
+      #     support_url: Rails.configuration.mailer['support'],
+      #     company_name: Rails.configuration.mailer['company_name'],
+      #     company_address: Rails.configuration.mailer['company_address']
+      #   }
+      # ).deliver_now
       render json: @marketplace_collaboration, status: :created
     else
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
