@@ -8,7 +8,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
                                             :create_assign, :update_assign, :delete_assign]
   # GET /marketplace/tender_qualification_criterias
   def index
-    authorize Marketplace::TenderQualificationCriteria
+    authorize ::Marketplace::TenderQualificationCriteria
     @marketplace_tender_qualification_criterias = @tender.qualification_criterias.all
 
     render json: @marketplace_tender_qualification_criterias
@@ -22,7 +22,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
 
   # POST /marketplace/tender_qualification_criterias
   def create
-    authorize Marketplace::TenderQualificationCriteria
+    authorize ::Marketplace::TenderQualificationCriteria
     @marketplace_tender_qualification_criteria = @tender.qualification_criterias.new(marketplace_tender_qualification_criteria_params)
 
     if @marketplace_tender_qualification_criteria.save

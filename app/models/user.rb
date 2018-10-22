@@ -72,6 +72,7 @@ class User < ApplicationRecord
 
   def user_tender_statuses(percent_array_result)
     count_all = percent_array_result.count
+    if count_all > 0
     more_61  = 0
     more_31 = 0
     less_30 = 0
@@ -88,9 +89,19 @@ class User < ApplicationRecord
         less_30 +=1
       end
     end
-     status_result = { total: count_all, complete: done,
-                        complete_61: more_61, complete_31: more_31,
-                        complete_less_31: less_30}
+   percent_done = done*100/count_all
+   percent_more_61 = more_61*100/count_all
+   percent_more_30 = more_31*100/count_all
+   percent_less_30 = 100 - (percent_done + percent_more_61 + percent_more_30)
+
+    status_result = { total: 100, complete: percent_done,
+                      complete_61: percent_more_61, complete_31: percent_more_30,
+                      complete_less_31: percent_less_30}
+    else
+      status_result = { total: 100, complete: 0,
+                        complete_61: 0, complete_31: 0,
+                        complete_less_31: 0}
+      end
   end
 
 

@@ -6,7 +6,7 @@ class UpdateProfile
       context.fail! errors: { error: :unauthorized, error_description: 'Action is not allowed'},
                     code: :unauthorized
     end
-
+    byebug
     if contact_params
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:contact_type], value: e[:value])}

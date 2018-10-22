@@ -46,6 +46,8 @@ class Core::Tender < ApplicationRecord
   has_many :bidsense_results
   has_many :collaboration_interests
   has_many :collaborations, class_name: 'Marketplace::Collaboration'
+  has_many :qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
+  has_many :award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
   has_many :tender_collaborators, through: :collaborations, class_name: 'Marketplace::TenderCollaborator'
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true

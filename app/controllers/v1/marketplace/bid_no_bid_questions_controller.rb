@@ -42,7 +42,7 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   # Comments for TenderQualificationCriteria
   def bid_no_bid_question_comments
     profiles = @marketplace_bid_no_bid_question.comments.map(&:profile).uniq
-    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.comments,
+    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.comments.where(tender_id: params[:tender_id]),
                                                                  each_serializer: CommentSerializer)
     render json: { comments: comments, profiles: profiles }
   end
@@ -50,7 +50,7 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   # Notes for TenderQualificationCriteria
   def bid_no_bid_question_notes
     profiles = @marketplace_bid_no_bid_question.notes.map(&:profile).uniq
-    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.notes,
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.notes.where(tender_id: params[:tender_id]),
                                                               each_serializer: NoteSerializer)
     render json: { notes: notes, profiles: profiles }
   end
@@ -58,7 +58,7 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_bid_no_bid_question
-    @marketplace_bid_no_bid_question = Marketplace::BidNoBidQuestion.find(params[:id])
+    @marketplace_bid_no_bid_question = ::Marketplace::BidNoBidQuestion.find(params[:id])
   end
 
   # Only allow a trusted parameter "white list" through.

@@ -31,14 +31,14 @@ Rails.application.routes.draw do
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
-      get :invites, to: 'users#invites'
+      get :invites, to: 'collaborations#invites'
       get :requests, to: 'user#requests'
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
-      member do
-        get :bid_no_bid_question_comments, to: 'bid_no_bid_questions#bid_no_bid_question_comments'
-        get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
-      end
+        member do
+          get :bid_no_bid_question_comments, to: 'bid_no_bid_questions#bid_no_bid_question_comments'
+          get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
+        end
       end
       
       resources :tenders do
@@ -57,6 +57,8 @@ Rails.application.routes.draw do
           end
         end
         resources :collaborations, only: [:index] do
+          post :accept
+          post :ignore
           get :collaboration_assignments
           collection do
             post :apply
@@ -72,13 +74,13 @@ Rails.application.routes.draw do
             end
           end
         end
-        resources :tender_qualification_criterias, path: 'qualification_criterias' do
+        resources :tender_qualification_criterias, path: 'qualification_criteria' do
           member do
             post :assign, to: 'tender_qualification_criterias#create_assign'
             patch :assign, to: 'tender_qualification_criterias#update_assign'
             delete :assign, to: 'tender_qualification_criterias#delete_assign'
-            get :tender_qualification_criteria_comments, to: 'tender_qualification_criterias#tender_qualification_criteria_comments'
-            get :tender_qualification_criteria_notes, to: 'tender_qualification_criterias#tender_qualification_criteria_notes'
+            get :tender_qualification_criteria_comments, to: 'tender_qualification_criteria#tender_qualification_criteria_comments'
+            get :tender_qualification_criteria_notes, to: 'tender_qualification_criteria#tender_qualification_criteria_notes'
             put :update_deadline
           end
           resources :tender_qualification_criteria_answers, path: 'answers' do

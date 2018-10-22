@@ -28,13 +28,13 @@ class V1::UsersController < ApplicationController
 
   def invites
     result = []
-    current_user.collaborations.each do |collab|
+    current_user.tender_collaborators.pending.each do |tc|
       result << {
-        collaboration: collab,
-        collaboration_role: collab.tender_collaborators.where(user: current_user).first.role,
-        tender: collab.tender,
+        collaboration: tc.collaboration,
+        collaboration_role: tc.role,
+        tender: tc.collaboration.tender,
         role: current_user.role,
-        status: :accepted
+        status: :pending
       }
     end
     render json: result

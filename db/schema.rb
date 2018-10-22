@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181016083910) do
+<<<<<<< HEAD
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20181022074921) do
+=======
+ActiveRecord::Schema.define(version: 20181018084952) do
+>>>>>>> work in progress
+=======
+ActiveRecord::Schema.define(version: 20181022074921) do
+>>>>>>> TEN-281 fix
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +161,7 @@ ActiveRecord::Schema.define(version: 20181016083910) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "parent_id"
+    t.integer "tender_id"
   end
 
   create_table "compete_answers", force: :cascade do |t|
@@ -759,6 +768,7 @@ ActiveRecord::Schema.define(version: 20181016083910) do
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status"
     t.index ["tender_id"], name: "index_marketplace_collaborations_on_tender_id"
   end
 
@@ -820,7 +830,10 @@ ActiveRecord::Schema.define(version: 20181016083910) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "role"
+    t.bigint "invited_by_user_id"
+    t.integer "status"
     t.index ["collaboration_id"], name: "index_marketplace_tender_collaborators_on_collaboration_id"
+    t.index ["invited_by_user_id"], name: "index_marketplace_tender_collaborators_on_invited_by_user_id"
     t.index ["user_id"], name: "index_marketplace_tender_collaborators_on_user_id"
   end
 
@@ -906,6 +919,7 @@ ActiveRecord::Schema.define(version: 20181016083910) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "tender_id"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -1155,6 +1169,7 @@ ActiveRecord::Schema.define(version: 20181016083910) do
   add_foreign_key "marketplace_tender_award_criteria_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_award_criteria_sections", "marketplace_collaborations", column: "collaboration_id"
+  add_foreign_key "marketplace_tender_collaborators", "users", column: "invited_by_user_id"
   add_foreign_key "marketplace_tender_criteria", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_criteria", "marketplace_tender_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_criteria_sections", "core_tenders", column: "tender_id"
