@@ -27,6 +27,13 @@ class TenderSerializer < ActiveModel::Serializer
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
 
+  attribute(:bid_status_last_answer) do
+    dates = Core::Tender.last.award_criteria_answers.pluck :created_at
+    dates += Core::Tender.last.qualification_criteria_answers.pluck :created_at
+    dates.sort!
+    dates.last
+  end
+
   attribute(:collaboration) do
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
     Marketplace::CollaborationSerializer.new(collaboration) if collaboration
