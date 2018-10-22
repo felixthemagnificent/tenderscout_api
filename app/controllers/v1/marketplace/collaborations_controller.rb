@@ -45,7 +45,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
     if @marketplace_collaboration.save
       CustomPostmarkMailer.template_email(
-        context.supplier.user.email,
+        user.email,
         Rails.configuration.mailer['templates']['collaboration_invite'],
         {
           user_name: current_user.profiles.first.fullname,
