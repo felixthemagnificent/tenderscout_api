@@ -4,9 +4,4 @@ class Marketplace::Collaboration < ApplicationRecord
   has_many :users, through: :tender_collaborators
   has_many :assignments, class_name: 'Marketplace::Assignment'
 
-  enum status: [:active, :pending, :ignore]
-
-  scope :active, -> { where(status: :active) }
-  scope :pending, -> { where(status: :pending) }
-  scope :ignored, -> { where(status: :ignore) }
 end
