@@ -1,10 +1,11 @@
 class User < ApplicationRecord
+  include ActionView::Helpers::UrlHelper
   include Pageable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :doorkeeper, :confirmable
+         :doorkeeper, :confirmable, :registerable
 
   has_many :profiles
   has_many :search_monitors
@@ -97,7 +98,12 @@ class User < ApplicationRecord
 
   def send_confirmation_instructions
     p('some text')
-    p(ActionController::Base::Rails.configuration)
+    #p(ActionController::Base::Rails.application.routes.url_helpers.v1_comments)
+    #p(Rails.config.action_mailer.default_url_options)
+    #p(ActionController::Base::Rails.application.config.action_mailer.default_url_options)
+
+    link = link_to('here', ActionController::Base::Rails.application.routes.url_helpers.v1_comments_path)
+    #p()
     p('some text')
     unless @raw_confirmation_token
       generate_confirmation_token!
@@ -108,6 +114,7 @@ class User < ApplicationRecord
     #send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
     #http://braincode.tenderscout.xyz/users/confirmation?confirmation_token=dmxPxzcNxsKzamC_4GAE
     #p(request.base_url)
+
     confirmation_url = 'http://localhost:3000/users/confirmation?confirmation_token=' + @raw_confirmation_token
     CustomPostmarkMailer.template_email(
         self.email,
@@ -122,7 +129,7 @@ class User < ApplicationRecord
             company_name: '',
             company_address: ''
         }
-    ).deliver_now
+    )#.deliver_now
   end
 
   def send_postmark_confirmation
