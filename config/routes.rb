@@ -79,8 +79,8 @@ Rails.application.routes.draw do
             post :assign, to: 'tender_qualification_criterias#create_assign'
             patch :assign, to: 'tender_qualification_criterias#update_assign'
             delete :assign, to: 'tender_qualification_criterias#delete_assign'
-            get :tender_qualification_criteria_comments, to: 'tender_qualification_criteria#tender_qualification_criteria_comments'
-            get :tender_qualification_criteria_notes, to: 'tender_qualification_criteria#tender_qualification_criteria_notes'
+            get :tender_qualification_criteria_comments, to: 'tender_qualification_criterias#tender_qualification_criteria_comments'
+            get :tender_qualification_criteria_notes, to: 'tender_qualification_criterias#tender_qualification_criteria_notes'
             put :update_deadline
           end
           resources :tender_qualification_criteria_answers, path: 'answers' do
