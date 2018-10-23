@@ -1,5 +1,5 @@
 class V1::Marketplace::TenderAwardCriteriaAnswerController < ApplicationController
-  after_action :verify_authorized
+  # after_action :verify_authorized
   def index
     render json: ::Marketplace::TenderAwardCriteriaAnswer.where(tender_award_criteria_id: params[:tender_award_criterium_id]).where(user: current_user)
   end
