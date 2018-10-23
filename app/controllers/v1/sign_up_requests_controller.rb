@@ -13,7 +13,7 @@ class V1::SignUpRequestsController < ApplicationController
     if result.success?
       user = User.find_by(email: request_params[:email])
       send_confirmation(user)
-      render json: result.request, status: :created
+      render json: {messgage: 'Confirm your account in email'}
     else
       render json: result.errors, status: :unprocessable_entity
     end
@@ -40,11 +40,10 @@ class V1::SignUpRequestsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def request_params
-    params.permit(:fullname, :company, :company_size, :state, :password,
-                  :city, :turnover, :tender_level, :win_rate, :email, :phone,
-                  :number_public_contracts, :do_use_automation, :do_use_collaboration,
-                  :do_use_bid_no_bid, :do_use_bid_library, :do_use_feedback, :do_collaborate,
-                  :tender_complete_time, :organisation_count, :industry_id, :country_id,
+    params.permit(:fullname, :company, :state, :password,
+                  :city, :tender_level, :email, :phone,
+                  :number_public_contracts, :tender_complete_time,
+                  :organisation_count, :industry_id, :country_id,
                   markets: []
     )
   end

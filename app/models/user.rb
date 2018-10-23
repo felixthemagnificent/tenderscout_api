@@ -22,8 +22,6 @@ class User < ApplicationRecord
 
   after_initialize :set_default_role, :if => :new_record?
 
-  after_create :send_postmark_confirmation, if: :confirmation_required?
-
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   def collaboration_tenders_statistic
@@ -103,12 +101,6 @@ class User < ApplicationRecord
     opts = pending_reconfirmation? ? { to: unconfirmed_email } : { }
     #send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
   end
-
-  def send_postmark_confirmation
-  p 'some text'
-  p(@raw_confirmation_token)
-  end
-
 
   def set_default_role
     self.role ||= :free
