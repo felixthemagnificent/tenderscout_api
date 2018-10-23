@@ -10,15 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20181022074921) do
-=======
-ActiveRecord::Schema.define(version: 20181018084952) do
->>>>>>> work in progress
-=======
-ActiveRecord::Schema.define(version: 20181022074921) do
->>>>>>> TEN-281 fix
+ActiveRecord::Schema.define(version: 20181023152956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1165,7 +1157,7 @@ ActiveRecord::Schema.define(version: 20181022074921) do
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria", "marketplace_tender_award_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_award_criteria_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "marketplace_tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
+  add_foreign_key "marketplace_tender_award_criteria_answers", "marketplace_tender_award_criteria", column: "tender_award_criteria_id"
   add_foreign_key "marketplace_tender_award_criteria_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_award_criteria_sections", "marketplace_collaborations", column: "collaboration_id"
