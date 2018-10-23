@@ -8,27 +8,34 @@ class V1::SignUpRequestsController < ApplicationController
   end
 
   def create
-    result = CreateSignUpRequest.call(params: request_params)
-    if result.success?
-      if User.exists?(email: request_params[:email])
+    industry = Industry.find_by(id: registration_request_params[:industry_id])
+    unless industry.present?
+     return render json: { error: :unprocessable_entity, error_description: 'Industry not found'},
+                    code: :unprocessable_entity
+    end
+    country = Core::Country.find_by(id: registration_request_params[:country_id])
+    unless country.present?
+      return render json: { error: :unprocessable_entity, error_description: 'Country not found'},
+                    code: :unprocessable_entity
+    end
+    @registration_request = SignUpRequest.new(registration_request_params)
+    @registration_request.industry = industry
+    @registration_request.country = country
+    if @registration_request.save
+      if User.exists?(email: registration_request_params[:email])
         return render json: {error: 'User already exists'}, status: :unprocessable_entity
       end
       @user = User.new(user_params)
-      render json: @user.errors, status: :unprocessable_entity unless @user.save
+      return render json: @user.errors, status: :unprocessable_entity unless @user.save
       @profile = @user.profiles.new(profile_params)
-      country = Core::Country.find_by(id: request_params[:country_id])
-      unless country.present?
-        render json: { error: :unprocessable_entity, error_description: 'Country not found'},
-                      code: :unprocessable_entity
-      end
       @profile.country = country
-      render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @profile.save
+      return render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @profile.save
       @contacts =  @profile.contacts.new(contact_type: 'phone', value: contact_params[:phone])
-      render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @contacts.save
+      return render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @contacts.save
       send_confirmation(@user)
       render json: {messgage: 'Confirm your account in email'}
     else
-      render json: result.errors, status: :unprocessable_entity
+      render json: @registration_request.errors, status: :unprocessable_entity
     end
   end
 
@@ -63,6 +70,16 @@ class V1::SignUpRequestsController < ApplicationController
 
   def contact_params
     params.permit(:phone)
+  end
+
+  def registration_request_params
+    params.permit(
+        :fullname, :company, :state,
+        :city, :tender_level, :email, :phone,
+        :number_public_contracts, :tender_complete_time,
+        :organisation_count, :industry_id, :country_id,
+        markets: []
+    )
   end
 
 end

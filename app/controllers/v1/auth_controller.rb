@@ -3,7 +3,7 @@ class V1::AuthController < Doorkeeper::TokensController
   def create
     user = User.find_by(email: params[:username])
     if user && !user.confirmed?
-      render json: 'User is unconfirmble'
+      render json: 'User is confirmed'
       return false
       end
 

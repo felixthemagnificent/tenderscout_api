@@ -62,7 +62,7 @@ class V1::UsersController < ApplicationController
   def create
     result = true
     @user = User.new(user_params)
-     authorize @user
+    authorize @user
     if @user.save
       profile = @user.profiles.new(profile_params)
       if profile.save
