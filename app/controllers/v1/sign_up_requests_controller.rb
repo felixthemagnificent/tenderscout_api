@@ -23,14 +23,6 @@ class V1::SignUpRequestsController < ApplicationController
     render json: @request
   end
 
-  def update
-    result = UpdateSignUpRequest.call(params: request_params, request: @request)
-    if result.success?
-      render json: result.request, status: :created
-    else
-      render json: result.errors, status: :unprocessable_entity
-    end
-  end
 
   private
   # Use callbacks to share common setup or constraints between actions.
