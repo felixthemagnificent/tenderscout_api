@@ -16,7 +16,7 @@ class CreateTenderQualificationCriteriaAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'QualificationCriteria not found'},
                     code: :unprocessable_entity
     end
-    unless answer_params.keys.include?("pass_fail") || answer_params.keys.include?("score")
+    unless answer_params.keys.include?("pass_fail") || answer_params.keys.include?("score") || answer_params.keys.include?("closed")
       context.fail! errors: { error: :unprocessable_entity, error_description: 'No answer provided'},
                     code: :unprocessable_entity
     end
