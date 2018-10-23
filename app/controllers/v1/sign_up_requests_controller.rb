@@ -8,11 +8,24 @@ class V1::SignUpRequestsController < ApplicationController
   end
 
   def create
-    p(request_params)
     result = CreateSignUpRequest.call(params: request_params)
     if result.success?
-      user = User.find_by(email: request_params[:email])
-      send_confirmation(user)
+      if User.exists?(email: request_params[:email])
+        return render json: {error: 'User already exists'}, status: :unprocessable_entity
+      end
+      @user = User.new(user_params)
+      render json: @user.errors, status: :unprocessable_entity unless @user.save
+      @profile = @user.profiles.new(profile_params)
+      country = Core::Country.find_by(id: request_params[:country_id])
+      unless country.present?
+        render json: { error: :unprocessable_entity, error_description: 'Country not found'},
+                      code: :unprocessable_entity
+      end
+      @profile.country = country
+      render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @profile.save
+      @contacts =  @profile.contacts.new(contact_type: 'phone', value: contact_params[:phone])
+      render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @contacts.save
+      send_confirmation(@user)
       render json: {messgage: 'Confirm your account in email'}
     else
       render json: result.errors, status: :unprocessable_entity
@@ -39,7 +52,17 @@ class V1::SignUpRequestsController < ApplicationController
                   markets: []
     )
   end
-  # def password_params
-  #   params.permit(:password)
-  # end
+
+  def user_params
+    params.permit(:email ,:password)
+  end
+
+  def profile_params
+    params.permit(:fullname, :city)
+  end
+
+  def contact_params
+    params.permit(:phone)
+  end
+
 end

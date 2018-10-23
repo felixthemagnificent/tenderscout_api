@@ -2,7 +2,8 @@ class CreateSignUps < ActiveRecord::Migration[5.1]
   def change
     create_table :sign_up_requests do |t|
         t.string :fullname, null: false, default: ''
-        t.string :fullname, null: false, default: ''
+        t.string :phone, null: false, default: ''
+        t.string :email, null: false, default: ''
         t.string :company, null: false, default: ''
         t.string :state, null: false, default: ''
         t.string :country, null: false, default: ''

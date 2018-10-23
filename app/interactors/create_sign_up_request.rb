@@ -12,21 +12,12 @@ class CreateSignUpRequest
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Country not found'},
                     code: :unprocessable_entity
     end
-    context.request = RegistrationRequest.new(request_params)
-    context.request.do_processed = false
+    context.request = SignUpRequest.new(request_params)
     context.request.industry = industry
     context.request.country = country
 
     context.fail! errors: context.request.errors, code: :unprocessable_entity unless context.request.save
 
-    @user = User.new(user_params)
-    context.fail! errors: context.request.errors, code: :unprocessable_entity unless @user.save
-    @profile = @user.profiles.new(profile_params)
-    @profile.country = country
-    context.fail! errors: context.request.errors, code: :unprocessable_entity unless @profile.save
-
-    @contacts =  @profile.contacts.new(contact_type: 'phone', value: contact_params[:phone])
-    context.fail! errors: context.request.errors, code: :unprocessable_entity unless @contacts.save
 
   end
 
@@ -42,15 +33,4 @@ class CreateSignUpRequest
     )
   end
 
-  def user_params
-    context.params.permit(:email ,:password)
-  end
-
-  def profile_params
-    context.params.permit(:fullname, :city)
-  end
-
-  def contact_params
-    context.params.permit(:phone)
-  end
 end
