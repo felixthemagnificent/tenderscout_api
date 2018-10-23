@@ -1,4 +1,4 @@
-class SignUpRequest
+class CreateRegistrationRequest
   include Interactor
 
   def call
@@ -22,15 +22,15 @@ class SignUpRequest
     p Rails.configuration.mailer
 
     CustomPostmarkMailer.template_email(
-      Rails.configuration.mailer['admin_email'],
-      Rails.configuration.mailer['templates']['sign_up_request'],
-      {
-        user_name: context.request.fullname,
-        product_url: Rails.configuration.mailer['product_url'],
-        action_url: Rails.configuration.mailer['admin_url'] + Rails.configuration.mailer['uri']['admin_sign_up'],
-        company_name: Rails.configuration.mailer['company_name'],
-        company_address: Rails.configuration.mailer['company_address']
-      }
+        Rails.configuration.mailer['admin_email'],
+        Rails.configuration.mailer['templates']['sign_up_request'],
+        {
+            user_name: context.request.fullname,
+            product_url: Rails.configuration.mailer['product_url'],
+            action_url: Rails.configuration.mailer['admin_url'] + Rails.configuration.mailer['uri']['admin_sign_up'],
+            company_name: Rails.configuration.mailer['company_name'],
+            company_address: Rails.configuration.mailer['company_address']
+        }
     ).deliver_now
   end
 

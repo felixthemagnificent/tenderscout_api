@@ -14,6 +14,7 @@ default: &default
     sign_up_process: '7952090'
     tender_publish: '8111794'
     assignment_invite: '8584462'
+    user_confirmation: '8698264'
   uri:
     admin_sign_up: '/users/signup-requests'
     tender_details: ''

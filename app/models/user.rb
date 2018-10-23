@@ -1,10 +1,11 @@
 class User < ApplicationRecord
+  include ActionView::Helpers::UrlHelper
   include Pageable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :doorkeeper
+         :doorkeeper, :confirmable, :registerable
 
   has_many :profiles
   has_many :search_monitors
@@ -104,6 +105,13 @@ class User < ApplicationRecord
       end
   end
 
+  def send_confirmation_instructions
+    unless @raw_confirmation_token
+      generate_confirmation_token!
+    end
+    opts = pending_reconfirmation? ? { to: unconfirmed_email } : { }
+    #send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
+  end
 
   def set_default_role
     self.role ||= :free
