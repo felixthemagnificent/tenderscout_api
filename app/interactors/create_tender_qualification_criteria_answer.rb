@@ -11,7 +11,7 @@ class CreateTenderQualificationCriteriaAnswer
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Action not allowed'},
                     code: :unprocessable_entity
     end
-    qualification_criteria = tender.qualification_criterias.where(id: qualification_criterias_params[:tender_qualification_criteria_id]).first
+    qualification_criteria = Marketplace::TenderQualificationCriteria.find_by_id qualification_criterias_params[:tender_qualification_criteria_id]
     unless qualification_criteria.present?
       context.fail! errors: { error: :unprocessable_entity, error_description: 'QualificationCriteria not found'},
                     code: :unprocessable_entity
