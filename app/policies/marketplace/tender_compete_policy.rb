@@ -14,6 +14,10 @@ class Marketplace::TenderCompetePolicy
     @user.paid? || @user.has_collaboration_on_tender?(tender)
   end
 
+  def close?
+    create?
+  end
+
   def create?
     @user.paid? || @user.has_collaboration_on_tender?(tender)
   end
