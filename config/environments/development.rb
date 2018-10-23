@@ -37,9 +37,6 @@ Rails.application.configure do
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
-  config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = { :api_token => "2f791fbd-8c09-40a5-97f3-40d1138baa3f" }
-  config.action_mailer.default_url_options = { :host => "braincode.tenderscout.xyz" }
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

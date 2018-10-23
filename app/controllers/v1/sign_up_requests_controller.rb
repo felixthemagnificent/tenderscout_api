@@ -1,4 +1,5 @@
 class V1::SignUpRequestsController < ApplicationController
+  include UserConfirmationNotifier
   before_action :set_request, only: [:show, :update]
   skip_before_action :authenticate_user!
 
@@ -7,8 +8,11 @@ class V1::SignUpRequestsController < ApplicationController
   end
 
   def create
-    result = CreateRegistrationRequest.call(params: request_params)
+    p(request_params)
+    result = CreateSignUpRequest.call(params: request_params)
     if result.success?
+      user = User.find_by(email: request_params[:email])
+      send_confirmation(user)
       render json: result.request, status: :created
     else
       render json: result.errors, status: :unprocessable_entity
@@ -28,6 +32,7 @@ class V1::SignUpRequestsController < ApplicationController
     end
   end
 
+  private
   # Use callbacks to share common setup or constraints between actions.
   def set_request
     @request = SignUpRequest.find(params[:id])
@@ -43,4 +48,7 @@ class V1::SignUpRequestsController < ApplicationController
                   markets: []
     )
   end
+  # def password_params
+  #   params.permit(:password)
+  # end
 end

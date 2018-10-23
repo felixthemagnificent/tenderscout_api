@@ -1,8 +1,8 @@
 class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
-  #after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-   #                                         :my_compete_tenders]
+  after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
+                                           :my_compete_tenders]
 
   # GET /users
   def index
@@ -60,17 +60,17 @@ class V1::UsersController < ApplicationController
 
   # POST /users
   def create
-    #result = true
+    result = true
     @user = User.new(user_params)
-    # authorize @user
+     authorize @user
     if @user.save
-      # profile = @user.profiles.new(profile_params)
-      # if profile.save
-      #   render json: @user, status: :created
-      # else
-      #   @user.destroy
-      #   render json: profile.errors.full_messages, status: :unprocessable_entity
-      # end
+      profile = @user.profiles.new(profile_params)
+      if profile.save
+        render json: @user, status: :created
+      else
+        @user.destroy
+        render json: profile.errors.full_messages, status: :unprocessable_entity
+      end
     else
       render json: @user.errors.full_messages, status: :unprocessable_entity
     end
