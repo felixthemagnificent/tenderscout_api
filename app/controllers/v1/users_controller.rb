@@ -2,7 +2,7 @@ class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-                                            :my_compete_tenders]
+                                           :my_compete_tenders]
 
   # GET /users
   def index
