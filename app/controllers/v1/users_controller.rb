@@ -1,6 +1,6 @@
 class V1::UsersController < ApplicationController
   include ActionController::Serialization
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :my_tenders]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
                                            :my_compete_tenders]
 
@@ -10,6 +10,10 @@ class V1::UsersController < ApplicationController
     users = User.all
     @users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: @users}
+  end
+
+  def my_tenders
+    all_my_tenders = @user.tenders
   end
 
   # GET /users/1

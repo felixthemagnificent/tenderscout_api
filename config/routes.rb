@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       # end
       get :invites, to: 'collaborations#invites'
       get :requests, to: 'user#requests'
+      get :my_tenders, to: 'users#my_tenders'
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
         member do
