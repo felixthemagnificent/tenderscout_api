@@ -64,6 +64,7 @@ class V1::UsersController < ApplicationController
     @user = User.new(user_params)
     authorize @user
     if @user.save
+      @user.confirm
       profile = @user.profiles.new(profile_params)
       if profile.save
         render json: @user, status: :created
