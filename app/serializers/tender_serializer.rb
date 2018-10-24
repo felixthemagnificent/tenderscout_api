@@ -28,14 +28,14 @@ class TenderSerializer < ActiveModel::Serializer
   has_many :naicses, serializer: Core::NaicsSerializer
 
   attribute(:bid_status_last_answer_date) do
-    dates = object.award_criteria_answers.pluck :created_at
-    dates += object.qualification_criteria_answers.pluck :created_at
+    dates = object.award_criteria_answers.where(user: current_user).pluck :created_at
+    dates += object.qualification_criteria_answers.where(user: current_user).pluck :created_at
     dates.sort!
     dates.last
   end
 
   attribute(:bnb_last_answer_date) do
-    dates = object.bid_no_bid_compete_answers.pluck :updated_at
+    dates = object.bid_no_bid_compete_answers.where(user: current_user).pluck :updated_at
     dates.sort!
     dates.last
   end
