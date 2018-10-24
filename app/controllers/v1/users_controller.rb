@@ -124,7 +124,7 @@ class V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.permit(:email, :password)
+    params.permit(:email, :password, :role)
   end
 
   def password_params
