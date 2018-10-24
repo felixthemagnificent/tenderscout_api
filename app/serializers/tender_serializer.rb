@@ -28,8 +28,8 @@ class TenderSerializer < ActiveModel::Serializer
   has_many :naicses, serializer: Core::NaicsSerializer
 
   attribute(:bid_status_last_answer) do
-    dates = Core::Tender.last.award_criteria_answers.pluck :created_at
-    dates += Core::Tender.last.qualification_criteria_answers.pluck :created_at
+    dates = object.award_criteria_answers.pluck :created_at
+    dates += object.qualification_criteria_answers.pluck :created_at
     dates.sort!
     dates.last
   end
