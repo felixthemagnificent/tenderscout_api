@@ -42,7 +42,23 @@ class TenderSerializer < ActiveModel::Serializer
 
   attribute(:collaboration) do
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
-    Marketplace::CollaborationSerializer.new(collaboration, test123: 123 ) if collaboration
+    collaborators = []
+    collaboration.tender_collaborators.each do |tc|
+      collaborators << 
+      {
+        id: tc.user.id,
+        email: tc.user.email,
+        collaboration_role: tc.role,
+        profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
+                                                                 each_serializer: ProfileSerializer)
+      }
+    end if collaboration
+    {
+      id: collaboration.id,
+      count: collaboration.tender_collaborators.count,
+      users: collaborators
+    } if collaboration
+    # Marketplace::CollaborationSerializer.new(collaboration) if collaboration
   end
   
   attribute(:bidsense) do

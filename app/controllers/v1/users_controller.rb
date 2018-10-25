@@ -2,7 +2,7 @@ class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-                                           :my_compete_tenders]
+                                           :my_compete_tenders, :my_tenders]
 
   # GET /users
   def index
@@ -10,6 +10,19 @@ class V1::UsersController < ApplicationController
     users = User.all
     @users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: @users}
+  end
+
+  def my_tenders
+    my_tenders = current_user.tenders
+    status = params[:status]
+    my_tenders = my_tenders.where(status: status.to_sym) if Core::Tender.statuses.keys.include?(status)
+    sort_field = params[:sort_field]
+    sort_direction = params[:sort_direction]
+    if (%w(desc asc).include?(sort_direction) and %w(created_at dispatch_date submission_date).include?(sort_field))
+      my_tenders.order(sort_direction.to_sym => sort_direction.to_sym)
+    end
+    render json: ActiveModel::Serializer::CollectionSerializer.new(my_tenders, 
+      each_serializer: TenderSerializer, current_user: current_user)
   end
 
   # GET /users/1

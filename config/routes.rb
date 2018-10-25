@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       post 'forget_password' => 'auth#forget_password'
       post 'reset_password' => 'auth#reset_password'
     end
+    get 'my/tenders', to: 'users#my_tenders'
     namespace :marketplace do
       # namespace :compete do
       #   resources :bid_no_bid_answers

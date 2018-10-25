@@ -1045,6 +1045,28 @@ ActiveRecord::Schema.define(version: 20181023152956) do
     t.index ["code"], name: "index_sfgov_codes_on_code"
   end
 
+  create_table "sign_up_requests", force: :cascade do |t|
+    t.string "fullname", default: "", null: false
+    t.string "phone", default: "", null: false
+    t.string "email", default: "", null: false
+    t.string "company", default: "", null: false
+    t.string "state", default: "", null: false
+    t.string "country", default: "", null: false
+    t.string "city", default: "", null: false
+    t.string "sector"
+    t.json "markets", default: {}, null: false
+    t.integer "tender_level", default: 0, null: false
+    t.integer "number_public_contracts", default: 0, null: false
+    t.float "tender_complete_time", default: 0.0, null: false
+    t.integer "organisation_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "country_id"
+    t.bigint "industry_id"
+    t.index ["country_id"], name: "index_sign_up_requests_on_country_id"
+    t.index ["industry_id"], name: "index_sign_up_requests_on_industry_id"
+  end
+
   create_table "suppliers", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "tender_id"
@@ -1178,6 +1200,8 @@ ActiveRecord::Schema.define(version: 20181023152956) do
   add_foreign_key "registration_requests", "core_countries", column: "country_id"
   add_foreign_key "registration_requests", "industries"
   add_foreign_key "search_monitors", "users"
+  add_foreign_key "sign_up_requests", "core_countries", column: "country_id"
+  add_foreign_key "sign_up_requests", "industries"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
 end
