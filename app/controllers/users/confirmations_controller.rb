@@ -7,7 +7,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
                                                     :expires_in         => Doorkeeper.configuration.access_token_expires_in,
                                                     :use_refresh_token  => Doorkeeper.configuration.refresh_token_enabled?
                                                 }).token
-       return render json: token, status: 200
+       return render json: token.to_json, status: 200
       else
        return render json: { error: resource.errors.messages }.to_json
       end
