@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   # end
   resources :contacts
   # use_doorkeeper
-  devise_for :users, defaults: { format: :json }
+  devise_for :users,controllers: { confirmations: 'users/confirmations'}, defaults: { format: :json }
   namespace :v1 do
     post 'scrapper/input' => 'scrapper/scrapper#input'
 
