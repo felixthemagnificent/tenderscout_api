@@ -4,5 +4,6 @@ class Marketplace::CollaborationSerializer < ActiveModel::Serializer
     
     link :collaboration_role, 'asd'
   end
+  has_many :tender_collaborators
   # has_one :tender
 end
