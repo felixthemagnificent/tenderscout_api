@@ -52,7 +52,7 @@ class TenderSerializer < ActiveModel::Serializer
         profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
                                                                  each_serializer: ProfileSerializer)
       }
-    end
+    end if collaboration
     {
       id: collaboration.id,
       count: collaboration.tender_collaborators.count,
