@@ -68,7 +68,7 @@ class TenderSerializer < ActiveModel::Serializer
     result = []
     Marketplace::BidNoBidQuestion.all.each do |question|
       result << question.as_json
-      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:first).try(:bid_no_bid_answer)
+      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:last).try(:bid_no_bid_answer)
       result.last[:answer] = answer
     end
 
