@@ -32,7 +32,7 @@ Rails.application.routes.draw do
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
-      get :invites, to: 'collaborations#invites'
+      get :invites, to: 'users#invites'
       get :requests, to: 'user#requests'
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
