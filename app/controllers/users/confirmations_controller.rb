@@ -8,10 +8,10 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
                                                     :use_refresh_token  => Doorkeeper.configuration.refresh_token_enabled?
                                                 })
         auth_object = {
-          access_token: at.token,
+          access_token: access_token.token,
           token_type:"Bearer",
-          expires_in: at.expires_in,
-          created_at: at.created_at
+          expires_in: access_token.expires_in,
+          created_at: access_token.created_at
         }
        return render json: auth_object.to_json, status: 200
       else

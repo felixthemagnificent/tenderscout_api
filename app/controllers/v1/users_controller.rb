@@ -41,7 +41,7 @@ class V1::UsersController < ApplicationController
 
   def invites
     result = []
-    user_as_collaborator = Marketplace::TenderCollaborator.where(user: current_user)
+    user_as_collaborator = ::Marketplace::TenderCollaborator.where(user: current_user)
     status = params[:status] 
     collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
     user_as_collaborator.where(user: current_user).each do |tc|
