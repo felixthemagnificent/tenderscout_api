@@ -44,7 +44,7 @@ class V1::UsersController < ApplicationController
     user_as_collaborator = ::Marketplace::TenderCollaborator.where(user: current_user)
     status = params[:status] 
     collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
-    user_as_collaborator.where(invited_by_user: current_user).each do |tc|
+    user_as_collaborator.where(user: current_user).each do |tc|
       result << {
         collaboration: tc.collaboration,
         collaboration_role: tc.role,
@@ -52,6 +52,24 @@ class V1::UsersController < ApplicationController
         role: current_user.role,
         status: tc.status,
         user: UserSerializer.new(tc.invited_by_user)
+      }
+    end
+    render json: result
+  end
+
+  def invited_by_me
+    result = []
+    user_as_collaborator = ::Marketplace::TenderCollaborator.where(user: current_user)
+    status = params[:status] 
+    collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
+    user_as_collaborator.where(invited_by_user: current_user).each do |tc|
+      result << {
+        collaboration: tc.collaboration,
+        collaboration_role: tc.role,
+        tender: tc.collaboration.tender,
+        role: current_user.role,
+        status: tc.status,
+        user: UserSerializer.new(tc.user)
       }
     end
     render json: result

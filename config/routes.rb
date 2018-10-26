@@ -29,7 +29,8 @@ Rails.application.routes.draw do
     end
     get 'my/tenders', to: 'users#my_tenders'
     get 'marketplace/invites', to: 'users#invites'
-
+    get 'marketplace/invited_by_me', to: 'users#invited_by_me'
+    
     namespace :marketplace do
       # namespace :compete do
       #   resources :bid_no_bid_answers
