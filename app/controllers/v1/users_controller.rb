@@ -69,7 +69,8 @@ class V1::UsersController < ApplicationController
         tender: tc.collaboration.tender,
         role: current_user.role,
         status: tc.status,
-        user: UserSerializer.new(tc.user)
+        user: UserSerializer.new(tc.user),
+        invited_at: tc.created_at
       }
     end
     render json: result
