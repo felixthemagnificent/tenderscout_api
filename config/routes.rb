@@ -28,11 +28,12 @@ Rails.application.routes.draw do
       post 'reset_password' => 'auth#reset_password'
     end
     get 'my/tenders', to: 'users#my_tenders'
+    get 'marketplace/invites', to: 'users#invites'
+
     namespace :marketplace do
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
-      get :invites, to: 'users#invites'
       get :requests, to: 'user#requests'
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
