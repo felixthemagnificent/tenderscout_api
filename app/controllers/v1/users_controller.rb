@@ -2,7 +2,7 @@ class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-                                           :my_compete_tenders, :my_tenders]
+                                           :my_compete_tenders, :my_tenders, :invited_by_me]
 
   # GET /users
   def index
@@ -44,7 +44,7 @@ class V1::UsersController < ApplicationController
     user_as_collaborator = ::Marketplace::TenderCollaborator.where(user: current_user)
     status = params[:status] 
     collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
-    user_as_collaborator.where(user: current_user).each do |tc|
+    user_as_collaborator.each do |tc|
       result << {
         collaboration: tc.collaboration,
         collaboration_role: tc.role,
@@ -59,10 +59,10 @@ class V1::UsersController < ApplicationController
 
   def invited_by_me
     result = []
-    user_as_collaborator = ::Marketplace::TenderCollaborator.where(user: current_user)
+    user_as_collaborator = ::Marketplace::TenderCollaborator.where(invited_by_user: current_user)
     status = params[:status] 
     collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
-    user_as_collaborator.where(invited_by_user: current_user).each do |tc|
+    user_as_collaborator.each do |tc|
       result << {
         collaboration: tc.collaboration,
         collaboration_role: tc.role,
