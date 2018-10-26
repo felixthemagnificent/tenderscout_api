@@ -2,12 +2,18 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   def show
     super do |resource|
       if successfully_sent?(resource)
-        token = Doorkeeper::AccessToken.create!({
+        access_token = Doorkeeper::AccessToken.create!({
                                                     :resource_owner_id  => resource.id,
                                                     :expires_in         => Doorkeeper.configuration.access_token_expires_in,
                                                     :use_refresh_token  => Doorkeeper.configuration.refresh_token_enabled?
-                                                }).token
-       return render json: token.to_json, status: 200
+                                                })
+        auth_object = {
+          access_token: at.token,
+          token_type:"Bearer",
+          expires_in: at.expires_in,
+          created_at: at.created_at
+        }
+       return render json: auth_object.to_json, status: 200
       else
        return render json: { error: resource.errors.messages }.to_json
       end
