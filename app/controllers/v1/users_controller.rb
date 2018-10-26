@@ -50,7 +50,8 @@ class V1::UsersController < ApplicationController
         collaboration_role: tc.role,
         tender: tc.collaboration.tender,
         role: current_user.role,
-        status: tc.status
+        status: tc.status,
+        user: UserSerializer.new(tc.invited_by_user)
       }
     end
     render json: result
