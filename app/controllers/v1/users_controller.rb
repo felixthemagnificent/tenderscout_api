@@ -41,13 +41,16 @@ class V1::UsersController < ApplicationController
 
   def invites
     result = []
-    current_user.tender_collaborators.pending.each do |tc|
+    user_as_collaborator = Marketplace::TenderCollaborator.where(user: current_user)
+    status = params[:status] 
+    collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
+    user_as_collaborator.where(user: current_user).each do |tc|
       result << {
         collaboration: tc.collaboration,
         collaboration_role: tc.role,
         tender: tc.collaboration.tender,
         role: current_user.role,
-        status: :pending
+        status: tc.status
       }
     end
     render json: result
