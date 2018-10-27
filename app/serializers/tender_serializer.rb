@@ -27,16 +27,38 @@ class TenderSerializer < ActiveModel::Serializer
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
 
-  attribute(:bid_status_last_answer) do
-    dates = Core::Tender.last.award_criteria_answers.pluck :created_at
-    dates += Core::Tender.last.qualification_criteria_answers.pluck :created_at
+  attribute(:bid_status_last_answer_date) do
+    dates = object.award_criteria_answers.where(user: current_user).pluck :created_at
+    dates += object.qualification_criteria_answers.where(user: current_user).pluck :created_at
+    dates.sort!
+    dates.last
+  end
+
+  attribute(:bnb_last_answer_date) do
+    dates = object.bid_no_bid_compete_answers.where(user: current_user).pluck :updated_at
     dates.sort!
     dates.last
   end
 
   attribute(:collaboration) do
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
-    Marketplace::CollaborationSerializer.new(collaboration) if collaboration
+    collaborators = []
+    collaboration.tender_collaborators.each do |tc|
+      collaborators << 
+      {
+        id: tc.user.id,
+        email: tc.user.email,
+        collaboration_role: tc.role,
+        profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
+                                                                 each_serializer: ProfileSerializer)
+      }
+    end if collaboration
+    {
+      id: collaboration.id,
+      count: collaboration.tender_collaborators.count,
+      users: collaborators
+    } if collaboration
+    # Marketplace::CollaborationSerializer.new(collaboration) if collaboration
   end
   
   attribute(:bidsense) do
@@ -46,7 +68,7 @@ class TenderSerializer < ActiveModel::Serializer
     result = []
     Marketplace::BidNoBidQuestion.all.each do |question|
       result << question.as_json
-      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:first).try(:bid_no_bid_answer)
+      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:last).try(:bid_no_bid_answer)
       result.last[:answer] = answer
     end
 

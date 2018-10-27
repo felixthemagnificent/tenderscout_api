@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   # end
   resources :contacts
   # use_doorkeeper
-  devise_for :users, defaults: { format: :json }
+  devise_for :users,controllers: { confirmations: 'users/confirmations'}, defaults: { format: :json }
   namespace :v1 do
     post 'scrapper/input' => 'scrapper/scrapper#input'
 
@@ -27,11 +27,14 @@ Rails.application.routes.draw do
       post 'forget_password' => 'auth#forget_password'
       post 'reset_password' => 'auth#reset_password'
     end
+    get 'my/tenders', to: 'users#my_tenders'
+    get 'marketplace/invites', to: 'users#invites'
+    get 'marketplace/invited_by_me', to: 'users#invited_by_me'
+    
     namespace :marketplace do
       # namespace :compete do
       #   resources :bid_no_bid_answers
       # end
-      get :invites, to: 'collaborations#invites'
       get :requests, to: 'user#requests'
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
@@ -174,6 +177,7 @@ Rails.application.routes.draw do
     post 'bidder/monitor/preview' => 'search_monitors#preview'
     post 'create_ticket', to: 'zen_service#create_ticket'
     get 'sign_into_zendesk', to: 'zen_service#sign_into_zendesk'
+    resources :sign_up_requests
     resources :registration_requests, path: 'user/registration_request' do
       member do
         put 'process', to: 'registration_requests#update'

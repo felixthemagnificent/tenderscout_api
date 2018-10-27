@@ -5,7 +5,7 @@ module Assignable
     def profile
       section = self.section
       return nil unless user_id.present?
-      collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: section.tender.id), user: user_id).first.collaboration
+      collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: section.tender.id), user: user_id).try(:first).try(:collaboration)
       self.assignments.where(collaboration: collaboration).first.user.profiles.first rescue nil
     end
 

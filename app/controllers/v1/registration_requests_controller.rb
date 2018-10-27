@@ -7,7 +7,7 @@ class V1::RegistrationRequestsController < ApplicationController
   end
 
   def create
-    result = SignUpRequest.call(params: request_params)
+    result = CreateRegistrationRequest.call(params: request_params)
     if result.success?
       render json: result.request, status: :created
     else

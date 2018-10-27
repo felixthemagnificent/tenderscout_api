@@ -10,15 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20181022074921) do
-=======
-ActiveRecord::Schema.define(version: 20181018084952) do
->>>>>>> work in progress
-=======
-ActiveRecord::Schema.define(version: 20181022074921) do
->>>>>>> TEN-281 fix
+ActiveRecord::Schema.define(version: 20181023152956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1053,6 +1045,28 @@ ActiveRecord::Schema.define(version: 20181022074921) do
     t.index ["code"], name: "index_sfgov_codes_on_code"
   end
 
+  create_table "sign_up_requests", force: :cascade do |t|
+    t.string "fullname", default: "", null: false
+    t.string "phone", default: "", null: false
+    t.string "email", default: "", null: false
+    t.string "company", default: "", null: false
+    t.string "state", default: "", null: false
+    t.string "country", default: "", null: false
+    t.string "city", default: "", null: false
+    t.string "sector"
+    t.json "markets", default: {}, null: false
+    t.integer "tender_level", default: 0, null: false
+    t.integer "number_public_contracts", default: 0, null: false
+    t.float "tender_complete_time", default: 0.0, null: false
+    t.integer "organisation_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "country_id"
+    t.bigint "industry_id"
+    t.index ["country_id"], name: "index_sign_up_requests_on_country_id"
+    t.index ["industry_id"], name: "index_sign_up_requests_on_industry_id"
+  end
+
   create_table "suppliers", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "tender_id"
@@ -1165,7 +1179,7 @@ ActiveRecord::Schema.define(version: 20181022074921) do
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria", "marketplace_tender_award_criteria_sections", column: "section_id"
   add_foreign_key "marketplace_tender_award_criteria_answers", "core_tenders", column: "tender_id"
-  add_foreign_key "marketplace_tender_award_criteria_answers", "marketplace_tender_criteria", column: "tender_award_criteria_id"
+  add_foreign_key "marketplace_tender_award_criteria_answers", "marketplace_tender_award_criteria", column: "tender_award_criteria_id"
   add_foreign_key "marketplace_tender_award_criteria_answers", "users"
   add_foreign_key "marketplace_tender_award_criteria_sections", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_tender_award_criteria_sections", "marketplace_collaborations", column: "collaboration_id"
@@ -1186,6 +1200,8 @@ ActiveRecord::Schema.define(version: 20181022074921) do
   add_foreign_key "registration_requests", "core_countries", column: "country_id"
   add_foreign_key "registration_requests", "industries"
   add_foreign_key "search_monitors", "users"
+  add_foreign_key "sign_up_requests", "core_countries", column: "country_id"
+  add_foreign_key "sign_up_requests", "industries"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
 end
