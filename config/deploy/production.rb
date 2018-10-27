@@ -60,4 +60,5 @@
 #     # password: "please use keys"
 #   }
 server "ec2-35-153-79-5.compute-1.amazonaws.com", user: "deploy", roles: %w{app db web}
+set :stage, :production
 set :branch, :master
