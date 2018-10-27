@@ -5,7 +5,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # before_action :set_marketplace_collaboration, only: [:show, :update, :destroy]
   # GET /marketplace/collaborations
   def index
-    @marketplace_collaborations = @tender.collaborations.active
+    @marketplace_collaborations = @tender.collaborations
 
     render json: @marketplace_collaborations
   end
