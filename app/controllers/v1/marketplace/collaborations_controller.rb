@@ -64,7 +64,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     user = User.find_by_id params[:user_id]
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id])
     @marketplace_collaboration.tender_collaborators.where(user: user).destroy_all
-    @marketplace_collaboration.destroy if e.tender_collaborators.count == 0
+    @marketplace_collaboration.destroy if @marketplace_collaboration.tender_collaborators.count == 0
 
     render json: nil
   end
