@@ -61,4 +61,4 @@
 #   }
 server "ec2-35-153-79-5.compute-1.amazonaws.com", user: "deploy", roles: %w{app db web}
 set :stage, :production
-set :branch, :master
+set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
