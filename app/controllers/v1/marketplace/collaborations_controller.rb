@@ -81,7 +81,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_collaboration
-      @marketplace_collaboration = Marketplace::Collaboration.find(params[:id]) || Marketplace::Collaboration.find(params[:collaboration_id])
+      @marketplace_collaboration = Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || Marketplace::Collaboration.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
