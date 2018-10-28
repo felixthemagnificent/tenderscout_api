@@ -11,12 +11,12 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   end
  
   def accept
-    @marketplace_collaboration.accept!
+    @marketplace_collaboration.where(user: current_user).first.active!
     render json: nil, status: :ok
   end
 
   def ignore
-    @marketplace_collaboration.ignore!
+    @marketplace_collaboration.where(user: current_user).first.ignore!
     render json: nil, status: :ok
   end
 
