@@ -14,16 +14,52 @@ class TenderSerializer < ActiveModel::Serializer
               :lead_source, :next_step, :private, :probability, :quantity, :stage, :salesforce_type, :industry, 
               :partner, :primary, :role, :competitor, :strengths, :weaknesses, :set_aside, :archiving_policy, 
               :archive_date, :original_set_aside, :awarded_at, :place_of_performance, :request_awards, 
-              :retender_status, :status, :dispatch_date
+              :retender_status, :status, :dispatch_date, :questioning_deadline, :answering_deadline
 
   attribute(:creator) { UserSerializer.new(object.creator) if object.creator }
   attribute(:country) { CountrySerializer.new(object.organization.try(:country)) if object.organization }
   attribute(:city) { object.try(:organization).try(:city_name) }
   attribute(:contact_email) { object.try(:organization).try(:email) }
   attribute(:contact_phone) { object.try(:organization).try(:phone) }
+  has_many :contacts, serializer: Marketplace::ContactSerializer
   attribute(:classification) { object.try(:classification).try(:description) }
+  attribute(:is_scrapped) { object.creator.blank? }
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
+
+  attribute(:bid_status_last_answer_date) do
+    dates = object.award_criteria_answers.where(user: current_user).pluck :created_at
+    dates += object.qualification_criteria_answers.where(user: current_user).pluck :created_at
+    dates.sort!
+    dates.last
+  end
+
+  attribute(:bnb_last_answer_date) do
+    dates = object.bid_no_bid_compete_answers.where(user: current_user).pluck :updated_at
+    dates.sort!
+    dates.last
+  end
+
+  attribute(:collaboration) do
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
+    collaborators = []
+    collaboration.tender_collaborators.each do |tc|
+      collaborators << 
+      {
+        id: tc.user.id,
+        email: tc.user.email,
+        collaboration_role: tc.role,
+        profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
+                                                                 each_serializer: ProfileSerializer)
+      }
+    end if collaboration
+    {
+      id: collaboration.id,
+      count: collaboration.tender_collaborators.count,
+      users: collaborators
+    } if collaboration
+    # Marketplace::CollaborationSerializer.new(collaboration) if collaboration
+  end
   
   attribute(:bidsense) do
     Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
@@ -32,7 +68,7 @@ class TenderSerializer < ActiveModel::Serializer
     result = []
     Marketplace::BidNoBidQuestion.all.each do |question|
       result << question.as_json
-      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:first).try(:bid_no_bid_answer)
+      answer = object.bid_no_bid_compete_answers.where(user: current_user, bid_no_bid_question: question).try(:last).try(:bid_no_bid_answer)
       result.last[:answer] = answer
     end
 

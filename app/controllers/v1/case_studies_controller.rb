@@ -3,16 +3,20 @@ class V1::CaseStudiesController < ApplicationController
   before_action :set_case_study, only: [:show, :update, :destroy, :remove_image]
   before_action :set_profile
   before_action :set_gallery_img, only: :remove_image
+  after_action :verify_authorized, except: [:remove_image]
 
   def index
+    authorize CaseStudy
     render json: @profile.case_studies
   end
 
   def show
+    authorize @case_study
     render json: @case_study
   end
 
   def create
+    authorize CaseStudy
     result = CreateCaseStudy.call(params: case_study_params, profile: @profile)
     if result.success?
       render json: result.case_study, status: :created
@@ -23,6 +27,7 @@ class V1::CaseStudiesController < ApplicationController
 
 
   def update
+    authorize @case_study
     result = UpdateCaseStudy.call(params: case_study_params, profile: @profile, case_study: @case_study)
     if result.success?
       render json: result.case_study
@@ -32,6 +37,7 @@ class V1::CaseStudiesController < ApplicationController
   end
 
   def destroy
+    authorize @case_study
     @case_study.destroy
   end
 

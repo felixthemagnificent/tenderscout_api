@@ -1,7 +1,7 @@
 # original model source: apps/domain-core/domain/tenders/domain/tender.rb
 class Core::Tender < ApplicationRecord
   include Pageable
-  update_index('tenders#tender') { self } 
+  update_index('tenders#tender') { self }
 
   self.table_name = "core_tenders"
 
@@ -32,11 +32,10 @@ class Core::Tender < ApplicationRecord
   has_many :nhs_e_classes, through: :tender_nhs_e_classes
   has_many :tender_pro_classes
   has_many :pro_classes, through: :tender_pro_classes
-  has_many :tender_collaborators, class_name: 'Marketplace::TenderCollaborator'
   has_and_belongs_to_many :attachments
   has_many :team_members, through: :tender_committees, source: :user, class_name: 'User'
-  has_many :task_sections, class_name: 'Marketplace::TenderTaskSection'
-  has_many :tasks, class_name: 'Marketplace::TenderTask'
+  has_many :qualification_criteria_sections, class_name: 'Marketplace::TenderQualificationCriteriaSection'
+  has_many :qualification_criterias, class_name: 'Marketplace::TenderQualificationCriteria'
   has_many :criteria_sections, class_name: 'Marketplace::TenderCriteriaSection'
   has_many :criteries, class_name: 'Marketplace::TenderCriterium'
   has_many :award_criteria_sections, class_name: 'Marketplace::TenderAwardCriteriaSection'
@@ -46,6 +45,10 @@ class Core::Tender < ApplicationRecord
   has_many :bid_no_bid_compete_answers, class_name: 'Marketplace::Compete::BidNoBidAnswer'
   has_many :bidsense_results
   has_many :collaboration_interests
+  has_many :collaborations, class_name: 'Marketplace::Collaboration'
+  has_many :qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
+  has_many :award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
+  has_many :tender_collaborators, through: :collaborations, class_name: 'Marketplace::TenderCollaborator'
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
@@ -60,7 +63,9 @@ class Core::Tender < ApplicationRecord
   after_save :recalculate_bidsense
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
-
+  #validates
+  validate :q_and_a_deadlines
+  validate :q_and_a_later_dispatch
   scope :with_relations, -> do
     relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
     includes(relations).references(*relations)
@@ -70,8 +75,8 @@ class Core::Tender < ApplicationRecord
     self.bidsense_results.where('average_score > ?', 0.6)
   end
 
-  def tasks_count
-    self.tasks.count
+  def qualification_criterias_count
+    self.qualification_criterias.count
   end
 
   def award_criteries_count
@@ -87,7 +92,7 @@ class Core::Tender < ApplicationRecord
           (1..5).each do |ans_num|
             answer_name = "Answer #{ans_num}"
             question.bid_no_bid_answers.create!({ answer_text: answer_name, position: ans_num } )
-          end 
+          end
         end
       end
     end
@@ -104,12 +109,12 @@ class Core::Tender < ApplicationRecord
           order: e.order
         }
       end
-      answered = self.bid_no_bid_compete_answers.where(bid_no_bid_question: question).map do |e| 
-        { 
-          id: e.id, 
-          user_id: e.user.id, 
+      answered = self.bid_no_bid_compete_answers.where(bid_no_bid_question: question).map do |e|
+        {
+          id: e.id,
+          user_id: e.user.id,
           answer_id: e.bid_no_bid_answer.id
-        } 
+        }
       end
       _tmp[:question] = {
         id: question.id,
@@ -127,7 +132,7 @@ class Core::Tender < ApplicationRecord
 
   end
 
-  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil, 
+  def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil,
                   tender_countries: nil)
 
     matches = []
@@ -152,31 +157,70 @@ class Core::Tender < ApplicationRecord
                 } if tender_value_from
 
     matches << {
-                  match:
+                  bool: 
                   {
-                    title: tender_title
+                    should:[
+                    { 
+                      term:
+                      {
+                        title: 
+                        {
+                          value: tender_title,
+                          boost: 2.5
+                        }
+                      }
+                    }, {
+                      match_phrase:
+                      {
+                        title: {
+                          query: tender_title,
+                          boost: 1.8
+                        }
+                      }
+                    },
+                    { 
+                      term:
+                      {
+                        description: 
+                        {
+                          value: tender_title,
+                          boost: 2.0
+                        }
+                      }
+                    }, {
+                      match_phrase:
+                      {
+                        description: 
+                        {
+                          query: tender_title,
+                          boost: 1.7
+                        }
+                      }
+                    }]
                   }
                 } unless tender_title.blank?
-
-    if tender_keywords 
+    if tender_keywords
       match_keywords = []
-      tender_keywords.each do |e| 
+      tender_keywords.each do |e|
         match_keywords << {
           match:
           {
-            description: e
+            description: {
+              value: e,
+              boost: 1.5
+            }
           }
         }
       end
       matches << {
-        bool: { 
+        bool: {
             should: match_keywords
           }
       }
     end
-    if tender_countries 
+    if tender_countries
       match_countries = []
-      tender_countries.each do |e| 
+      tender_countries.each do |e|
         match_countries << {
           match:
           {
@@ -185,7 +229,7 @@ class Core::Tender < ApplicationRecord
         }
       end
       matches << {
-        bool: { 
+        bool: {
             should: match_countries
           }
       }
@@ -234,7 +278,7 @@ class Core::Tender < ApplicationRecord
   def world_region
       self.organization.country.world_region rescue nil
   end
-  
+
   def world_subregion
       self.organization.country.world_subregion rescue nil
   end
@@ -245,6 +289,161 @@ class Core::Tender < ApplicationRecord
 
   def classification_description
       self.classification.description rescue nil
+  end
+
+  def similar_opportunities
+    result = nil
+    matches = []
+    if self.estimated_high_value.present?
+      matches <<  {
+          range:
+              {
+                  high_value:
+                      {
+                          lte: estimated_high_value.to_i
+                      }
+              }
+      }
+    end
+    if self.estimated_low_value.present?
+      matches << {
+          range:
+              {
+                  low_value:
+                      {
+                          gte: self.estimated_low_value.to_i
+                      }
+              }
+      }
+    end
+    if self.country.present?
+      matches << {
+          match:{
+              country_id: self.country.id
+          }
+      }
+    end
+    if self.nuts_codes.present?
+      match_nuts = []
+      self.nuts_codes.each do |e|
+        match_nuts << {
+            match:{
+                ic_nuts_codes: e
+            }
+        }
+        matches << {
+            bool: {
+                should: match_nuts
+            }
+        }
+      end
+    end
+    if self.cpvs.present?
+      match_cpvs = []
+      self.cpvs.each do |e|
+        match_cpvs << {
+            match:{
+                ic_cpvs: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_cpvs
+            }
+        }
+      end
+    end
+    if self.naicses.present?
+      match_naicses = []
+      self.naicses.each do |e|
+        match_naicses << {
+            match:{
+                ic_naicses: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_naicses
+            }
+        }
+      end
+    end
+    if self.ngips.present?
+      match_ngips = []
+      self.ngips.each do |e|
+        match_ngips << {
+            match:{
+                ic_ngips: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_ngips
+            }
+        }
+      end
+    end
+    if self.unspsces.present?
+      match_unspsces = []
+      self.unspsces.each do |e|
+        match_unspsces << {
+            match:{
+                ic_unspsces: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_unspsces
+            }
+        }
+      end
+    end
+    if self.gsins.present?
+      match_gsins = []
+      self.gsins.each do |e|
+        match_gsins << {
+            match:{
+                ic_gsins: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_gsins
+            }
+        }
+      end
+    end
+    if self.nhs_e_classes.present?
+      match_nhs_e_classes = []
+      self.nhs_e_classes.each do |e|
+        match_nhs_e_classes << {
+            match:{
+                ic_nhs_e_classes: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_nhs_e_classes
+            }
+        }
+      end
+    end
+    if self.pro_classes.present?
+      match_pro_classes = []
+      self.pro_classes.each do |e|
+        match_pro_classes << {
+            match:{
+                ic_pro_classes: e.id
+            }
+        }
+        matches << {
+            bool: {
+                should: match_pro_classes
+            }
+        }
+      end
+    end
+    result = TendersIndex.query(matches)
   end
 
   def format_fields
@@ -284,5 +483,21 @@ class Core::Tender < ApplicationRecord
   private
   def recalculate_bidsense
     Bidsense::RecalculateScoreJob.perform_later tender: self
+  end
+
+  def q_and_a_deadlines
+    if questioning_deadline.present? && answering_deadline.present?
+      if questioning_deadline > answering_deadline
+        errors.add(:error, 'Questioning deadline must be earlier Answering deadline')
+      end
+    end
+  end
+
+  def q_and_a_later_dispatch
+    if questioning_deadline.present? && answering_deadline.present? && dispatch_date.present?
+      if dispatch_date > questioning_deadline
+        errors.add(:error, 'Q&A deadlines must be earlier than dispatch date')
+      end
+    end
   end
 end

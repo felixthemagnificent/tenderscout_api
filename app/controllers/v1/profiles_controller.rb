@@ -3,20 +3,24 @@ class V1::ProfilesController < ApplicationController
 
   before_action :set_profile, only: [:show, :update, :destroy, :create_avatar, :destroy_avatar, :create_cover_img, :destroy_cover_img]
   before_action :set_user
+  # after_action :verify_authorized
 
   # GET /profiles
   def index
+    authorize Profile
     @profiles = @user.profiles
     render json: @profiles
   end
 
   # GET /profiles/1
   def show
+    authorize @profile
     render json: @profile
   end
 
   # POST /profiles
   def create
+    authorize Profile
     result = CreateProfile.call(params: params, user: current_user)
     if result.success?
       render json: result.profile, status: :created
@@ -27,6 +31,7 @@ class V1::ProfilesController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
+    authorize @profile
     result = UpdateProfile.call(profile: @profile, params: params, user: current_user)
     if result.success?
       render json: result.profile

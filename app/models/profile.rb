@@ -2,6 +2,8 @@ class Profile < ApplicationRecord
   has_many :contacts
   has_many :case_studies
   has_many :bidsense_results
+  has_many :comments
+  has_many :notes
 
   has_and_belongs_to_many :keywords
   has_and_belongs_to_many :countries, class_name: 'Core::Country'
@@ -16,8 +18,9 @@ class Profile < ApplicationRecord
   mount_uploader :avatar, AvatarUploader
   mount_uploader :cover_img, CoverImgUploader
 
-  validates_presence_of :fullname, :display_name, :timezone, :profile_type, :user_id
-  validates_presence_of :company_size, :turnover unless :profile_type != :consultant
+  validates_presence_of :fullname
+  #:display_name, :timezone, :profile_type, :user_id
+  #validates_presence_of :company_size, :turnover unless :profile_type != :consultant
 
   after_save :recalculate_bidsense
 

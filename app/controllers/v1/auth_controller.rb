@@ -1,7 +1,14 @@
 class V1::AuthController < Doorkeeper::TokensController
 
   def create
+    user = User.find_by(email: params[:username])
+    if user && !user.confirmed?
+      render json: { message: 'User is not confirmed' }, status: 401
+      return false
+      end
+
     if super == :ok
+
       print 'sign_zendesk'
       # byebug
     end

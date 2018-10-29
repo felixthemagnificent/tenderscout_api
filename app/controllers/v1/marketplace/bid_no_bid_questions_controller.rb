@@ -1,5 +1,6 @@
 class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
-  before_action :set_marketplace_bid_no_bid_question, only: [:show, :update, :destroy]
+  before_action :set_marketplace_bid_no_bid_question, only: [:show, :update, :destroy, :bid_no_bid_question_comments,
+                                                             :bid_no_bid_question_notes]
 
   # GET /marketplace/bid_no_bid_questions
   def index
@@ -38,14 +39,30 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
     @marketplace_bid_no_bid_question.destroy
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_marketplace_bid_no_bid_question
-      @marketplace_bid_no_bid_question = Marketplace::BidNoBidQuestion.find(params[:id])
-    end
+  # Comments for TenderQualificationCriteria
+  def bid_no_bid_question_comments
+    profiles = @marketplace_bid_no_bid_question.comments.map(&:profile).uniq
+    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.comments.where(tender_id: params[:tender_id]),
+                                                                 each_serializer: CommentSerializer)
+    render json: { comments: comments, profiles: profiles }
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def marketplace_bid_no_bid_question_params
-      params.permit(:question_text, :position, :tender_id)
-    end
+  # Notes for TenderQualificationCriteria
+  def bid_no_bid_question_notes
+    profiles = @marketplace_bid_no_bid_question.notes.map(&:profile).uniq
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.notes.where(tender_id: params[:tender_id]),
+                                                              each_serializer: NoteSerializer)
+    render json: { notes: notes, profiles: profiles }
+  end
+
+  private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_marketplace_bid_no_bid_question
+    @marketplace_bid_no_bid_question = ::Marketplace::BidNoBidQuestion.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def marketplace_bid_no_bid_question_params
+    params.permit(:question_text, :position, :tender_id)
+  end
 end

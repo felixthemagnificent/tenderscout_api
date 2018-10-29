@@ -1,19 +1,22 @@
 class V1::SearchMonitorsController < ApplicationController
   before_action :set_search_monitor, only: [:show, :update, :destroy, :result, :archive, :share, :add_favourite, :delete_favourite]
+  after_action :verify_authorized, except: [:delete_favourite, :add_favourite]
   respond_to :json
   # GET /search_monitors
   def index
     @search_monitors = current_user.search_monitors
-
+    authorize @search_monitors
     render json: @search_monitors
   end
 
   # GET /search_monitors/1
   def show
+    authorize @search_monitor
     render json: @search_monitor
   end
 
   def preview
+    authorize SearchMonitor
     data, count = process_search(search_monitor_params)
     render json: {
       data: data,
@@ -22,6 +25,7 @@ class V1::SearchMonitorsController < ApplicationController
   end
 
   def all_results
+    authorize SearchMonitor
     data, count = process_search({})
     render json: {
       data: data,
@@ -34,6 +38,7 @@ class V1::SearchMonitorsController < ApplicationController
   end
 
   def archive
+    authorize SearchMonitor
     if @search_monitor.update(is_archived: true)
       render json: nil, status: :ok
     else
@@ -54,6 +59,7 @@ class V1::SearchMonitorsController < ApplicationController
   end
 
   def result
+    authorize SearchMonitor
     search_params = @search_monitor.as_json({except: [:created_at, :updated_at, :id, :user_id]}).symbolize_keys
     data, count = process_search(search_params)
     render json: {
@@ -65,7 +71,7 @@ class V1::SearchMonitorsController < ApplicationController
   # POST /search_monitors
   def create
     @search_monitor = current_user.search_monitors.new(search_monitor_params)
-
+    authorize @search_monitor
     if @search_monitor.save
       render json: @search_monitor, status: :created
     else
@@ -75,6 +81,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   # PATCH/PUT /search_monitors/1
   def update
+    authorize @search_monitor
     if @search_monitor.update(search_monitor_params)
       render json: @search_monitor
     else
@@ -84,6 +91,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   # DELETE /search_monitors/1
   def destroy
+    authorize @search_monitor
     @search_monitor.destroy
   end
 

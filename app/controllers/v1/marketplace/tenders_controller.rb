@@ -1,10 +1,14 @@
 class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
-                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list]
-
+                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
+                                    :similar_opportunities_tenders]
+  after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish, :get_bnb_data,
+                                    :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
+                                            :current_buyer_company_won_list, :similar_opportunities_tenders]
   # GET /profiles
   def index
+    authorize Core::Tender
     tenders = Core::Tender.all
     # byebug
     @tenders = tenders.my_paginate(paginate_params)
@@ -33,11 +37,13 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # GET /profiles/1
   def show
+    authorize @tender
     render json: @tender
   end
 
   # POST /profiles
   def create
+    authorize Core::Tender
     result = CreateTender.call(params: params, user: current_user)
     if result.success?
       render json: result.tender, status: :created
@@ -48,6 +54,7 @@ class V1::Marketplace::TendersController < ApplicationController
 
   # PATCH/PUT /profiles/1
   def update
+    authorize @tender
     result = UpdateTender.call(tender: @tender, params: params, user: current_user)
     if result.success?
       render json: result.tender, current_user: current_user
@@ -97,6 +104,11 @@ class V1::Marketplace::TendersController < ApplicationController
     render json: organization_list
   end
 
+  def similar_opportunities_tenders
+    result =  @tender.similar_opportunities.objects.limit(10)
+    render json: result
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -116,8 +128,8 @@ class V1::Marketplace::TendersController < ApplicationController
   def tender_params
     params.permit(
       :title, :description, :industry, :geography, :value_from,
-      :value_to, :keywords, :submission_date, :dispatch_date,
-      contact_info: []
+      :value_to, :keywords, :submission_date, :dispatch_date, :questioning_deadline,
+      :answering_deadline, contact_info: []
     )
   end
 

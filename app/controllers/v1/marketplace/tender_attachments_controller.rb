@@ -16,8 +16,7 @@ class V1::Marketplace::TenderAttachmentsController < ApplicationController
   end
 
   def destroy
-    @tender.attachments.delete(@attachment)
-    unless @attachment.remove_file
+    unless @tender.attachments.delete(@attachment)
       render json: {
         error: :service_unavailable,
         error_description: 'Attachment was not deleted from S3'
