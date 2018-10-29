@@ -46,12 +46,12 @@ class V1::UsersController < ApplicationController
     collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
     user_as_collaborator.each do |tc|
       result << {
-        collaboration: tc.collaboration,
+        collaboration: Marketplace::CollaborationSerializer.new(tc.collaboration),
         collaboration_role: tc.role,
         tender: tc.collaboration.tender,
         role: current_user.role,
         status: tc.status,
-        user: UserSerializer.new(tc.invited_by_user)
+        user: (tc.invited_by_user ? UserSerializer.new(tc.invited_by_user) : nil)
       }
     end
     render json: result
