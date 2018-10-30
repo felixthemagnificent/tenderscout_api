@@ -40,6 +40,11 @@ class TenderSerializer < ActiveModel::Serializer
     dates.last
   end
 
+  attribute(:is_collaboration_owner) do
+    tc = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first)
+    tc.role == 'owner' ? true : false
+  end
+
   attribute(:collaboration) do
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
     collaborators = []
