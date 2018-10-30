@@ -42,7 +42,7 @@ class TenderSerializer < ActiveModel::Serializer
 
   attribute(:is_collaboration_owner) do
     tc = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first)
-    tc.role == 'owner' ? true : false
+    tc.try(:role) == 'owner' ? true : false
   end
 
   attribute(:collaboration) do
