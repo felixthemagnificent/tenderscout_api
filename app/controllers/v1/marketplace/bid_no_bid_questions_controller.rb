@@ -49,8 +49,9 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
 
   # Notes for TenderQualificationCriteria
   def bid_no_bid_question_notes
-    profiles = @marketplace_bid_no_bid_question.notes.map(&:profile).uniq
-    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.notes.where(tender_id: params[:tender_id]),
+    profiles = @marketplace_bid_no_bid_question.notes.where(profile_id: current_user.profiles.first.id).map(&:profile).uniq
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.notes.where(tender_id: params[:tender_id],
+                                                                                                           profile_id: current_user.profiles.first.id),
                                                               each_serializer: NoteSerializer)
     render json: { notes: notes, profiles: profiles }
   end
