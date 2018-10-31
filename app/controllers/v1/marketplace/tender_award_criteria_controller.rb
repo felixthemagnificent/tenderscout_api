@@ -52,8 +52,8 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # Notes for TenderAwardCriteries
   def tender_award_criteria_notes
-    profiles = @marketplace_tender_award_criterium.notes.map(&:profile).uniq
-    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.notes,
+    profiles = @marketplace_tender_award_criterium.notes.where(profile_id: current_user.profiles.first.id).map(&:profile).uniq
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.notes.where(profile_id: current_user.profiles.first.id),
                                                               each_serializer: NoteSerializer)
     render json: { notes: notes, profiles: profiles }
   end
