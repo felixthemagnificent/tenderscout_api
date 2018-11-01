@@ -42,8 +42,9 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   # Comments for TenderQualificationCriteria
   def bid_no_bid_question_comments
     tender = Core::Tender.find(params[:tender_id])
-    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender), user: current_user.id).first.collaboration
-    collaboration_profiles = collaboration.users.map(&:profiles)
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender), user: current_user.id)
+    return render json: { comments: [], profiles: [] } unless collaboration.present?
+    collaboration_profiles = collaboration.first.collaboration.users.map(&:profiles)
     profiles_ids = collaboration_profiles.map(&:ids).flatten
     profiles = @marketplace_bid_no_bid_question.comments.where(profile_id: profiles_ids).map(&:profile).uniq
     comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_bid_no_bid_question.comments.where(tender_id: params[:tender_id], profile_id: profiles_ids),
