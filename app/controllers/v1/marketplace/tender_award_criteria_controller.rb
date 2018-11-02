@@ -46,12 +46,17 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   def tender_award_criteria_comments
     tender = @marketplace_tender_award_criterium.section.tender
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender), user: current_user.id)
-    return render json: { comments: [], profiles: [] } unless collaboration.present?
+    if collaboration.present?
     collaboration_profiles = collaboration.first.collaboration.users.map(&:profiles)
     profiles_ids = collaboration_profiles.map(&:ids).flatten
     profiles = @marketplace_tender_award_criterium.comments.where(profile_id: profiles_ids).map(&:profile).uniq
     comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.comments.where(profile_id: profiles_ids),
                                                                  each_serializer: CommentSerializer)
+    else
+      profiles = @marketplace_tender_award_criterium.comments.where(profile_id: current_user.profiles.first.id).map(&:profile)
+      comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.comments.where(profile_id: current_user.profiles.first.id),
+                                                                   each_serializer: CommentSerializer)
+    end
     render json: { comments: comments, profiles: profiles }
   end
 
