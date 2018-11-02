@@ -13,7 +13,7 @@ class V1::UsersController < ApplicationController
   end
 
   def my_tenders
-    my_tenders = current_user.tenders
+    my_tenders = current_user.tenders_by_current_user
     status = params[:status]
     my_tenders = my_tenders.where(status: status.to_sym) if Core::Tender.statuses.keys.include?(status)
     sort_field = params[:sort_field]

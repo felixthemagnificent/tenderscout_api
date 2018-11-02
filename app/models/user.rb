@@ -24,6 +24,10 @@ class User < ApplicationRecord
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
+  def tenders_by_current_user
+    tenders.where(creator: self)
+  end
+
   def collaboration_tenders_statistic
     percent_array_result = []
     result = {}
