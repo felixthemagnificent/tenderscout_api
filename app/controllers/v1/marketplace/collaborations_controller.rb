@@ -5,18 +5,18 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # before_action :set_marketplace_collaboration, only: [:show, :update, :destroy]
   # GET /marketplace/collaborations
   def index
-    @marketplace_collaborations = @tender.collaborations.active
+    @marketplace_collaborations = @tender.collaborations
 
     render json: @marketplace_collaborations
   end
  
   def accept
-    @marketplace_collaboration.accept!
+    @marketplace_collaboration.tender_collaborators.where(user: current_user).first.active!
     render json: nil, status: :ok
   end
 
   def ignore
-    @marketplace_collaboration.ignore!
+    @marketplace_collaboration.tender_collaborators.where(user: current_user).first.ignore!
     render json: nil, status: :ok
   end
 
@@ -63,8 +63,9 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   def remove
     user = User.find_by_id params[:user_id]
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id])
+    authorize @marketplace_collaboration
     @marketplace_collaboration.tender_collaborators.where(user: user).destroy_all
-    @marketplace_collaboration.destroy if e.tender_collaborators.count == 0
+    @marketplace_collaboration.destroy if @marketplace_collaboration.tender_collaborators.count == 0
 
     render json: nil
   end
@@ -80,7 +81,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_collaboration
-      @marketplace_collaboration = Marketplace::Collaboration.find(params[:id])
+      @marketplace_collaboration = Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || Marketplace::Collaboration.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.

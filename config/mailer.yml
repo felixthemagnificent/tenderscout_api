@@ -33,3 +33,12 @@ alpha_staging:
 
 production:
   <<: *default
+  from: 'anton.rogachevskyi@braincode.xyz'
+  company_name: 'Company Name'
+  company_address: 'Company Address'
+  admin_email: 'anton.rogachevskyi@braincode.xyz'
+  product_url: 'http://hub.tenderscout.com'
+  support: 'http://tenderscout.support.com'
+  tender_management_url: 'http://tender_management_url'
+  api_url: 'http://api.hub.tenderscout.com'
+  admin_url: 'http://admin.hub.tenderscout.com'

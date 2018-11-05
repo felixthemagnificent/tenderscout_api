@@ -44,16 +44,26 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # Comments for TenderAwardCriteries
   def tender_award_criteria_comments
-    profiles = @marketplace_tender_award_criterium.comments.map(&:profile).uniq
-    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.comments,
+    tender = @marketplace_tender_award_criterium.section.tender
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender), user: current_user.id)
+    if collaboration.present?
+    collaboration_profiles = collaboration.first.collaboration.users.map(&:profiles)
+    profiles_ids = collaboration_profiles.map(&:ids).flatten
+    profiles = @marketplace_tender_award_criterium.comments.where(profile_id: profiles_ids).map(&:profile).uniq
+    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.comments.where(profile_id: profiles_ids),
                                                                  each_serializer: CommentSerializer)
+    else
+      profiles = @marketplace_tender_award_criterium.comments.where(profile_id: current_user.profiles.first.id).map(&:profile)
+      comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.comments.where(profile_id: current_user.profiles.first.id),
+                                                                   each_serializer: CommentSerializer)
+    end
     render json: { comments: comments, profiles: profiles }
   end
 
   # Notes for TenderAwardCriteries
   def tender_award_criteria_notes
-    profiles = @marketplace_tender_award_criterium.notes.map(&:profile).uniq
-    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.notes,
+    profiles = @marketplace_tender_award_criterium.notes.where(profile_id: current_user.profiles.first.id).map(&:profile).uniq
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_award_criterium.notes.where(profile_id: current_user.profiles.first.id),
                                                               each_serializer: NoteSerializer)
     render json: { notes: notes, profiles: profiles }
   end

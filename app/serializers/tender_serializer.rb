@@ -44,11 +44,14 @@ class TenderSerializer < ActiveModel::Serializer
     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:collaboration)
     collaborators = []
     collaboration.tender_collaborators.each do |tc|
+      is_owner = (tc.try(:role) == 'owner') ? true : false
+
       collaborators << 
       {
         id: tc.user.id,
         email: tc.user.email,
         collaboration_role: tc.role,
+        is_owner: is_owner,
         profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
                                                                  each_serializer: ProfileSerializer)
       }

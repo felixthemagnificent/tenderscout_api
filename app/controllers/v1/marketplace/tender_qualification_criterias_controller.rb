@@ -50,16 +50,27 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
 
   # Comments for TenderQualificationCriteria
   def tender_qualification_criteria_comments
-    profiles = @marketplace_tender_qualification_criteria.comments.map(&:profile).uniq
-    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_qualification_criteria.comments,
+    tender = @marketplace_tender_qualification_criteria.section.tender
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender), user: current_user.id)
+    if collaboration.present?
+    collaboration_profiles = collaboration.first.collaboration.users.map(&:profiles)
+    profiles_ids = collaboration_profiles.map(&:ids).flatten
+    profiles = @marketplace_tender_qualification_criteria.comments.where(profile_id: profiles_ids).map(&:profile).uniq
+    comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_qualification_criteria.comments.where(profile_id: profiles_ids),
                                                                  each_serializer: CommentSerializer)
+
+    else
+      profiles = @marketplace_tender_qualification_criteria.comments.where(profile_id: current_user.profiles.first.id).map(&:profile)
+      comments = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_qualification_criteria.comments.where(profile_id: current_user.profiles.first.id),
+                                                                   each_serializer: CommentSerializer)
+    end
     render json: { comments: comments, profiles: profiles }
   end
 
   # Notes for TenderQualificationCriteria
   def tender_qualification_criteria_notes
-    profiles = @marketplace_tender_qualification_criteria.notes.map(&:profile).uniq
-    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_qualification_criteria.notes,
+    profiles = @marketplace_tender_qualification_criteria.notes.where(profile_id: current_user.profiles.first.id).map(&:profile).uniq
+    notes = ActiveModel::Serializer::CollectionSerializer.new(@marketplace_tender_qualification_criteria.notes.where(profile_id: current_user.profiles.first.id),
                                                               each_serializer: NoteSerializer)
     render json: { notes: notes, profiles: profiles }
   end

@@ -2,10 +2,21 @@ class V1::Marketplace::CollaborationInterestsController < ApplicationController
   include ActionController::Serialization
   # after_action :verify_authorized
   before_action :set_collaboration_interest, only: [:show, :destroy]
+  before_action :set_tender
 
   def index
-    result = GetCollaborations.call(params: index_params, user: current_user)
-    render json: result.results, each_serializer: ProfileSerializer
+    collaborations = GetCollaborations.call(params: index_params, user: current_user)
+    result = []
+    collaborations.map do |e| 
+      is_collaborated = false
+      collaboration = Marketplace::Collaboration.where(tender: @tender).try(:first)
+      is_collaborated = true if collaboration && collaboration.tender_collaborators.where(user: current_user).count > 0
+      result << {
+        is_collaborated: is_collaborated,
+        profile: ProfileSerializer.new(e)
+      }
+    end
+    render json: result
   end
 
   def show
@@ -39,6 +50,10 @@ class V1::Marketplace::CollaborationInterestsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_collaboration_interest
     @collaboration_interest = CollaborationInterest.find(params[:id])
+  end
+
+  def set_tender
+    @tender = Core::Tender.find(params[:tender_id])
   end
 
   # Only allow a trusted parameter "white list" through.
