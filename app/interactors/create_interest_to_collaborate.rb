@@ -4,7 +4,7 @@ class CreateInterestToCollaborate
   def call
     unless context.user.valid_password?(context.params[:current_password])
       context.fail! errors: { error: :unprocessable_entity, error_description: 'Wrong password'},
-                    code: :unprocessable_entity
+                    code: :ok
     end
 
     tender = Core::Tender.where(id: interest_params[:tender_id]).first
