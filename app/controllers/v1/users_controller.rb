@@ -1,8 +1,8 @@
 class V1::UsersController < ApplicationController
   include ActionController::Serialization
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :change_user_role]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-                                           :my_compete_tenders, :my_tenders, :invited_by_me]
+                                           :my_compete_tenders, :my_tenders, :invited_by_me, :change_user_role]
 
   # GET /users
   def index
@@ -143,6 +143,14 @@ class V1::UsersController < ApplicationController
     render json: result, status: :ok
   end
 
+  def change_user_role
+    if @user.update(role_params)
+      render json: @user
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -165,5 +173,9 @@ class V1::UsersController < ApplicationController
 
   def password_params
     params.permit(:password, :password_confirmation, :current_password)
+  end
+
+  def role_params
+    params.permit(:role)
   end
 end

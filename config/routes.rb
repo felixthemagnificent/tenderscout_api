@@ -137,6 +137,9 @@ Rails.application.routes.draw do
       collection do
         get :search
       end
+      member do
+       put :change_user_role
+      end
       resources :profiles do
         member do
           post :avatar, to: 'profiles#create_avatar'
