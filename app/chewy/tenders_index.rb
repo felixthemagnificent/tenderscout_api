@@ -72,8 +72,8 @@ class TendersIndex < Chewy::Index
     field :ic_gsins, value: -> (tender) { tender.try(:gsins).try(:ids) }
     field :ic_nhs_e_classes, value: -> (tender) { tender.try(:nhs_e_classes).try(:ids) }
     field :ic_pro_classes, value: -> (tender) { tender.try(:pro_classes).try(:ids) }
-    field :buyers, value: -> (tender) do
+    field :buyers, value: -> (tender) {
         tender.buyers.map { |e| e.profiles.first.fullname }
-    end, analyzer: fullname
+    }, analyzer: :fullname
   end
 end
