@@ -129,7 +129,7 @@ class User < ApplicationRecord
       matches = []
       matches << { 
         match: { 
-          fullname:{
+          buyers:{
             query: search_field,
             analyzer: :fullname_search,
             operator: :and,

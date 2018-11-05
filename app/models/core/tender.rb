@@ -133,7 +133,7 @@ class Core::Tender < ApplicationRecord
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil,
-                  tender_countries: nil)
+                  tender_countries: nil, tender_buyers: nil)
 
     matches = []
     matches <<  {
@@ -145,6 +145,23 @@ class Core::Tender < ApplicationRecord
                     }
                   }
                 } if tender_value_to
+    matches << {
+                  buyers:{
+                        query:tender buyers,
+                        analyzer: :fullname_search,
+                        operator: :and,
+                        # prefix: 1
+                      }
+                  } if tender_buyers
+    matches << {
+                  range:
+                  {
+                    low_value:
+                    {
+                      gte: tender_value_from
+                    }
+                  }
+                } if tender_value_from
 
     matches << {
                   range:
@@ -200,6 +217,25 @@ class Core::Tender < ApplicationRecord
                   }
                 } unless tender_title.blank?
     if tender_keywords
+      match_keywords = []
+      tender_keywords.each do |e|
+        match_keywords << {
+          match:
+          {
+            description: {
+              value: e,
+              boost: 1.5
+            }
+          }
+        }
+      end
+      matches << {
+        bool: {
+            should: match_keywords
+          }
+      }
+    end
+    if tender_buyers
       match_keywords = []
       tender_keywords.each do |e|
         match_keywords << {
