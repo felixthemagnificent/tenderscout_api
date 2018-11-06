@@ -24,6 +24,12 @@ class User < ApplicationRecord
 
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
+  def my_tender_list
+    created_tenders = Core::Tender.where(creator: self).ids
+    participant_tenders = tenders.ids
+    result = Core::Tender.where(id: created_tenders + participant_tenders)
+  end
+
   def collaboration_tenders_statistic
     percent_array_result = []
     result = {}
@@ -123,7 +129,7 @@ class User < ApplicationRecord
       matches = []
       matches << { 
         match: { 
-          fullname:{
+          buyers:{
             query: search_field,
             analyzer: :fullname_search,
             operator: :and,

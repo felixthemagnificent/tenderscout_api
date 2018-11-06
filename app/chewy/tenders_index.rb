@@ -1,4 +1,61 @@
 class TendersIndex < Chewy::Index
+  settings analysis: {
+    tokenizer: {
+      customNgram: {
+        min_gram: "3",
+        type: "nGram",
+        max_gram: "15"
+      }
+    },
+    filter: {
+      custom_word_delimiter: {
+        type: 'word_delimiter',
+        generate_word_parts: true,    # "PowerShot" => "Power" "Shot", части одного слова становятся отдельными токенами
+        generate_number_parts: true,  # "500-42" => "500" "42"
+        catenate_words: false,        # "wi-fi" => "wifi"
+        catenate_numbers: false,      # "500-42" => "50042"
+        catenate_all: false,          # "wi-fi-4000" => "wifi4000"
+        split_on_case_change: true,   # "PowerShot" => "Power" "Shot"
+        preserve_original: false,     # "500-42" => "500-42" "500" "42"
+        split_on_numerics: true       # "j2se" => "j" "2" "se"
+      },
+      email: {
+        type: :pattern_capture,
+        preserve_original: 1,
+        patterns: [
+          "([^@]+)",
+          "(\\p{L}+)",
+          "(\\d+)",
+          "@(.+)",
+          "([^-@]+)"
+        ]
+      },
+      fullname: {
+        type:     :ngram,
+        min_gram: 3,
+        max_gram: 10
+      },
+    },
+    analyzer: {
+      split_tokens: {
+        tokenizer: :letter,
+        filter: [:lowercase],
+      },
+      fullname: {
+        tokenizer: :customNgram,
+        filter: [
+          :lowercase
+        ]
+      },
+      fullname_search: {
+        tokenizer: :letter,
+        filter: [
+          :lowercase
+        ]
+      }
+
+    }
+  }
 
   define_type Core::Tender.where('id > ?', (Core::Tender.last.id - 1000)) do
     field :title, value: -> (tender) { tender.title }
@@ -15,5 +72,8 @@ class TendersIndex < Chewy::Index
     field :ic_gsins, value: -> (tender) { tender.try(:gsins).try(:ids) }
     field :ic_nhs_e_classes, value: -> (tender) { tender.try(:nhs_e_classes).try(:ids) }
     field :ic_pro_classes, value: -> (tender) { tender.try(:pro_classes).try(:ids) }
+    field :buyers, value: -> (tender) {
+        tender.try(:organization).try(:name) || tender.try(:creator).try(:profiles).try(:first).try(:fullname)
+    }, analyzer: :fullname
   end
 end
