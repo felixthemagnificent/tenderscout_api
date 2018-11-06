@@ -1,5 +1,6 @@
 class V1::Scrapper::ScrapperController < ApplicationController
-
+  skip_before_action :authenticate_user!
+  
   def input
     parameters = params.to_unsafe_h
     unless parameters.empty?
