@@ -6,4 +6,4 @@ test:
 development:
   host: 'localhost:9200'
 production:
-  host: https://search-tenders-braincode-prod2-atgnxbdeynfs2yb3awipo3zt74.us-east-1.es.amazonaws.com:443'
+  host: 'https://search-tenders-braincode-prod2-atgnxbdeynfs2yb3awipo3zt74.us-east-1.es.amazonaws.com:443'
