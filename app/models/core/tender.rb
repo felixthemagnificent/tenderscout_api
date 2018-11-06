@@ -150,6 +150,7 @@ class Core::Tender < ApplicationRecord
                     buyers:{
                           query: tender_buyers,
                           analyzer: :fullname,
+                          operator: :and
                           # prefix: 1
                         }
                     }
