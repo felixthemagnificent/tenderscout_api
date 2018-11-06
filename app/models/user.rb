@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :tender_qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
   has_many :tender_award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
   has_many :assignments, :class_name => 'Marketplace::Assignment'
+  has_many :favourite_tenders
   enum role: [:admin, :standart, :basic, :free]
 
   after_initialize :set_default_role, :if => :new_record?

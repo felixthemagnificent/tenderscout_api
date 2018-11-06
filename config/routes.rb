@@ -45,6 +45,9 @@ Rails.application.routes.draw do
       end
       
       resources :tenders do
+        collection do
+          get :my_favourites
+        end
         member do
           put :publish
           get :compete
@@ -52,6 +55,8 @@ Rails.application.routes.draw do
           get :current_buyer_company_won_list
           get :complete_organization_tenders_list
           get :similar_opportunities_tenders
+          put :add_favourite, to: 'tenders#add_favourite'
+          delete :delete_favourite, to: 'tenders#delete_favourite'
         end
         member do
           scope :compete do
