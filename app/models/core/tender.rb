@@ -234,25 +234,7 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
-    if tender_buyers
-      match_keywords = []
-      tender_keywords.each do |e|
-        match_keywords << {
-          match:
-          {
-            description: {
-              value: e,
-              boost: 1.5
-            }
-          }
-        }
-      end
-      matches << {
-        bool: {
-            should: match_keywords
-          }
-      }
-    end
+
     if tender_countries
       match_countries = []
       tender_countries.each do |e|
