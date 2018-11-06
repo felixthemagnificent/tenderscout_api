@@ -1,4 +1,4 @@
-class FavouriteTender < ApplicationRecord
+class UserFavouriteTender < ApplicationRecord
   belongs_to :user
   belongs_to :tender, class_name: 'Core::Tender'
 

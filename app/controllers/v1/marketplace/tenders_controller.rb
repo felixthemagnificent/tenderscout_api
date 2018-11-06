@@ -111,19 +111,19 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def delete_favourite
-    current_user.favourite_tenders.where(tender: @tender).delete_all
+    current_user.user_favourite_tenders.where(tender: @tender).delete_all
 
     render json: @tender, status: :ok
   end
 
   def add_favourite
-    current_user.favourite_tenders.find_or_create_by tender: @tender
+    current_user.user_favourite_tenders.find_or_create_by tender: @tender
 
     render json: @tender, status: :ok
   end
 
   def my_favourites
-    @favourite_tenders = Core::Tender.where(id: current_user.favourite_tenders.pluck(:tender_id))
+    @favourite_tenders = current_user.favourite_tenders
     render json: @favourite_tenders
   end
 
