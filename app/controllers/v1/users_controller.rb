@@ -144,11 +144,15 @@ class V1::UsersController < ApplicationController
   end
 
   def change_user_role
+    if current_user.admin?
     if @user.update(role_params)
       render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end
+    else
+      render json: {error: 'You are not admin'}, status: 403
+      end
   end
 
   private
