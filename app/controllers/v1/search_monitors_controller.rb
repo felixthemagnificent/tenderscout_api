@@ -130,6 +130,6 @@ class V1::SearchMonitorsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def search_monitor_params
-      params.permit(:title, :tenderTitle, :valueFrom, :valueTo, codeList:[], countryList:[], buyerList:[], statusList:[], keywordList:[])
+      params.permit(:title, :tenderTitle, :valueFrom, :valueTo, :buyer, codeList:[], countryList:[], statusList:[], keywordList:[])
     end
 end
