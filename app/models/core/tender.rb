@@ -146,12 +146,13 @@ class Core::Tender < ApplicationRecord
                   }
                 } if tender_value_to
     matches << {
-                  buyers:{
-                        query:tender_buyers,
-                        analyzer: :fullname_search,
-                        operator: :and,
-                        # prefix: 1
-                      }
+                  match: {
+                    buyers:{
+                          query: tender_buyers,
+                          analyzer: :fullname,
+                          # prefix: 1
+                        }
+                    }
                   } if tender_buyers
     matches << {
                   range:
