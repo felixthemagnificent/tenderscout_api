@@ -29,6 +29,7 @@ class V1::SignUpRequestsController < ApplicationController
       return render json: @user.errors, status: :unprocessable_entity unless @user.save
       @profile = @user.profiles.new(profile_params)
       @profile.country = country
+      @profile.industry = industry
       return render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @profile.save
       @contacts =  @profile.contacts.new(contact_type: 'phone', value: contact_params[:phone])
       return render json: @user.errors, status: :unprocessable_entity, code: :unprocessable_entity unless @contacts.save
@@ -65,7 +66,7 @@ class V1::SignUpRequestsController < ApplicationController
   end
 
   def profile_params
-    params.permit(:fullname, :city)
+    params.permit(:fullname, :city, :tender_level, :number_public_contracts)
   end
 
   def contact_params

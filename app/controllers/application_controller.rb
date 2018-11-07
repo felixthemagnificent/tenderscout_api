@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::API
+  before_action :authenticate_user!, unless: :public_endpoint?
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   
-  before_action :authenticate_user!, unless: :public_endpoint?
+  
 
 
   protected

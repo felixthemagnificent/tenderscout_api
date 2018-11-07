@@ -7,8 +7,7 @@ class Marketplace::Assignment < ApplicationRecord
   private
 
   def check_available
-    if Marketplace::Assignment.where(assignable_type: assignable_type, assignable_id: assignable_id,
-                  user_id: user_id, collaboration_id: collaboration_id).present?
+    if Marketplace::Assignment.where(assignable_type: assignable_type, assignable_id: assignable_id, collaboration_id: collaboration_id).present?
       errors.add(:error, 'Assignment is already exist')
     end
   end

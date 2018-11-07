@@ -52,7 +52,7 @@ class Core::Tender < ApplicationRecord
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
-
+  has_many :user_favourite_tenders
   enum status: [:created, :open, :archived]
 
   scope :active, -> { active_on(DateTime.now) }
@@ -133,7 +133,7 @@ class Core::Tender < ApplicationRecord
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil,
-                  tender_countries: nil)
+                  tender_countries: nil, tender_buyers: nil)
 
     matches = []
     matches <<  {
@@ -145,6 +145,25 @@ class Core::Tender < ApplicationRecord
                     }
                   }
                 } if tender_value_to
+    matches << {
+                  match: {
+                    buyers:{
+                          query: tender_buyers,
+                          analyzer: :fullname,
+                          operator: :and
+                          # prefix: 1
+                        }
+                    }
+                  } if tender_buyers
+    matches << {
+                  range:
+                  {
+                    low_value:
+                    {
+                      gte: tender_value_from
+                    }
+                  }
+                } if tender_value_from
 
     matches << {
                   range:
@@ -218,6 +237,7 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
+
     if tender_countries
       match_countries = []
       tender_countries.each do |e|

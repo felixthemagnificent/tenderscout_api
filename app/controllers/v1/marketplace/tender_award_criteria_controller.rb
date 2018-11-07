@@ -8,6 +8,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # GET /marketplace/tender_award_criteria
   def index
     @marketplace_tender_award_criteria = @tender.award_criteries
+    @marketplace_tender_award_criteria.map{ |x| x.user_id = current_user.id }
 
     render json: @marketplace_tender_award_criteria
   end

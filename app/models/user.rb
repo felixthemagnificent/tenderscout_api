@@ -18,6 +18,8 @@ class User < ApplicationRecord
   has_many :tender_qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
   has_many :tender_award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
   has_many :assignments, :class_name => 'Marketplace::Assignment'
+  has_many :user_favourite_tenders
+  has_many :favourite_tenders, through: :user_favourite_tenders, source: :tender, class_name: 'Core::Tender'
   enum role: [:admin, :standart, :basic, :free]
 
   after_initialize :set_default_role, :if => :new_record?
@@ -129,7 +131,7 @@ class User < ApplicationRecord
       matches = []
       matches << { 
         match: { 
-          fullname:{
+          buyers:{
             query: search_field,
             analyzer: :fullname_search,
             operator: :and,
