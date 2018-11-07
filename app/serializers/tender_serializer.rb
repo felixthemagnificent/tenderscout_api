@@ -82,6 +82,14 @@ class TenderSerializer < ActiveModel::Serializer
     CollaboratorTenderStatus.score(user: current_user, tender: object)
   end
 
+  attribute(:favourite) do
+    if UserFavouriteTender.where(tender_id: object.id, user_id: current_user.id).present?
+      true
+    else
+      false
+    end
+  end
+
   def current_user
     @instance_options[:current_user] || @instance_options[:scope]
   end
