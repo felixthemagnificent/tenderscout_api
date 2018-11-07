@@ -4,6 +4,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
   after_action :verify_authorized, except: [:bulk_create]
   # GET /marketplace/tender_award_criteria_sections
   def index
+    ::Marketplace::TenderAwardCriterium.current_user_id(current_user.id)
     @marketplace_tender_award_criteria_sections = @tender.award_criteria_sections
     authorize @marketplace_tender_award_criteria_sections
     render json: @marketplace_tender_award_criteria_sections
