@@ -4,7 +4,7 @@ module AssignmentNotifier
       user = User.find(assignment.user_id)
       profile = User.find(assignment.user_id).profiles.first
       tender = criteria.section.tender
-      compete_status_url = request.base_url + "/v1/marketplace/tenders/#{tender.id}/bid-status"
+      compete_status_url = TENDERSCOUTHOST + "/v1/marketplace/tenders/#{tender.id}/bid-status"
     CustomPostmarkMailer.template_email(
         user.email,
         Rails.configuration.mailer['templates']['assignment_invite'],
