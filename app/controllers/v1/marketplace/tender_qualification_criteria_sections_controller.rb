@@ -5,9 +5,9 @@ class V1::Marketplace::TenderQualificationCriteriaSectionsController < Applicati
 
   # GET /marketplace/tender_qualification_criteria_sections
   def index
-    authorize ::Marketplace::TenderQualificationCriteriaSection
+    ::Marketplace::TenderQualificationCriteria.current_user_id(current_user.id)
     @marketplace_tender_qualification_criteria_sections = @tender.qualification_criteria_sections
-
+    authorize @marketplace_tender_qualification_criteria_sections
     render json: @marketplace_tender_qualification_criteria_sections
   end
 

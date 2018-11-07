@@ -8,9 +8,9 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
                                             :create_assign, :update_assign, :delete_assign]
   # GET /marketplace/tender_qualification_criterias
   def index
-    authorize ::Marketplace::TenderQualificationCriteria
     @marketplace_tender_qualification_criterias = @tender.qualification_criterias.all
-
+    @marketplace_tender_qualification_criterias.map{ |x| x.user_id = current_user.id }
+    authorize @marketplace_tender_qualification_criterias
     render json: @marketplace_tender_qualification_criterias
   end
 
