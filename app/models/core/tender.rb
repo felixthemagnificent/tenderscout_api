@@ -52,7 +52,7 @@ class Core::Tender < ApplicationRecord
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
-
+  has_many :user_favourite_tenders
   enum status: [:created, :open, :archived]
 
   scope :active, -> { active_on(DateTime.now) }

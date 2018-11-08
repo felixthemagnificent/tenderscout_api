@@ -2,10 +2,11 @@ class V1::Marketplace::TendersController < ApplicationController
   include ActionController::Serialization
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
-                                    :similar_opportunities_tenders]
+                                    :similar_opportunities_tenders, :add_favourite, :delete_favourite]
   after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
-                                            :current_buyer_company_won_list, :similar_opportunities_tenders]
+                                            :current_buyer_company_won_list, :similar_opportunities_tenders,
+                                            :add_favourite, :delete_favourite, :my_favourites]
   # GET /profiles
   def index
     authorize Core::Tender
@@ -107,6 +108,23 @@ class V1::Marketplace::TendersController < ApplicationController
   def similar_opportunities_tenders
     result =  @tender.similar_opportunities.objects.limit(10)
     render json: result
+  end
+
+  def delete_favourite
+    current_user.user_favourite_tenders.where(tender: @tender).delete_all
+
+    render json: @tender, status: :ok
+  end
+
+  def add_favourite
+    current_user.user_favourite_tenders.find_or_create_by tender: @tender
+
+    render json: @tender, status: :ok
+  end
+
+  def my_favourites
+    @favourite_tenders = current_user.favourite_tenders
+    render json: @favourite_tenders
   end
 
   private
