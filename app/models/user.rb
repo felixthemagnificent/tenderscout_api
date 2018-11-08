@@ -58,11 +58,11 @@ class User < ApplicationRecord
   end
   
   def tender_qualification_criteria_answer_completed_count(tender)
-    self.tender_qualification_criteria_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
+    self.tender_qualification_criteria_answers.where(tender_id: tender.id).where(closed: true).count
   end
 
   def tender_award_criteria_answer_completed_count(tender)
-    self.tender_award_criteria_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
+    self.tender_award_criteria_answers.where(tender_id: tender.id).where(closed: true).count
   end
 
   def calculate_tender_complete_percent(qualification_criteria_count,criteria_count,

@@ -113,7 +113,11 @@ class Core::Tender < ApplicationRecord
         {
           id: e.id,
           user_id: e.user.id,
-          answer_id: e.bid_no_bid_answer.id
+          answer_id: e.bid_no_bid_answer.id,
+          answer_text: e.bid_no_bid_answer.answer_text,
+          created_at: e.created_at,
+          order: e.bid_no_bid_answer.order,
+          weight: e.bid_no_bid_answer.weight
         }
       end
       _tmp[:question] = {

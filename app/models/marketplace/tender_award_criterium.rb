@@ -4,13 +4,6 @@ class Marketplace::TenderAwardCriterium < ApplicationRecord
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_many :assignments, class_name: 'Marketplace::Assignment', as: :assignable, dependent: :destroy
-  attr_accessor :user_id
-  @@current_user_id = nil
-  def user_id
-    @@current_user_id
-  end
-  def self.current_user_id(user_id)
-    @@current_user_id = user_id
-  end
+
   include Assignable
 end
