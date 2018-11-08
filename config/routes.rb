@@ -175,6 +175,7 @@ Rails.application.routes.draw do
         put :favourite, to: 'search_monitors#add_favourite'
         delete :favourite, to: 'search_monitors#delete_favourite'
         get :result
+        get :export_monitor
       end
       collection do
         get :all_result, to: 'search_monitors#all_results'
