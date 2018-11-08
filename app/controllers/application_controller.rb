@@ -1,9 +1,16 @@
 class ApplicationController < ActionController::API
   before_action :authenticate_user!, unless: :public_endpoint?
+  around_action :set_current_user
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-  
-  
+
+  def set_current_user
+    Current.user = current_user
+    yield
+  ensure
+    # to address the thread variable leak issues in Puma/Thin webserver
+    Current.user = nil
+  end
 
 
   protected

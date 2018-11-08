@@ -9,7 +9,6 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   # GET /marketplace/tender_qualification_criterias
   def index
     @marketplace_tender_qualification_criterias = @tender.qualification_criterias.all
-    @marketplace_tender_qualification_criterias.map{ |x| x.user_id = current_user.id }
     authorize @marketplace_tender_qualification_criterias
     render json: @marketplace_tender_qualification_criterias
   end
@@ -110,7 +109,6 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_qualification_criteria
       @marketplace_tender_qualification_criteria = ::Marketplace::TenderQualificationCriteria.find(params[:id])
-      @marketplace_tender_qualification_criteria.user_id = current_user.id
     end
 
     def set_tender

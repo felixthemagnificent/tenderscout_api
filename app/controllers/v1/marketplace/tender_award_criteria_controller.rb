@@ -8,7 +8,6 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # GET /marketplace/tender_award_criteria
   def index
     @marketplace_tender_award_criteria = @tender.award_criteries
-    @marketplace_tender_award_criteria.map{ |x| x.user_id = current_user.id }
 
     render json: @marketplace_tender_award_criteria
   end
@@ -109,7 +108,6 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_tender_award_criterium
     @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(params[:id])
-    @marketplace_tender_award_criterium.user_id = current_user
   end
 
   # Only allow a trusted parameter "white list" through.
