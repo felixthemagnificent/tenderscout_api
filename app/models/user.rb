@@ -23,7 +23,7 @@ class User < ApplicationRecord
   enum role: [:admin, :standart, :basic, :free]
 
   after_initialize :set_default_role, :if => :new_record?
-
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   def my_tender_list
