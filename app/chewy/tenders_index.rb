@@ -78,5 +78,3 @@ class TendersIndex < Chewy::Index
     }, analyzer: :fullname
   end
 end
-
-}
