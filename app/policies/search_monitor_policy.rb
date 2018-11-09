@@ -42,7 +42,7 @@ class SearchMonitorPolicy
     index?
   end
 
-  def export_monitor?
+  def export?
     index?
   end
 

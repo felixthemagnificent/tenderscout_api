@@ -1,6 +1,6 @@
 class V1::SearchMonitorsController < ApplicationController
   before_action :set_search_monitor, only: [:show, :update, :destroy, :result, :archive, :share,
-                                            :add_favourite, :delete_favourite, :export_monitor]
+                                            :add_favourite, :delete_favourite, :export]
   after_action :verify_authorized, except: [:delete_favourite, :add_favourite]
   respond_to :json
   # GET /search_monitors
@@ -98,10 +98,9 @@ class V1::SearchMonitorsController < ApplicationController
     @search_monitor.destroy
   end
 
-  def export_monitor
+  def export
     authorize SearchMonitor
-    results = @search_monitor.results.page(1).per(1000).objects
-   SearchMonitor::MonitorExport.perform_later results
+    SearchMonitor::MonitorExport.perform_later @search_monitor
   end
 
 

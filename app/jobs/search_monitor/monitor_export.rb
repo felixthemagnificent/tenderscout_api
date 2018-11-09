@@ -4,7 +4,7 @@ class SearchMonitor::MonitorExport < ApplicationJob
   queue_as :default
 
   def perform(monitor)
-    results = monitor.results.page(1).per(1000).objects.map(&:id)
+    results = monitor.results.page(1).per(1000).objects
     filename = Rails.root.join('public') + SearchMonitor::MonitorExport.temp_name('monitor_export_', 'csv')
     header = ['Title', 'Description', 'Buyer','Low Value', 'High Value', 'Dispatch Date', 'Submission Date']
     CSV.open(filename, "wb") do |csv|
@@ -17,7 +17,7 @@ class SearchMonitor::MonitorExport < ApplicationJob
   end
 
   def send_file(monitor, file)
-    tokens = Doorkeeper::AccessToken.where(resource_owner_id: monitor.last.user.id).map(&:token) 
+    tokens = Doorkeeper::AccessToken.where(resource_owner_id: monitor.user.id).map(&:token) 
     tokens.each do |token|
       ActionCable.server.broadcast "search_export_#{token}_channel", file
     end
