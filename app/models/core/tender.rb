@@ -123,6 +123,7 @@ class Core::Tender < ApplicationRecord
       _tmp[:question] = {
         id: question.id,
         question_text: question.question_text,
+        title: question.title,
         available_answers: answers,
         answered: answered
       }
