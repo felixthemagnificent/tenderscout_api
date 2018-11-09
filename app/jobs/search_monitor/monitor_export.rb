@@ -6,7 +6,7 @@ class SearchMonitor::MonitorExport < ApplicationJob
   def perform(results)
     temporary_name = SearchMonitor::MonitorExport.temp_name 'monitor_export_'
     header = ['Title', 'Description', 'Buyer','Low Value', 'High Value', 'Dispatch Date', 'Submission Date']
-    Tempfile.open([temporary_name, ".csv"],Rails.root.join('tmp')) do |outfile|
+    Tempfile.open([temporary_name, ".csv"],Rails.root.join('public')) do |outfile|
       CSV.open(outfile, "wb") do |csv|
       csv << header
       results.each do |e|
