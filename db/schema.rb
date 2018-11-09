@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181106094312) do
+ActiveRecord::Schema.define(version: 20181109204010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1037,6 +1037,7 @@ ActiveRecord::Schema.define(version: 20181106094312) do
     t.datetime "updated_at", null: false
     t.boolean "is_archived", default: false
     t.string "buyer"
+    t.string "export"
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 

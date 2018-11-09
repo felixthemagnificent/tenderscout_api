@@ -1,4 +1,5 @@
 class SearchMonitor < ApplicationRecord
+  mount_uploader :export, MonitorExportUploader
   belongs_to :user
   
   def results
