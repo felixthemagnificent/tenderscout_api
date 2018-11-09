@@ -10,7 +10,7 @@ class SearchMonitor::MonitorExport < ApplicationJob
       CSV.open(outfile, "wb") do |csv|
       csv << header
       results.each do |e|
-        csv << [e.title,e.description,e.organization,e.estimated_low_value,e.estimated_high_value,e.dispatch_date,e.submission_date]
+        csv << [e.title,e.description,e.organization_name,e.estimated_low_value,e.estimated_high_value,e.dispatch_date,e.submission_date]
       end
     end
     end
