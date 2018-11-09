@@ -67,7 +67,7 @@ class Core::Tender < ApplicationRecord
   validate :q_and_a_deadlines
   validate :q_and_a_later_dispatch
   scope :with_relations, -> do
-    relations = [:currency, :procedure, :classification, :additional_information, :documents, organization: [ :country ] ]
+    relations = [:cpvs, :naicses, :ngips, :unspsces, :gsins, :nhs_e_classes, :pro_classes, :country, organization:[:country] ]
     includes(relations).references(*relations)
   end
 
