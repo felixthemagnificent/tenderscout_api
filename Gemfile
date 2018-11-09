@@ -71,6 +71,7 @@ gem "zendesk_api"
 gem 'pundit'
 gem 'parser'
 gem 'unparser'
+gem 'parallel'
 
 group :development do
   gem 'capistrano'
