@@ -100,8 +100,8 @@ class V1::SearchMonitorsController < ApplicationController
 
   def export_monitor
     authorize SearchMonitor
-    p @search_monitor
-    #SearchMonitor::MonitorExport.perform
+    results = @search_monitor.results.page(1).per(1000).objects
+   SearchMonitor::MonitorExport.perform_later results
   end
 
 
