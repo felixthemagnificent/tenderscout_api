@@ -69,6 +69,8 @@ gem "mini_magick"
 gem 'sidekiq'
 gem "zendesk_api"
 gem 'pundit'
+gem 'parser'
+gem 'unparser'
 
 group :development do
   gem 'capistrano'
