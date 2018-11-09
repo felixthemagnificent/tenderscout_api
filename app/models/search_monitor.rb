@@ -2,6 +2,10 @@ class SearchMonitor < ApplicationRecord
   mount_uploader :export, MonitorExportUploader
   belongs_to :user
   
+  def downloadable_export_url
+    self.export.url(query: {"response-content-disposition" => "attachment;"})
+  end
+
   def results
     Core::Tender.search(
         tender_title: tenderTitle,

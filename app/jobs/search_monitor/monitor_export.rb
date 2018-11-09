@@ -21,7 +21,7 @@ class SearchMonitor::MonitorExport < ApplicationJob
     monitor.save!
     tokens = Doorkeeper::AccessToken.where(resource_owner_id: monitor.user.id).map(&:token) 
     tokens.each do |token|
-      ActionCable.server.broadcast "search_export_#{token}_channel", monitor.export.url
+      ActionCable.server.broadcast "search_export_#{token}_channel", monitor.downloadable_export_url
     end
   end
 
