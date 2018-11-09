@@ -1,16 +1,6 @@
 Rails.application.routes.draw do
-  # namespace :marketplace do
-  #   resources :tender_criteria_sections
-  # end
-  # namespace :marketplace do
-  #   resources :tender_committees
-  # end
-  # namespace :marketplace do
-  #   resources :tender_criteria
-  # end
-  # namespace :marketplace do
-  #   resources :tender_qualification_criterias
-  # end
+  mount ActionCable.server => '/cable'
+  
   resources :contacts
   # use_doorkeeper
   devise_for :users,controllers: { confirmations: 'users/confirmations'}, defaults: { format: :json }
