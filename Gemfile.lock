@@ -15,6 +15,14 @@ GIT
       capistrano-bundler
       puma (~> 3.4)
 
+GIT
+  remote: https://github.com/seuros/capistrano-sidekiq.git
+  revision: b0a9e03cdaaf0eb9f668d4ae721a149fd155cdd4
+  specs:
+    capistrano-sidekiq (1.0.2)
+      capistrano (>= 3.9.0)
+      sidekiq (>= 3.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -331,6 +339,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
+  capistrano-sidekiq!
   capistrano3-puma!
   carrierwave (~> 1.0)
   chewy
