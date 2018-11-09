@@ -23,7 +23,7 @@ class User < ApplicationRecord
   enum role: [:admin, :standart, :basic, :free]
 
   after_initialize :set_default_role, :if => :new_record?
-
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
   def my_tender_list
@@ -58,11 +58,11 @@ class User < ApplicationRecord
   end
   
   def tender_qualification_criteria_answer_completed_count(tender)
-    self.tender_qualification_criteria_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
+    self.tender_qualification_criteria_answers.where(tender_id: tender.id).where(closed: true).count
   end
 
   def tender_award_criteria_answer_completed_count(tender)
-    self.tender_award_criteria_answers.where(tender_id: tender.id).where(pass_fail: true).where.not(score: nil).count
+    self.tender_award_criteria_answers.where(tender_id: tender.id).where(closed: true).count
   end
 
   def calculate_tender_complete_percent(qualification_criteria_count,criteria_count,

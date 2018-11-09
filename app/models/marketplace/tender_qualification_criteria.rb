@@ -4,13 +4,5 @@ class Marketplace::TenderQualificationCriteria < ApplicationRecord
   has_many :comments, as: :commentable
   has_many :notes, as: :notable
   has_many :assignments, class_name: 'Marketplace::Assignment', as: :assignable
-  attr_accessor :user_id
-  @@current_user_id = nil
-  def user_id
-    @@current_user_id
-  end
-  def self.current_user_id(user_id)
-    @@current_user_id = user_id
-  end
   include Assignable
 end
