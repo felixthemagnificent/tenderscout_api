@@ -25,6 +25,7 @@ class GetCollaborations
       profiles = profiles.where(profile_type: Profile.profile_types[index_params[:type]])
     end
     profiles.each { |item| context.results.push(item) }
+    context.results = profiles
   end
 
   private
