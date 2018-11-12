@@ -139,7 +139,7 @@ class V1::UsersController < ApplicationController
   end
 
   def my_compete_tenders
-    result = current_user.tenders
+    result = current_user.tenders.uniq
     render json: result, status: :ok
   end
 
