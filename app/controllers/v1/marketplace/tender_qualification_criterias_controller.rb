@@ -86,7 +86,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   def create_assign
     @assignment = @marketplace_tender_qualification_criteria.assignments.new(assignments_params)
     if @assignment.save
-      render json: @assignment, status: :created
+      render json: @assignment, status: :ok
     else
       render json: @assignment.errors, status: :unprocessable_entity
     end

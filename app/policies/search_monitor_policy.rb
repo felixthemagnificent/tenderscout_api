@@ -42,6 +42,10 @@ class SearchMonitorPolicy
     index?
   end
 
+  def export?
+    index?
+  end
+
 
 
   def destroy?
