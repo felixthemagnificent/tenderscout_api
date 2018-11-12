@@ -1,5 +1,6 @@
 class V1::SearchMonitorsController < ApplicationController
-  before_action :set_search_monitor, only: [:show, :update, :destroy, :result, :archive, :share, :add_favourite, :delete_favourite]
+  before_action :set_search_monitor, only: [:show, :update, :destroy, :result, :archive, :share,
+                                            :add_favourite, :delete_favourite, :export]
   after_action :verify_authorized, except: [:delete_favourite, :add_favourite]
   respond_to :json
   # GET /search_monitors
@@ -17,7 +18,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   def preview
     authorize SearchMonitor
-    data, count = process_search(search_monitor_params)
+    data, count = preview_search(search_monitor_params)
     render json: {
       data: data,
       count: count
@@ -60,13 +61,15 @@ class V1::SearchMonitorsController < ApplicationController
 
   def result
     authorize SearchMonitor
-    search_params = @search_monitor.as_json({except: [:created_at, :updated_at, :id, :user_id]}).symbolize_keys
-    data, count = process_search(search_params)
+    results = @search_monitor.results
+    data, count = serialize_core_tenders_search(results)
     render json: {
       data: data,
       count: count
     }, current_user: current_user
   end
+
+
 
   # POST /search_monitors
   def create
@@ -95,34 +98,49 @@ class V1::SearchMonitorsController < ApplicationController
     @search_monitor.destroy
   end
 
+  def export
+    authorize SearchMonitor
+    SearchMonitor::MonitorExport.perform_later @search_monitor
+  end
+
 
   private
-    def process_search(search_monitor_params)
+    def serialize_core_tenders_search(results)
+      tenders = results.page(params[:page]).per(params[:page_size]).objects.map do |tender|
+        # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }
+        # ActiveModelSerializers::SerializableResource.new(tender, options).serializer.attributes
+        TenderSerializer.new(tender, current_user: current_user, search_monitor: @search_monitor).attributes
+      end
+      return tenders, results.count
+    end
+
+    def preview_search(search_monitor_params)
       tender_title = search_monitor_params[:tenderTitle]
       tender_keywords = search_monitor_params[:keywordList]
       tender_value_from = search_monitor_params[:valueFrom]
       tender_value_to = search_monitor_params[:valueTo]
       tender_countries = search_monitor_params[:countryList]
       tender_buyers = search_monitor_params[:buyer]
-
+    
       cur_page = params[:page]
       page_size = params[:page_size]
-
+    
       results = Core::Tender.search(
-        tender_title: tender_title, 
-        tender_keywords: tender_keywords, 
-        tender_value_from: tender_value_from, 
+        tender_title: tender_title,
+        tender_keywords: tender_keywords,
+        tender_value_from: tender_value_from,
         tender_value_to: tender_value_to,
         tender_countries: tender_countries,
         tender_buyers: tender_buyers
         )
-      tenders = results.page(cur_page).per(page_size).objects.map do |tender| 
+      tenders = results.page(cur_page).per(page_size).objects.map do |tender|
         # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }
         # ActiveModelSerializers::SerializableResource.new(tender, options).serializer.attributes
-        TenderSerializer.new(tender, current_user: current_user, search_monitor: @search_monitor).attributes 
+        TenderSerializer.new(tender, current_user: current_user, search_monitor: @search_monitor).attributes
       end
       return tenders, results.count
     end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_search_monitor
       @search_monitor = SearchMonitor.find(params[:id])

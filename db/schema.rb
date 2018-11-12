@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181106080925) do
+ActiveRecord::Schema.define(version: 20181109204010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1037,6 +1037,7 @@ ActiveRecord::Schema.define(version: 20181106080925) do
     t.datetime "updated_at", null: false
     t.boolean "is_archived", default: false
     t.string "buyer"
+    t.string "export"
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 
@@ -1076,6 +1077,15 @@ ActiveRecord::Schema.define(version: 20181106080925) do
     t.integer "status"
     t.index ["tender_id"], name: "index_suppliers_on_tender_id"
     t.index ["user_id"], name: "index_suppliers_on_user_id"
+  end
+
+  create_table "user_favourite_tenders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "tender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tender_id"], name: "index_user_favourite_tenders_on_tender_id"
+    t.index ["user_id"], name: "index_user_favourite_tenders_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -1205,4 +1215,6 @@ ActiveRecord::Schema.define(version: 20181106080925) do
   add_foreign_key "sign_up_requests", "industries"
   add_foreign_key "suppliers", "core_tenders", column: "tender_id"
   add_foreign_key "suppliers", "users"
+  add_foreign_key "user_favourite_tenders", "core_tenders", column: "tender_id"
+  add_foreign_key "user_favourite_tenders", "users"
 end
