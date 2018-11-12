@@ -81,7 +81,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
     @assignment = @marketplace_tender_award_criterium.assignments.new(assignments_params)
     if @assignment.save
       send_notice(@assignment, @marketplace_tender_award_criterium)
-      render json: @assignment, status: :created
+      render json: @assignment, status: :ok
     else
       render json: @assignment.errors, status: :unprocessable_entity
     end
