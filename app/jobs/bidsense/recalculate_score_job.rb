@@ -3,18 +3,18 @@ class Bidsense::RecalculateScoreJob < ApplicationJob
 
   def perform(profile: nil, tender: nil)
 
-    return unless profile or tender
-    if profile && tender
-      update_results(profile, tender)
-    elsif profile
-      Core::Tender.all.each do |tender|
-        update_results(profile, tender)
-      end
-    elsif tender
-      Profile.all.each do |profile|
-        update_results(profile, tender)
-      end
-    end  
+    # return unless profile or tender
+    # if profile && tender
+    #   update_results(profile, tender)
+    # elsif profile
+    #   Core::Tender.all.each do |tender|
+    #     update_results(profile, tender)
+    #   end
+    # elsif tender
+    #   Profile.all.each do |profile|
+    #     update_results(profile, tender)
+    #   end
+    # end  
   end
 
   private
