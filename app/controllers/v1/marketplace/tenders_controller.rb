@@ -106,7 +106,8 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def similar_opportunities_tenders
-    result =  @tender.similar_opportunities.objects.limit(10)
+    ids =  @tender.similar_opportunities.objects.limit(10).map(&:id).delete_if { |e| e == @tender.id }
+    result = Core::Tender.where(id: ids)
     render json: result
   end
 
