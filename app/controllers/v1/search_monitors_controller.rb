@@ -27,7 +27,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   def all_results
     authorize SearchMonitor
-    data, count = process_search({})
+    data, count = preview_search({})
     render json: {
       data: data,
       count: count
