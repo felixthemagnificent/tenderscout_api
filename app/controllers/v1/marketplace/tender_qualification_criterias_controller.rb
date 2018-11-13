@@ -86,6 +86,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   def create_assign
     @assignment = @marketplace_tender_qualification_criteria.assignments.new(assignments_params)
     if @assignment.save
+      send_notice(@assignment, @marketplace_tender_qualification_criteria)
       render json: @assignment, status: :ok
     else
       render json: @assignment.errors, status: :unprocessable_entity
@@ -95,6 +96,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   def update_assign
     @assignment = @marketplace_tender_qualification_criteria.assignment
     if @assignment.update(assignments_params)
+      send_notice(@assignment, @marketplace_tender_qualification_criteria)
       render json: @assignment
     else
       render json: @assignment.errors, status: :unprocessable_entity

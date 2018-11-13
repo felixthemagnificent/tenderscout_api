@@ -18,7 +18,7 @@ module AssignmentNotifier
             company_name: Rails.configuration.mailer['company_name'],
             company_address: Rails.configuration.mailer['company_address']
       }
-    ).deliver_now
+    ).deliver_later
       end
 
   end
