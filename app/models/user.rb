@@ -3,7 +3,7 @@ class User < ApplicationRecord
   include Pageable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable,
+  devise :database_authenticatable, :async, 
          :recoverable, :rememberable, :trackable, :validatable,
          :doorkeeper, :confirmable, :registerable
 

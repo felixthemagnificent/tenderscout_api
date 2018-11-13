@@ -72,6 +72,7 @@ gem 'pundit'
 gem 'parser'
 gem 'unparser'
 gem 'parallel'
+gem 'devise-async'
 
 group :development do
   gem 'capistrano'
