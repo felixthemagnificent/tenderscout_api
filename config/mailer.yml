@@ -1,5 +1,5 @@
 default: &default
-  from: 'support@tenderscout.com'
+  from: 'tony@tenderscout.com' #FIXME support@tenderscout.com
   company_name: 'Company Name'
   company_address: 'Company Address'
   admin_email: 'anton.rogachevskyi@braincode.xyz'
