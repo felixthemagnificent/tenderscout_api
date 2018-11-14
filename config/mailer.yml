@@ -7,6 +7,7 @@ default: &default
   support: 'http://tenderscout.support.com'
   tender_management_url: 'http://tender_management_url'
   api_url: 'http://api.dev.tenderscout.braincode.xyz'
+  reset_password_link: 'http://dev.tenderscout.braincode.xyz/auth/confirm/%{token}'
   admin_url: 'http://admin.dev.tenderscout.braincode.xyz'
   templates:
     supplier_invite: '8923197'
@@ -39,6 +40,7 @@ production:
   admin_email: 'anton.rogachevskyi@braincode.xyz'
   product_url: 'http://hub.tenderscout.com'
   support: 'http://tenderscout.support.com'
+  reset_password_link: 'http://hub.tenderscout.com/auth/confirm/%{token}'
   tender_management_url: 'http://tender_management_url'
   api_url: 'http://api.hub.tenderscout.com'
   admin_url: 'http://admin.hub.tenderscout.com'

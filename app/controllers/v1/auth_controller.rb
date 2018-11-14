@@ -60,6 +60,17 @@ class V1::AuthController < Doorkeeper::TokensController
   def send_reset_password_instructions(user)
     user.send(:set_reset_password_token)
     token = user.reset_password_token
-
+    CustomPostmarkMailer.template_email(
+      user.email,
+      Rails.configuration.mailer['templates']['password_reset'],
+      {
+        user_name: user.profiles.first.fullname,
+        product_url: Rails.configuration.mailer['product_url'],
+        support_url: Rails.configuration.mailer['support'],
+        company_name: Rails.configuration.mailer['company_name'],
+        reset_password_link: Rails.configuration.mailer['reset_password_link'] % {token: token},
+        company_address: Rails.configuration.mailer['company_address']
+      }
+    ).deliver_later
   end
 end
