@@ -130,6 +130,7 @@ Rails.application.routes.draw do
     resources :assistances
     resources :users do
       collection do
+        get :available_in_marketplace
         get :search
       end
       member do

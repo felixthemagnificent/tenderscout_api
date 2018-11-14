@@ -12,6 +12,12 @@ class V1::UsersController < ApplicationController
     render json: {count: users.count, data: @users}
   end
 
+  def available_in_marketplace
+    users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user)
+    users = users.my_paginate(paginate_params)
+    render json: {count: users.count, data: users}
+  end
+
   def my_tenders
     my_tenders = current_user.my_tender_list
     status = params[:status]
