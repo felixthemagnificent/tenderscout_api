@@ -34,7 +34,7 @@ module TenderscoutApi
     config.api_only = true
     config.mailer = config_for(:mailer)
     config.active_job.queue_adapter = :sidekiq
-    config.action_mailer.delivery_method = :postmark
-    config.action_mailer.postmark_settings = { :api_token => "890762cf-9b67-432c-a151-53bbab09b1d3" }
+    # config.action_mailer.delivery_method = :postmark
+    # config.action_mailer.postmark_settings = { :api_token => "890762cf-9b67-432c-a151-53bbab09b1d3" }
   end
 end
