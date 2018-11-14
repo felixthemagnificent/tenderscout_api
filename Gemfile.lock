@@ -116,9 +116,6 @@ GEM
       railties (>= 4.1.0, < 5.2)
       responders
       warden (~> 1.2.3)
-    devise-async (1.0.0)
-      activejob (>= 5.0)
-      devise (>= 4.0)
     devise-doorkeeper (1.1.2)
       devise
       doorkeeper
@@ -365,7 +362,6 @@ DEPENDENCIES
   chewy
   database_cleaner
   devise
-  devise-async
   devise-doorkeeper
   factory_bot_rails
   faker (~> 1.6, >= 1.6.3)
