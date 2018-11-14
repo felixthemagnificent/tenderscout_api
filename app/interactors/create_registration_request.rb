@@ -19,8 +19,6 @@ class CreateRegistrationRequest
 
     context.fail! errors: context.request.errors, code: :unprocessable_entity unless context.request.save
 
-    p Rails.configuration.mailer
-
     CustomPostmarkMailer.template_email(
         Rails.configuration.mailer['admin_email'],
         Rails.configuration.mailer['templates']['sign_up_request'],
@@ -31,7 +29,7 @@ class CreateRegistrationRequest
             company_name: Rails.configuration.mailer['company_name'],
             company_address: Rails.configuration.mailer['company_address']
         }
-    ).deliver_now
+    ).deliver_later
   end
 
   private

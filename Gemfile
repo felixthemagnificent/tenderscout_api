@@ -61,7 +61,6 @@ gem 'active_model_serializers'
 gem 'chewy'
 gem 'kaminari'
 gem 'interactor'
-# gem 'postmark-rails'
 gem 'postmark_mailer', github: 'scienceexchange/postmark_mailer'
 gem 'carrierwave', '~> 1.0'
 gem "fog-aws"
@@ -72,7 +71,6 @@ gem 'pundit'
 gem 'parser'
 gem 'unparser'
 gem 'parallel'
-gem 'devise-async'
 
 group :development do
   gem 'capistrano'

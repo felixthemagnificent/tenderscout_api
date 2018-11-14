@@ -70,7 +70,7 @@ class PublishTender
         context.tender.creator.email,
         Rails.configuration.mailer['templates']['tender_publish'],
         model
-      ).deliver_now
+      ).deliver_later
     end
 
     unless context.tender.collaborators.present?
@@ -82,7 +82,7 @@ class PublishTender
             user.email,
             Rails.configuration.mailer['templates']['tender_publish'],
             model
-          ).deliver_now
+          ).deliver_later
         end
       end
     end

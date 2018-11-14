@@ -25,7 +25,7 @@ class V1::AuthController < Doorkeeper::TokensController
 
   def forget_password
     user = User.where(email: params[:email]).first
-    user.send_reset_password_instructions if user
+    send_reset_password_instructions(user) if user
     render json: nil, status: :ok
   end
 
@@ -54,5 +54,12 @@ class V1::AuthController < Doorkeeper::TokensController
         error: 'Reset token is invalid'
       }, status: 500
     end
+  end
+  
+  private
+  def send_reset_password_instructions(user)
+    user.send(:set_reset_password_token)
+    token = user.reset_password_token
+
   end
 end
