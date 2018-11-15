@@ -76,7 +76,7 @@ class Core::Tender < ApplicationRecord
       :awarded
     elsif self.cancelled_on
       :cancelled
-    elsif self.submission_date > Time.now
+    elsif self.submission_date && self.submission_date > Time.now
       :open
     else
       :closed
