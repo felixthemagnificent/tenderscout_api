@@ -13,8 +13,7 @@ class V1::UsersController < ApplicationController
   end
 
   def available_in_marketplace
-    @user = current_user
-    authorize @user
+    authorize User
     users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
     users = User.where(id: users)
     users = users.my_paginate(paginate_params)
