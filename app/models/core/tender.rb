@@ -71,6 +71,18 @@ class Core::Tender < ApplicationRecord
     includes(relations).references(*relations)
   end
 
+  def status
+    if self.awarded_on
+      :awarded
+    elsif self.cancelled_on
+      :cancelled
+    elsif self.submission_date > Time.now
+      :open
+    else
+      :closed
+    end
+  end
+
   def matched_competitor_bidsense
     self.bidsense_results.where('average_score > ?', 0.6)
   end
@@ -138,29 +150,35 @@ class Core::Tender < ApplicationRecord
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil,
-                  tender_countries: nil, tender_buyers: nil)
+                  tender_countries: nil, tender_buyers: nil, tender_statuses: [])
 
     matches = []
-    matches <<  {
-                  range:
-                  {
-                    high_value:
+    if tender_value_to
+      matches <<  {
+                    range:
                     {
-                     lte: tender_value_to
+                      high_value:
+                      {
+                       lte: tender_value_to
+                      }
                     }
-                  }
-                } if tender_value_to
-    matches << {
-                  match: {
-                    buyers:{
-                          query: tender_buyers,
-                          analyzer: :fullname,
-                          operator: :and
-                          # prefix: 1
-                        }
-                    }
-                  } if tender_buyers
-    matches << {
+                  } 
+    end
+    if tender_buyers
+      matches << {
+                    match: {
+                      buyers:{
+                            query: tender_buyers,
+                            analyzer: :fullname,
+                            operator: :and
+                            # prefix: 1
+                          }
+                      }
+                    } 
+    end
+
+    if tender_value_from
+      matches << {
                   range:
                   {
                     low_value:
@@ -168,61 +186,66 @@ class Core::Tender < ApplicationRecord
                       gte: tender_value_from
                     }
                   }
-                } if tender_value_from
+                } 
+    end
 
-    matches << {
-                  range:
-                  {
-                    low_value:
+    if tender_value_from
+      matches << {
+                    range:
                     {
-                      gte: tender_value_from
+                      low_value:
+                      {
+                        gte: tender_value_from
+                      }
                     }
-                  }
-                } if tender_value_from
+                  } 
+    end
+    unless tender_title.blank?
+      matches << {
+                    bool: 
+                    {
+                      should:[
+                      { 
+                        term:
+                        {
+                          title: 
+                          {
+                            value: tender_title,
+                            boost: 2.5
+                          }
+                        }
+                      }, {
+                        match_phrase:
+                        {
+                          title: {
+                            query: tender_title,
+                            boost: 1.8
+                          }
+                        }
+                      },
+                      { 
+                        term:
+                        {
+                          description: 
+                          {
+                            value: tender_title,
+                            boost: 2.0
+                          }
+                        }
+                      }, {
+                        match_phrase:
+                        {
+                          description: 
+                          {
+                            query: tender_title,
+                            boost: 1.7
+                          }
+                        }
+                      }]
+                    }
+                  } 
+    end
 
-    matches << {
-                  bool: 
-                  {
-                    should:[
-                    { 
-                      term:
-                      {
-                        title: 
-                        {
-                          value: tender_title,
-                          boost: 2.5
-                        }
-                      }
-                    }, {
-                      match_phrase:
-                      {
-                        title: {
-                          query: tender_title,
-                          boost: 1.8
-                        }
-                      }
-                    },
-                    { 
-                      term:
-                      {
-                        description: 
-                        {
-                          value: tender_title,
-                          boost: 2.0
-                        }
-                      }
-                    }, {
-                      match_phrase:
-                      {
-                        description: 
-                        {
-                          query: tender_title,
-                          boost: 1.7
-                        }
-                      }
-                    }]
-                  }
-                } unless tender_title.blank?
     if tender_keywords
       match_keywords = []
       tender_keywords.each do |e|
@@ -259,6 +282,51 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
+
+    unless tender_statuses.empty?
+      if tender_statuses.include? 'awarded'
+        matches <<  {
+              exists:
+              {
+                field: :awarded_on
+              }
+            } 
+      end
+      if tender_statuses.include? 'cancelled'
+        matches <<  {
+              exists:
+              {
+                field: :cancelled_on
+              }
+            } 
+      end
+
+      if tender_statuses.include? 'open'
+        matches <<  {
+                      range:
+                      {
+                        submission_date:
+                        {
+                         lt: DateTime.now
+                        }
+                      }
+                    } 
+      end
+
+      if tender_statuses.include? 'closed'
+        matches <<  {
+                      range:
+                      {
+                        submission_date:
+                        {
+                         gte: DateTime.now
+                        }
+                      }
+                    } 
+      end
+
+    end
+
     TendersIndex.query(matches).order(created_at: { order: :desc })
   end
 

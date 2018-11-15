@@ -61,7 +61,10 @@ class TendersIndex < Chewy::Index
     witchcraft!
     field :title, value: -> (tender) { tender.title }
     field :description, value: -> (tender) { (tender.description.gsub(/[^0-9A-Za-z \t]/i, '').gsub(/\t/,' ') rescue '') }
-    field :created_at, type: 'date', value: ->{ created_at }
+    field :created_at, type: 'date', value: -> (tender) { tender.created_at }
+    field :awarded_on, type: 'date', value: -> (tender) { tender.awarded_on }
+    field :cancelled_on, type: 'date', value: -> (tender) { tender.cancelled_on }
+    field :submission_date, type: 'date', value: -> (tender) { tender.submission_date }
     field :country_id, value: ->(tender) { tender.try(:country).try(:id) }
     field :low_value, value: ->(tender) { tender.estimated_low_value.to_i }, type: :integer
     field :high_value, value: ->(tender) { tender.estimated_high_value.to_i }, type: :integer
