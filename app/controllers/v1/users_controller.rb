@@ -2,7 +2,7 @@ class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy, :change_user_role]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-                                           :my_compete_tenders, :my_tenders, :invited_by_me, :change_user_role]
+                                           :my_compete_tenders, :my_tenders, :invited_by_me, :change_user_role, :available_in_marketplace]
 
   # GET /users
   def index
@@ -10,6 +10,14 @@ class V1::UsersController < ApplicationController
     users = User.all
     @users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: @users}
+  end
+
+  def available_in_marketplace
+    users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
+    users = User.where(id: users)
+    users = users.my_paginate(paginate_params)
+    render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(users, 
+          each_serializer: UserSerializer, current_user: current_user)}
   end
 
   def my_tenders
