@@ -13,7 +13,8 @@ class V1::UsersController < ApplicationController
   end
 
   def available_in_marketplace
-    users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user)
+    users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
+    users = User.where(id: users)
     users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: users}
   end
