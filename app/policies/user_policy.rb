@@ -26,6 +26,10 @@ class UserPolicy
     index?
   end
 
+  def available_in_marketplace?
+    !@user.free?
+  end
+  
   class Scope
     attr_reader :user, :scope
 
