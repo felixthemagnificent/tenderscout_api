@@ -16,7 +16,8 @@ class V1::UsersController < ApplicationController
     users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
     users = User.where(id: users)
     users = users.my_paginate(paginate_params)
-    render json: {count: users.count, data: users}
+    render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(users, 
+          each_serializer: UserSerializer, current_user: current_user)}
   end
 
   def my_tenders
