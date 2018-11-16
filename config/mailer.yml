@@ -17,6 +17,7 @@ default: &default
     tender_publish: '8923196'
     assignment_invite: '8922900'
     user_confirmation: '8923193'
+    password_reset: '8922902'
   uri:
     admin_sign_up: '/users/signup-requests'
     tender_details: ''
