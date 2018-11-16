@@ -283,7 +283,7 @@ class Core::Tender < ApplicationRecord
       }
     end
 
-    if tender_statuses
+    if tender_statuses  
       if tender_statuses.include? 'awarded'
         matches <<  {
               exists:
@@ -307,7 +307,7 @@ class Core::Tender < ApplicationRecord
                       {
                         submission_date:
                         {
-                         lt: DateTime.now
+                         gt: DateTime.now
                         }
                       }
                     } 
@@ -319,7 +319,7 @@ class Core::Tender < ApplicationRecord
                       {
                         submission_date:
                         {
-                         gte: DateTime.now
+                         lte: DateTime.now
                         }
                       }
                     } 
