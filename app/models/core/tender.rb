@@ -325,7 +325,9 @@ class Core::Tender < ApplicationRecord
                     } 
       end
       matches << {
-        must: status_matches
+        bool: {
+          must: status_matches
+        }
       }
 
     end
