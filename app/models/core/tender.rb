@@ -283,7 +283,7 @@ class Core::Tender < ApplicationRecord
       }
     end
 
-    unless tender_statuses.empty?
+    if tender_statuses
       if tender_statuses.include? 'awarded'
         matches <<  {
               exists:

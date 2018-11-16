@@ -121,7 +121,8 @@ class V1::SearchMonitorsController < ApplicationController
       tender_value_to = search_monitor_params[:valueTo]
       tender_countries = search_monitor_params[:countryList]
       tender_buyers = search_monitor_params[:buyer]
-    
+      tender_statuses = search_monitor_params[:status]
+
       cur_page = params[:page]
       page_size = params[:page_size]
     
@@ -131,7 +132,8 @@ class V1::SearchMonitorsController < ApplicationController
         tender_value_from: tender_value_from,
         tender_value_to: tender_value_to,
         tender_countries: tender_countries,
-        tender_buyers: tender_buyers
+        tender_buyers: tender_buyers,
+        tender_statuses: tender_statuses
         )
       tenders = results.page(cur_page).per(page_size).objects.map do |tender|
         # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }
