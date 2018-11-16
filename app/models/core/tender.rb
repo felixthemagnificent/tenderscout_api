@@ -282,10 +282,10 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
-
+    status_matches = []
     if tender_statuses  
       if tender_statuses.include? 'awarded'
-        matches <<  {
+        status_matches <<  {
               exists:
               {
                 field: :awarded_on
@@ -293,7 +293,7 @@ class Core::Tender < ApplicationRecord
             } 
       end
       if tender_statuses.include? 'cancelled'
-        matches <<  {
+        status_matches <<  {
               exists:
               {
                 field: :cancelled_on
@@ -302,7 +302,7 @@ class Core::Tender < ApplicationRecord
       end
 
       if tender_statuses.include? 'open'
-        matches <<  {
+        status_matches <<  {
                       range:
                       {
                         submission_date:
@@ -314,7 +314,7 @@ class Core::Tender < ApplicationRecord
       end
 
       if tender_statuses.include? 'closed'
-        matches <<  {
+        status_matches <<  {
                       range:
                       {
                         submission_date:
@@ -324,6 +324,9 @@ class Core::Tender < ApplicationRecord
                       }
                     } 
       end
+      matches << {
+        must: status_matches
+      }
 
     end
 
