@@ -10,6 +10,7 @@ default: &default
   reset_password_link: 'http://dev.tenderscout.braincode.xyz/auth/confirm/%{token}'
   admin_url: 'http://admin.dev.tenderscout.braincode.xyz'
   templates:
+    password_reset: '8922902'
     supplier_invite: '8923197'
     sign_up_request: '8922899'
     sign_up_process: '8923194'
