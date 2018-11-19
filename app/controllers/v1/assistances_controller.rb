@@ -33,9 +33,9 @@ class V1::AssistancesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def assistance_params
-    params.permit(:assistance_type, :message)
+    params.permit(:assistance_type, :message, :tender_id)
   end
-  
+
   def paginate_params
     params.permit(:page, :page_size)
   end

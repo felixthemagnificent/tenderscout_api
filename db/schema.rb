@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181115154834) do
+ActiveRecord::Schema.define(version: 20181119213600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,8 @@ ActiveRecord::Schema.define(version: 20181115154834) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "tender_id"
+    t.index ["tender_id"], name: "index_assistances_on_tender_id"
     t.index ["user_id"], name: "index_assistances_on_user_id"
   end
 
@@ -736,6 +738,7 @@ ActiveRecord::Schema.define(version: 20181115154834) do
     t.datetime "updated_at", null: false
     t.integer "weight"
     t.datetime "deadline"
+    t.json "files"
     t.index ["section_id"], name: "index_marketplace_tender_award_criteria_on_section_id"
   end
 
@@ -748,6 +751,7 @@ ActiveRecord::Schema.define(version: 20181115154834) do
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "collaboration_id"
     t.index ["tender_award_criteria_id"], name: "tender_award_criteria_answers_index"
     t.index ["tender_id"], name: "index_marketplace_tender_award_criteria_answers_on_tender_id"
     t.index ["user_id"], name: "index_marketplace_tender_award_criteria_answers_on_user_id"
@@ -811,6 +815,7 @@ ActiveRecord::Schema.define(version: 20181115154834) do
     t.datetime "deadline"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "files"
     t.index ["section_id"], name: "index_marketplace_tender_q_c_on_section_id"
     t.index ["tender_id"], name: "index_marketplace_tender_q_c_on_tender_id"
   end
@@ -824,6 +829,7 @@ ActiveRecord::Schema.define(version: 20181115154834) do
     t.bigint "tender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "collaboration_id"
     t.index ["tender_id"], name: "index_marketplace_tender_q_c_answers_on_tender_id"
     t.index ["tender_qualification_criteria_id"], name: "index_marketplace_tender_q_c_answers_on_tender_q_c_id"
     t.index ["user_id"], name: "index_marketplace_tender_q_c_answers_on_user_id"
@@ -1064,6 +1070,7 @@ ActiveRecord::Schema.define(version: 20181115154834) do
     t.string "name", default: "", null: false
   end
 
+  add_foreign_key "assistances", "core_tenders", column: "tender_id"
   add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
