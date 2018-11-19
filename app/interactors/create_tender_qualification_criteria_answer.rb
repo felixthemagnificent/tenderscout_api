@@ -26,7 +26,8 @@ class CreateTenderQualificationCriteriaAnswer
                     code: :unprocessable_entity
     end
 
-    context.answer = qualification_criteria.answers.new(answer_params)
+    context.answer = qualification_criteria.answers.find_or_initialize_by(collaboration_id: answer_params[:collaboration_id],tender_id: answer_params[:tender_id],tender_qualification_criteria_id: qualification_criterias_params[:tender_qualification_criteria_id])
+    context.answer.attributes = answer_params
     context.answer.user = context.user
 
     unless context.answer.save
@@ -46,6 +47,6 @@ class CreateTenderQualificationCriteriaAnswer
   end
 
   def answer_params
-    context.params.permit(:tender_id, :pass_fail, :score, :closed)
+    context.params.permit(:tender_id, :pass_fail, :score, :closed, :collaboration_id)
   end
 end
