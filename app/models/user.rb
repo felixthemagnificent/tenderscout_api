@@ -58,11 +58,13 @@ class User < ApplicationRecord
   end
   
   def tender_qualification_criteria_answer_completed_count(tender)
-    self.tender_qualification_criteria_answers.where(tender_id: tender.id).where(closed: true).uniq(&:tender_qualification_criteria_id).count
+    collaboration =  Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender.id), user: self.id).first.collaboration
+    Marketplace::TenderQualificationCriteriaAnswer.where(tender_id: tender.id, collaboration_id: collaboration.id).where(closed: true).uniq(&:tender_qualification_criteria_id).count
   end
 
   def tender_award_criteria_answer_completed_count(tender)
-    self.tender_award_criteria_answers.where(tender_id: tender.id).where(closed: true).uniq(&:tender_award_criteria_id).count
+    collaboration =  Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender.id), user: self.id).first.collaboration
+    Marketplace::TenderAwardCriteriaAnswer.where(tender_id: tender.id, collaboration_id: collaboration.id).where(closed: true).uniq(&:tender_award_criteria_id).count
   end
 
   def calculate_tender_complete_percent(qualification_criteria_count,criteria_count,
