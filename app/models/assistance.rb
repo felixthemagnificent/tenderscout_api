@@ -1,4 +1,5 @@
 class Assistance < ApplicationRecord
+  include Pageable
   belongs_to :user
 
   enum assistance_type: [:tender, :bid, :other]

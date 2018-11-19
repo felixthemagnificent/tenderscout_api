@@ -4,6 +4,8 @@ class V1::AssistancesController < ApplicationController
 
   def index
     authorize Assistance
+    assistances = Assistance.all
+    assistances = assistances.my_paginate(paginate_params)
     render json: Assistance.all
   end
 
@@ -33,4 +35,9 @@ class V1::AssistancesController < ApplicationController
   def assistance_params
     params.permit(:assistance_type, :message)
   end
+  
+  def paginate_params
+    params.permit(:page, :page_size)
+  end
+
 end
