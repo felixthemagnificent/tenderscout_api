@@ -14,11 +14,11 @@ class V1::AssistancesController < ApplicationController
 
   def create
     authorize Assistance
-    result = CreateAssistanceRequest.call(params: assistance_params, user: current_user)
-    if result.success?
-      render json: result.assistance, status: :created
+    assistance = Assistance.new(assistance_params)
+    if current_user.valid_password(params[:current_password]) && assistance.save
+      render json: assistance, status: :created
     else
-      render json: result.errors, status: result.code
+      render json: assistance.errors, status: :unprocessable_entity
     end
   end
 
@@ -31,6 +31,6 @@ class V1::AssistancesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def assistance_params
-    params.permit(:assistance_type, :message, :current_password)
+    params.permit(:assistance_type, :message)
   end
 end
