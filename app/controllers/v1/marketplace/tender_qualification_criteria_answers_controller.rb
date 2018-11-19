@@ -28,7 +28,7 @@ class V1::Marketplace::TenderQualificationCriteriaAnswersController < Applicatio
   end
 
   def answer_params
-    params.permit(:tender_qualification_criteria_id, :tender_id, :pass_fail, :score, :closed)
+    params.permit(:tender_qualification_criteria_id, :tender_id, :pass_fail, :score, :closed, :collaboration_id)
   end
 
   def close_params

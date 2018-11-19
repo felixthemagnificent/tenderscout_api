@@ -27,7 +27,8 @@ class CreateAwardCriteriaAnswer
                     code: :unprocessable_entity
     end
 
-    context.answer = award_criteria.answers.new(answer_params)
+    context.answer = award_criteria.answers.find_or_initialize_by(collaboration_id: answer_params[:collaboration_id],tender_id: answer_params[:tender_id],tender_award_criteria_id: award_criteria_params[:tender_award_criterium_id])
+    context.answer.attributes = answer_params
     context.answer.user = context.user
 
     unless context.answer.save
@@ -47,6 +48,6 @@ class CreateAwardCriteriaAnswer
   end
 
   def answer_params
-    context.params.permit(:tender_id, :pass_fail, :score, :closed)
+    context.params.permit(:tender_id, :pass_fail, :score, :closed, :collaboration_id)
   end
 end
