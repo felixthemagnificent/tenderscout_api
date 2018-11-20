@@ -22,7 +22,7 @@ class V1::AssistancesController < ApplicationController
   def create
     authorize Assistance
     assistance = Assistance.new(assistance_params)
-    if current_user.valid_password(params[:current_password]) && assistance.save
+    if current_user.valid_password?(params[:current_password]) && assistance.save
       render json: assistance, status: :created
     else
       render json: assistance.errors, status: :unprocessable_entity
