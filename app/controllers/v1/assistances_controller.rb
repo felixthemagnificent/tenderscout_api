@@ -4,7 +4,14 @@ class V1::AssistancesController < ApplicationController
 
   def index
     authorize Assistance
-    render json: Assistance.all
+    assistances = Assistance.all
+    assistances_paginated = assistances.my_paginate(paginate_params)
+    render json: {
+      data: ActiveModel::Serializer::CollectionSerializer.new(
+        assistances_paginated, 
+        each_serializer: AssistanceSerializer),
+      count: assistances.count
+    }
   end
 
   def show
@@ -31,6 +38,11 @@ class V1::AssistancesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def assistance_params
-    params.permit(:assistance_type, :message)
+    params.permit(:assistance_type, :message, :tender_id)
   end
+
+  def paginate_params
+    params.permit(:page, :page_size)
+  end
+
 end
