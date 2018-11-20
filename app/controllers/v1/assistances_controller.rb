@@ -22,6 +22,8 @@ class V1::AssistancesController < ApplicationController
   def create
     authorize Assistance
     assistance = Assistance.new(assistance_params)
+    assistance.tender = Core::Tender.find_by_id params[:tender_id]
+    assistance.user = current_user
     if current_user.valid_password?(params[:current_password]) && assistance.save
       render json: assistance, status: :created
     else
