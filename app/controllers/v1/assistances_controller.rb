@@ -6,7 +6,12 @@ class V1::AssistancesController < ApplicationController
     authorize Assistance
     assistances = Assistance.all
     assistances_paginated = assistances.my_paginate(paginate_params)
-    render json: {data: assistances_paginated, count: assistances.count}
+    render json: {
+      data: ActiveModel::Serializer::CollectionSerializer.new(
+        assistances_paginated, 
+        each_serializer: AssistanceSerializer),
+      count: assistances.count
+    }
   end
 
   def show
