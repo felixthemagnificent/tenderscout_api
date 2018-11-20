@@ -5,8 +5,8 @@ class V1::AssistancesController < ApplicationController
   def index
     authorize Assistance
     assistances = Assistance.all
-    assistances = assistances.my_paginate(paginate_params)
-    render json: Assistance.all
+    assistances_paginated = assistances.my_paginate(paginate_params)
+    render json: {data: assistances_paginated, count: assistances.count}
   end
 
   def show
