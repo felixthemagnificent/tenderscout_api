@@ -1,4 +1,5 @@
 class Marketplace::TenderQualificationCriteria < ApplicationRecord
+  mount_uploaders :files, CriteriaFileUploader
   belongs_to :section, class_name: 'Marketplace::TenderQualificationCriteriaSection', foreign_key: :section_id
   has_many :answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer', foreign_key: :tender_qualification_criteria_id, dependent: :destroy
   has_many :comments, as: :commentable
