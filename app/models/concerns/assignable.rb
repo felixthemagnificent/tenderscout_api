@@ -3,9 +3,6 @@ module Assignable
 
   included do
     def profile
-      p('--------------')
-      p(Current.user.present?)
-      p('--------------')
       section = self.section
       return nil unless Current.user.present?
       collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: section.tender.id), user: Current.user.id).try(:first).try(:collaboration)
