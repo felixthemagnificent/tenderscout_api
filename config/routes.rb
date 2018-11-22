@@ -33,7 +33,7 @@ Rails.application.routes.draw do
           get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
         end
       end
-      
+      resources :bid_results
       resources :tenders do
         collection do
           get :my_favourites
@@ -47,6 +47,7 @@ Rails.application.routes.draw do
           get :similar_opportunities_tenders
           put :add_favourite, to: 'tenders#add_favourite'
           delete :delete_favourite, to: 'tenders#delete_favourite'
+          get :bid_result
         end
         member do
           scope :compete do
