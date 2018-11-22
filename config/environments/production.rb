@@ -1,4 +1,5 @@
 Rails.application.configure do
+  TENDERSCOUTHOST = 'http://hub.tenderscout.com'
   # Settings specified here will take с over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -83,5 +84,14 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  TENDERSCOUTHOST = 'http://hub.tenderscout.com'
+  Rails.application.config.middleware.use ExceptionNotification::Rack,
+    :slack => {
+      :webhook_url => "https://hooks.slack.com/services/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",
+      :channel => "#exceptions",
+      :additional_parameters => {
+        :icon_url => "https://cdn1.iconfinder.com/data/icons/mix-color-3/502/Untitled-39-512.png",
+        :mrkdwn => true
+      }
+    }
+
 end

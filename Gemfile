@@ -71,6 +71,7 @@ gem 'pundit'
 gem 'parser'
 gem 'unparser'
 gem 'parallel'
+gem 'exception_notification'
 
 group :development do
   gem 'capistrano'
