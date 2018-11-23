@@ -5,5 +5,5 @@ class Marketplace::Collaboration < ApplicationRecord
   has_many :assignments, class_name: 'Marketplace::Assignment'
   has_many :tender_qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
   has_many :tender_award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
-
+  has_many :marketplace_bid_results, class_name: 'Marketplace::BidResult', foreign_key: :marketplace_collaboration_id
 end
