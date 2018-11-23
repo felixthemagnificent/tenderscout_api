@@ -6,5 +6,5 @@ Rails.application.configure do
     # NOTE: We must use lograge.custom_options or else lograge will only log the default info, even if extra info has been added to the notification payload
     event.payload
   end
-  config.lograge.logger = LogStashLogger.new(type: :udp, host: 'localhost', port: 5228)
+  config.lograge.logger = LogStashLogger.new(type: :udp, host: '::1', port: 5228)
 end

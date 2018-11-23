@@ -198,5 +198,22 @@ Rails.application.routes.draw do
       resources :sfgov_codes
     end
   end
+
+  namespace :v2 do
+    namespace :marketplace do
+      resources :tenders do
+        resources :collaborations, only: [:index] do
+          post :accept
+          post :ignore
+          get :collaboration_assignments
+          collection do
+            post :apply
+            post :remove
+          end
+        end
+        resources :collaboration_interests  
+      end
+    end
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
