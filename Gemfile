@@ -71,6 +71,12 @@ gem 'pundit'
 gem 'parser'
 gem 'unparser'
 gem 'parallel'
+gem 'exception_notification'
+gem 'slack-notifier'
+
+gem 'lograge'
+gem 'logstash-event'
+gem 'logstash-logger'
 
 group :development do
   gem 'capistrano'
