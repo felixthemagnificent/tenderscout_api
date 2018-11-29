@@ -63,6 +63,7 @@ class V1::SearchMonitorsController < ApplicationController
     authorize SearchMonitor
     results = @search_monitor.results
     data, count = serialize_core_tenders_search(results)
+    save_tender_count(@search_monitor,count)
     render json: {
       data: data,
       count: count
@@ -105,6 +106,11 @@ class V1::SearchMonitorsController < ApplicationController
 
 
   private
+    def save_tender_count(monitor,count)
+      monitor.tenders_count = count
+      monitor.save
+    end
+
     def serialize_core_tenders_search(results)
       tenders = results.page(params[:page]).per(params[:page_size]).objects.map do |tender|
         # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }

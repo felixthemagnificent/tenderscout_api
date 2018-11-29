@@ -1,5 +1,6 @@
 class SearchMonitorSerializer < ActiveModel::Serializer
-  attributes :id, :title, :tenderTitle, :countryList, :keywordList, :valueFrom, :valueTo, :codeList, :buyer, :statusList, :is_archived, :status
+  attributes :id, :title, :tenderTitle, :countryList, :keywordList, :valueFrom, :valueTo, :codeList, :buyer,
+             :statusList, :is_archived, :status, :tenders_count
 
   attribute(:is_favourite) { is_favourite_monitor?(object)}
 
