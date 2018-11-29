@@ -13,7 +13,8 @@ class SearchMonitor < ApplicationRecord
         tender_value_from: valueFrom,
         tender_value_to: valueTo,
         tender_countries: countryList,
-        tender_buyers: buyer
+        tender_buyers: buyer,
+        tender_statuses: status
     )
   end
 

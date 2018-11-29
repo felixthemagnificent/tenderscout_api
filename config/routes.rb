@@ -33,7 +33,7 @@ Rails.application.routes.draw do
           get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
         end
       end
-      
+      resources :bid_results
       resources :tenders do
         collection do
           get :my_favourites
@@ -47,6 +47,7 @@ Rails.application.routes.draw do
           get :similar_opportunities_tenders
           put :add_favourite, to: 'tenders#add_favourite'
           delete :delete_favourite, to: 'tenders#delete_favourite'
+          get :bid_result
         end
         member do
           scope :compete do
@@ -196,6 +197,23 @@ Rails.application.routes.draw do
       resources :ngip_codes
       resources :nigp_codes
       resources :sfgov_codes
+    end
+  end
+
+  namespace :v2 do
+    namespace :marketplace do
+      resources :tenders do
+        resources :collaborations, only: [:index] do
+          post :accept
+          post :ignore
+          get :collaboration_assignments
+          collection do
+            post :apply
+            post :remove
+          end
+        end
+        resources :collaboration_interests  
+      end
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

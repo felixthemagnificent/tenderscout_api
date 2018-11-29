@@ -5,6 +5,6 @@ class Marketplace::TenderAwardCriterium < ApplicationRecord
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_many :assignments, class_name: 'Marketplace::Assignment', as: :assignable, dependent: :destroy
-
+  has_many :marketplace_bid_results, class_name: 'Marketplace::BidResult', foreign_key: :tender_award_criteria_id
   include Assignable
 end
