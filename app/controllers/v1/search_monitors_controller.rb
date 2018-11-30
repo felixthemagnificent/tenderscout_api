@@ -122,6 +122,10 @@ class V1::SearchMonitorsController < ApplicationController
       tender_countries = search_monitor_params[:countryList]
       tender_buyers = search_monitor_params[:buyer]
       tender_statuses = search_monitor_params[:status]
+      tender_sort_by = search_monitor_params[:sort_by]
+      tender_sort_direction = search_monitor_params[:sort_direction]
+      tender_submission_date_from = search_monitor_params[:submission_date_from]
+      tender_submission_date_to = search_monitor_params[:submission_date_to]
 
       cur_page = params[:page]
       page_size = params[:page_size]
@@ -133,7 +137,13 @@ class V1::SearchMonitorsController < ApplicationController
         tender_value_to: tender_value_to,
         tender_countries: tender_countries,
         tender_buyers: tender_buyers,
-        tender_statuses: tender_statuses
+        tender_statuses: tender_statuses,
+        tender_submission_date_to: tender_submission_date_to,
+        tender_submission_date_from: tender_submission_date_from,
+        tender_sort: {
+            sort_by: tender_sort_by,
+            sort_direction: tender_sort_direction
+          }
         )
       tenders = results.page(cur_page).per(page_size).objects.map do |tender|
         # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }
@@ -150,6 +160,6 @@ class V1::SearchMonitorsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def search_monitor_params
-      params.permit(:title, :tenderTitle, :valueFrom, :valueTo, :buyer, codeList:[], countryList:[], statusList:[], keywordList:[], status: [])
+      params.permit(:title, :tenderTitle, :valueFrom, :valueTo, :buyer, :sort_by, :sort_direction, :submission_date_to, :submission_date_from, codeList:[], countryList:[], statusList:[], keywordList:[], status: [])
     end
 end
