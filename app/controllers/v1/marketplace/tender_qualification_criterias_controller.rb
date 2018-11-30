@@ -106,7 +106,11 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   end
 
   def delete_files
-    @marketplace_tender_qualification_criteria.files.each {|e| e.try(:remove!) }
+    if params[:index].present?
+      @marketplace_tender_qualification_criteria.files.at(params[:index]).try(:remove!) 
+    else
+      @marketplace_tender_qualification_criteria.files.each {|e| e.try(:remove!) }
+    end
   end
 
 

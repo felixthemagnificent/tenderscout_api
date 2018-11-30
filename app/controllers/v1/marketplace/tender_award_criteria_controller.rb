@@ -98,7 +98,11 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   end
 
   def delete_files
-    @marketplace_tender_award_criterium.files.each {|e| e.try(:remove!) }
+    if params[:index].present?
+      @marketplace_tender_award_criterium.files.at(params[:index]).try(:remove!) 
+    else
+      @marketplace_tender_award_criterium.files.each {|e| e.try(:remove!) }
+    end
   end
 
 
