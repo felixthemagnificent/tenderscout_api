@@ -14,5 +14,8 @@ class Assistance < ApplicationRecord
   def is_correct_password
   	unless self.user.valid_password?(self.current_password)
   	  errors.add(:password, 'Password is invalid!')
+  	end
+  end
+  
 
 end
