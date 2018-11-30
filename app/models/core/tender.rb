@@ -150,7 +150,8 @@ class Core::Tender < ApplicationRecord
   end
 
   def self.search(tender_title: nil, tender_keywords: nil, tender_value_from: nil, tender_value_to: nil,
-                  tender_countries: nil, tender_buyers: nil, tender_statuses: [])
+                  tender_countries: nil, tender_buyers: nil, tender_statuses: [], tender_sort: {},
+                  tender_submission_date_from: nil, tender_submission_date_to: nil)
 
     matches = []
     if tender_value_to
@@ -177,13 +178,25 @@ class Core::Tender < ApplicationRecord
                     } 
     end
 
-    if tender_value_from
+    if tender_submission_date_from
       matches << {
                   range:
                   {
-                    low_value:
+                    submission_date:
                     {
-                      gte: tender_value_from
+                      gte: tender_submission_date_from
+                    }
+                  }
+                } 
+    end
+
+    if tender_submission_date_to
+      matches << {
+                  range:
+                  {
+                    submission_date:
+                    {
+                      lte: tender_submission_date_to
                     }
                   }
                 } 
@@ -282,7 +295,9 @@ class Core::Tender < ApplicationRecord
           }
       }
     end
+
     status_matches = []
+
     if tender_statuses  
       if tender_statuses.include? 'awarded'
         status_matches <<  {
@@ -332,7 +347,18 @@ class Core::Tender < ApplicationRecord
 
     end
 
-    TendersIndex.query(matches).order(created_at: { order: :desc })
+    results = TendersIndex.query(matches)
+    if tender_sort[:sort_by].present? and tender_sort[:sort_direction].present?
+      results = results.order(
+        tender_sort[:sort_by].to_sym => 
+        {
+          order: tender_sort[:sort_direction] 
+        }
+      )
+    else
+      results = results.order(created_at: { order: :desc })
+    end
+    results
   end
 
   def owner?(current_user)
