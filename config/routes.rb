@@ -33,7 +33,7 @@ Rails.application.routes.draw do
           get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
         end
       end
-      
+      resources :bid_results
       resources :tenders do
         collection do
           get :my_favourites
@@ -47,6 +47,7 @@ Rails.application.routes.draw do
           get :similar_opportunities_tenders
           put :add_favourite, to: 'tenders#add_favourite'
           delete :delete_favourite, to: 'tenders#delete_favourite'
+          get :bid_result
         end
         member do
           scope :compete do
@@ -66,6 +67,7 @@ Rails.application.routes.draw do
         resources :collaboration_interests  
         resources :tender_collaborators, path: 'collaborators'
         resources :tender_award_criteria, path: 'award_criteries' do
+          delete :files, to: 'tender_award_criteria#delete_files'
           resources :tender_award_criteria_answer, path: 'answers' do
             member do
               put :close
@@ -73,6 +75,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_qualification_criterias, path: 'qualification_criteria' do
+          delete :files, to: 'tender_qualification_criteria#delete_files'
           member do
             post :assign, to: 'tender_qualification_criterias#create_assign'
             patch :assign, to: 'tender_qualification_criterias#update_assign'
@@ -196,6 +199,23 @@ Rails.application.routes.draw do
       resources :ngip_codes
       resources :nigp_codes
       resources :sfgov_codes
+    end
+  end
+
+  namespace :v2 do
+    namespace :marketplace do
+      resources :tenders do
+        resources :collaborations, only: [:index] do
+          post :accept
+          post :ignore
+          get :collaboration_assignments
+          collection do
+            post :apply
+            post :remove
+          end
+        end
+        resources :collaboration_interests  
+      end
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

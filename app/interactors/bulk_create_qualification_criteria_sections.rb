@@ -21,6 +21,7 @@ class BulkCreateQualificationCriteriaSections
         order: e[:order],
         title: e[:title],
         weight: e[:weight],
+        files: e[:files]
         )
       criteria.save!
     end
