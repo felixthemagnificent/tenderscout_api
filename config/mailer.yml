@@ -17,6 +17,7 @@ default: &default
     tender_publish: '8923196'
     assignment_invite: '8922900'
     user_confirmation: '8923193'
+    admin_assistance_notifier: '9178405'
   uri:
     admin_sign_up: '/users/signup-requests'
     tender_details: ''

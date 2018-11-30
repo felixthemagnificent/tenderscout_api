@@ -1,6 +1,7 @@
 Rails.application.configure do
   TENDERSCOUTHOST = 'http://hub.tenderscout.com'
-  # Settings specified here will take с over those in config/application.rb.
+  ADMINPANELHOST = 'http://admin.hub.tenderscout.com'
+      # Settings specified here will take с over those in config/application.rb.
 
   # Code is not reloaded between requests.
   config.cache_classes = true
