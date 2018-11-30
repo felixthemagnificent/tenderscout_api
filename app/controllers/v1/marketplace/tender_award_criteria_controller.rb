@@ -2,7 +2,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   include AssignmentNotifier
   before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy, :tender_award_criteria_comments,
                                                                 :tender_award_criteria_notes, :update_deadline,
-                                                                :create_assign, :update_assign, :delete_assign]
+                                                                :create_assign, :update_assign, :delete_assign, :delete_files]
   before_action :set_tender
 
   # GET /marketplace/tender_award_criteria
@@ -96,6 +96,15 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
       render json: @assignment.errors, status: :unprocessable_entity
     end
   end
+
+  def delete_files
+    if params[:index].present?
+      @marketplace_tender_award_criterium.files.at(params[:index]).try(:remove!) 
+    else
+      @marketplace_tender_award_criterium.files.each {|e| e.try(:remove!) }
+    end
+  end
+
 
   def delete_assign
     @marketplace_tender_award_criterium.assignment.destroy

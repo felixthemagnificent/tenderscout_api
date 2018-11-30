@@ -21,6 +21,7 @@ class BulkCreateAwardCriteriaSections
         order: e[:order],
         title: e[:title],
         weight: e[:weight],
+        files: e[:files]
         # parent: parent
         )
       criteria.save!

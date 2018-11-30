@@ -67,6 +67,7 @@ Rails.application.routes.draw do
         resources :collaboration_interests  
         resources :tender_collaborators, path: 'collaborators'
         resources :tender_award_criteria, path: 'award_criteries' do
+          delete :files, to: 'tender_award_criteria#delete_files'
           resources :tender_award_criteria_answer, path: 'answers' do
             member do
               put :close
@@ -74,6 +75,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_qualification_criterias, path: 'qualification_criteria' do
+          delete :files, to: 'tender_qualification_criteria#delete_files'
           member do
             post :assign, to: 'tender_qualification_criterias#create_assign'
             patch :assign, to: 'tender_qualification_criterias#update_assign'
