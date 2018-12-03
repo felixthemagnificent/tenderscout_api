@@ -61,7 +61,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   def result
     authorize SearchMonitor
-    results = @search_monitor.results
+    results = @search_monitor.results(sort_by: params[:sort_by], sort_direction: params[:sort_direction])
     data, count = serialize_core_tenders_search(results)
     save_tender_count(@search_monitor,count)
     render json: {
