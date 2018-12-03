@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181203064832) do
+ActiveRecord::Schema.define(version: 20181203125808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,20 @@ ActiveRecord::Schema.define(version: 20181203064832) do
     t.bigint "tender_id"
     t.index ["attachment_id"], name: "index_attachments_core_tenders_on_attachment_id"
     t.index ["tender_id"], name: "index_attachments_core_tenders_on_tender_id"
+  end
+
+  create_table "attachments_marketplace_tender_award_criteria", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "tender_award_criterium_id"
+    t.index ["attachment_id"], name: "index_attachments_tender_a_criterium_on_attachment_id"
+    t.index ["tender_award_criterium_id"], name: "index_attachments_tender_a_criterium_on_award_criterium_id"
+  end
+
+  create_table "attachments_marketplace_tender_qualification_criteria", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "tender_qualification_criteria_id"
+    t.index ["attachment_id"], name: "index_attachments_tender_q_criteria_on_attachment_id"
+    t.index ["tender_qualification_criteria_id"], name: "index_attachments_tender_q_criteria_on_award_criteria_id"
   end
 
   create_table "bidsense_results", force: :cascade do |t|
@@ -1089,6 +1103,10 @@ ActiveRecord::Schema.define(version: 20181203064832) do
   add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
+  add_foreign_key "attachments_marketplace_tender_award_criteria", "attachments"
+  add_foreign_key "attachments_marketplace_tender_award_criteria", "marketplace_tender_award_criteria", column: "tender_award_criterium_id"
+  add_foreign_key "attachments_marketplace_tender_qualification_criteria", "attachments"
+  add_foreign_key "attachments_marketplace_tender_qualification_criteria", "marketplace_tender_qualification_criteria", column: "tender_qualification_criteria_id"
   add_foreign_key "bidsense_results", "core_tenders", column: "tender_id"
   add_foreign_key "bidsense_results", "profiles"
   add_foreign_key "case_studies", "profiles"

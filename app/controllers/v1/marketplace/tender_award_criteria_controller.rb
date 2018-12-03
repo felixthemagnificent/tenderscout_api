@@ -20,11 +20,14 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # POST /marketplace/tender_award_criteria
   def create
     @marketplace_tender_award_criterium = @tender.award_criteries.new(marketplace_tender_award_criterium_params)
-    if marketplace_tender_award_criterium_params[:files]
-      marketplace_tender_award_criterium_params[:files].each do |k,v|
-        @marketplace_tender_award_criterium.files << v
+    if params[:files]
+      params[:files].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_award_criterium.attachments << attachment
       end
     end
+
     if @marketplace_tender_award_criterium.save
       render json: @marketplace_tender_award_criterium, status: :created
     else
@@ -34,9 +37,11 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # PATCH/PUT /marketplace/tender_award_criteria/1
   def update
-    if marketplace_tender_award_criterium_params[:files]
-      marketplace_tender_award_criterium_params[:files].each do |k,v|
-        @marketplace_tender_award_criterium.files << v
+    if params[:files]
+      params[:files].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_award_criterium.attachments << attachment
       end
     end
     if @marketplace_tender_award_criterium.update(marketplace_tender_award_criterium_params)
@@ -108,9 +113,9 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   def delete_files
     if params[:index].present?
-      @marketplace_tender_award_criterium.files.at(params[:index]).try(:remove!) 
+      @marketplace_tender_award_criterium.attachments.where(id: params[:index]).each { |e| e.destroy }
     else
-      @marketplace_tender_award_criterium.files.each {|e| e.try(:remove!) }
+      @marketplace_tender_award_criterium.attachments.where(id: params[:index]).each { |e| e.destroy }
     end
   end
 
@@ -130,7 +135,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def marketplace_tender_award_criterium_params
-    params.permit(:order, :title, :description, :weight, :section_id, {files: []})
+    params.permit(:order, :title, :description, :weight, :section_id, files: [])
   end
 
   def deadline_params
