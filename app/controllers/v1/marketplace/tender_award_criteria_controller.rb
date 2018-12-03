@@ -20,7 +20,11 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # POST /marketplace/tender_award_criteria
   def create
     @marketplace_tender_award_criterium = @tender.award_criteries.new(marketplace_tender_award_criterium_params)
-
+    if marketplace_tender_award_criterium_params[:files]
+      marketplace_tender_award_criterium_params[:files].each do |k,v|
+        @marketplace_tender_award_criterium.files << v
+      end
+    end
     if @marketplace_tender_award_criterium.save
       render json: @marketplace_tender_award_criterium, status: :created
     else
@@ -30,6 +34,11 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # PATCH/PUT /marketplace/tender_award_criteria/1
   def update
+    if marketplace_tender_award_criterium_params[:files]
+      marketplace_tender_award_criterium_params[:files].each do |k,v|
+        @marketplace_tender_award_criterium.files << v
+      end
+    end
     if @marketplace_tender_award_criterium.update(marketplace_tender_award_criterium_params)
       render json: @marketplace_tender_award_criterium
     else
