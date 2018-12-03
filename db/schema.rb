@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120091300) do
+ActiveRecord::Schema.define(version: 20181203064832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -706,6 +706,18 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.index ["tender_id"], name: "index_marketplace_bid_no_bid_questions_on_tender_id"
   end
 
+  create_table "marketplace_bid_results", force: :cascade do |t|
+    t.integer "estimate_score"
+    t.integer "actual_score"
+    t.integer "winning_score"
+    t.integer "award_criteria_answer_id"
+    t.integer "tender_award_criteria_id"
+    t.bigint "marketplace_collaboration_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["marketplace_collaboration_id"], name: "index_marketplace_bid_results_on_marketplace_collaboration_id"
+  end
+
   create_table "marketplace_collaborations", force: :cascade do |t|
     t.bigint "tender_id"
     t.datetime "created_at", null: false
@@ -993,6 +1005,9 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.string "buyer"
     t.string "export"
     t.string "status", default: [], array: true
+    t.integer "tenders_count"
+    t.datetime "submission_date_to"
+    t.datetime "submission_date_from"
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 
@@ -1112,6 +1127,7 @@ ActiveRecord::Schema.define(version: 20181120091300) do
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_bid_no_bid_answers", "marketplace_bid_no_bid_questions", column: "bid_no_bid_question_id"
   add_foreign_key "marketplace_bid_no_bid_questions", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_bid_results", "marketplace_collaborations"
   add_foreign_key "marketplace_collaborations", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "marketplace_bid_no_bid_answers", column: "bid_no_bid_answer_id", name: "index_compete_bnb_answers_on_bnb_answer"
