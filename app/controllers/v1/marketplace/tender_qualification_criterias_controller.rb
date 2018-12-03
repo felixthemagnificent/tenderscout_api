@@ -24,6 +24,14 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
     authorize ::Marketplace::TenderQualificationCriteria
     @marketplace_tender_qualification_criteria = @tender.qualification_criterias.new(marketplace_tender_qualification_criteria_params)
 
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_qualification_criteria.attachments << attachment
+      end
+    end
+
     if @marketplace_tender_qualification_criteria.save
       render json: @marketplace_tender_qualification_criteria, status: :created
     else
@@ -34,6 +42,13 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   # PATCH/PUT /marketplace/tender_qualification_criterias/1
   def update
     authorize @marketplace_tender_qualification_criteria
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_qualification_criteria.attachments << attachment
+      end
+    end
     if @marketplace_tender_qualification_criteria.update(marketplace_tender_qualification_criteria_params)
       render json: @marketplace_tender_qualification_criteria
     else
@@ -107,9 +122,9 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
 
   def delete_files
     if params[:index].present?
-      @marketplace_tender_qualification_criteria.files.at(params[:index]).try(:remove!) 
+      @marketplace_tender_qualification_criteria.attachments.where(id: params[:index]).each { |e| e.destroy }
     else
-      @marketplace_tender_qualification_criteria.files.each {|e| e.try(:remove!) }
+      @marketplace_tender_qualification_criteria.attachments.each { |e| e.destroy }
     end
   end
 

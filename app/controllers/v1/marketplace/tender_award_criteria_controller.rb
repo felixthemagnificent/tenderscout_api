@@ -115,7 +115,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
     if params[:index].present?
       @marketplace_tender_award_criterium.attachments.where(id: params[:index]).each { |e| e.destroy }
     else
-      @marketplace_tender_award_criterium.attachments.where(id: params[:index]).each { |e| e.destroy }
+      @marketplace_tender_award_criterium.attachments.each { |e| e.destroy }
     end
   end
 
