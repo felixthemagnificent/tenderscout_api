@@ -1,4 +1,6 @@
 class SearchMonitor < ApplicationRecord
+  attr_accessor :sort_by
+  attr_accessor :sort_direction
   mount_uploader :export, MonitorExportUploader
   belongs_to :user
   
