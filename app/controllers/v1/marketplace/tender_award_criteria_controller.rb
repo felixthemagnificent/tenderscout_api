@@ -20,8 +20,8 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # POST /marketplace/tender_award_criteria
   def create
     @marketplace_tender_award_criterium = @tender.award_criteries.new(marketplace_tender_award_criterium_params)
-    if params[:files]
-      params[:files].each do |k,v|
+    if params[:attachments]
+      params[:attachments].each do |k,v|
         attachment = Attachment.new(file: v)
         attachment.save
         @marketplace_tender_award_criterium.attachments << attachment
@@ -37,8 +37,8 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # PATCH/PUT /marketplace/tender_award_criteria/1
   def update
-    if params[:files]
-      params[:files].each do |k,v|
+    if params[:attachments]
+      params[:attachments].each do |k,v|
         attachment = Attachment.new(file: v)
         attachment.save
         @marketplace_tender_award_criterium.attachments << attachment
