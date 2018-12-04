@@ -20,11 +20,17 @@ class BulkCreateAwardCriteriaSections
       criteria = section.award_criteries.new(
         order: e[:order],
         title: e[:title],
-        weight: e[:weight],
-        files: e[:files]
+        weight: e[:weight]
         # parent: parent
         )
       criteria.save!
+      if params[:attachments]
+        params[:attachments].each do |k,v|
+          attachment = Attachment.new(file: v)
+          attachment.save
+          criteria.attachments << attachment
+        end
+      end
       create_criteries(params: e, section: section, parent: criteria) if e[:criteries]
     end
   end

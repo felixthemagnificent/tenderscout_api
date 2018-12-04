@@ -24,6 +24,13 @@ class BulkCreateQualificationCriteriaSections
         files: e[:files]
         )
       criteria.save!
+      if params[:attachments]
+        params[:attachments].each do |k,v|
+          attachment = Attachment.new(file: v)
+          attachment.save
+          criteria.attachments << attachment
+        end
+      end
     end
   end
 
