@@ -8,7 +8,7 @@ class SearchMonitor < ApplicationRecord
     self.export.url(query: {"response-content-disposition" => "attachment;"})
   end
 
-  def results(sort_by, sort_direction)
+  def results(sort_by: nil, sort_direction: nil)
     Core::Tender.search(
         tender_title: tenderTitle,
         tender_keywords: keywordList,
