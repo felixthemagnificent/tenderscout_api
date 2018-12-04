@@ -27,7 +27,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   def all_results
     authorize SearchMonitor
-    data, count = preview_search({})
+    data, count = preview_search(search_monitor_sort_params)
     render json: {
       data: data,
       count: count
@@ -167,5 +167,8 @@ class V1::SearchMonitorsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def search_monitor_params
       params.permit(:title, :tenderTitle, :valueFrom, :valueTo, :buyer, :sort_by, :sort_direction, :submission_date_to, :submission_date_from, codeList:[], countryList:[], statusList:[], keywordList:[], status: [])
+    end
+    def search_monitor_sort_params
+      params.permit(:sort_by, :sort_direction)
     end
 end
