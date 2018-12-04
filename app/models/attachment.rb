@@ -1,6 +1,6 @@
 class Attachment < ApplicationRecord
   mount_uploader :file, AttachmentUploader
-  validate_presence_of :file
+  validates_presence_of :file
   before_save :update_file_attributes
 
   private
