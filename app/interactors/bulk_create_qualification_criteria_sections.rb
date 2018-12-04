@@ -3,7 +3,7 @@ class BulkCreateQualificationCriteriaSections
 
   def call
     Marketplace::TenderQualificationCriteriaSection.transaction do
-      marketplace_tender_qualification_criteria_sections.each do |section|
+      marketplace_tender_qualification_criteria_sections.each do |_, section|
         section_instance = context.tender.qualification_criteria_sections.new(title: section[:title], order: section[:order])
         section_instance.save!
 
@@ -16,16 +16,15 @@ class BulkCreateQualificationCriteriaSections
 
   def create_criteries(params: nil, section: nil)
 
-    params[:qualification_criterias].each do |e|
+    params[:qualification_criterias].each do |_, e|
       criteria = section.qualification_criterias.new(
         order: e[:order],
         title: e[:title],
-        weight: e[:weight],
-        files: e[:files]
+        weight: e[:weight]
         )
       criteria.save!
-      if params[:attachments]
-        params[:attachments].each do |k,v|
+      if e[:attachments]
+        e[:attachments].each do |k,v|
           attachment = Attachment.new(file: v)
           attachment.save
           criteria.attachments << attachment
