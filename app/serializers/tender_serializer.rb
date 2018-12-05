@@ -63,6 +63,10 @@ class TenderSerializer < ActiveModel::Serializer
     } if collaboration
     # Marketplace::CollaborationSerializer.new(collaboration) if collaboration
   end
+
+  attribute(:collaboration_count) do
+    tender.collaborations.count
+  end
   
   attribute(:bidsense) do
     Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
