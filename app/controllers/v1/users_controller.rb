@@ -25,7 +25,7 @@ class V1::UsersController < ApplicationController
     my_tenders = current_user.my_tender_list
     status = params[:status]
     my_tenders = my_tenders.where(status: status.to_sym) if Core::Tender.statuses.keys.include?(status)
-    my_tenders = my_tenders.with_references
+    my_tenders = my_tenders.with_relations
     sort_field = params[:sort_field]
     sort_direction = params[:sort_direction]
     if (%w(desc asc).include?(sort_direction) and %w(created_at dispatch_date submission_date).include?(sort_field))
