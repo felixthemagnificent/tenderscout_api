@@ -28,7 +28,7 @@ class V1::UsersController < ApplicationController
     sort_field = params[:sort_field]
     sort_direction = params[:sort_direction]
     if (%w(desc asc).include?(sort_direction) and %w(created_at dispatch_date submission_date).include?(sort_field))
-      my_tenders.order(sort_direction.to_sym => sort_direction.to_sym)
+      my_tenders = my_tenders.order(sort_direction.to_sym => sort_direction.to_sym)
     end
     render json: ActiveModel::Serializer::CollectionSerializer.new(my_tenders, 
       each_serializer: TenderSerializer, current_user: current_user)
