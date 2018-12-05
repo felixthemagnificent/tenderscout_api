@@ -65,7 +65,7 @@ class TenderSerializer < ActiveModel::Serializer
   end
 
   attribute(:collaboration_count) do
-    tender.collaborations.count
+    object.collaborations.count
   end
   
   attribute(:bidsense) do

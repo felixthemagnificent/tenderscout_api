@@ -132,7 +132,8 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_qualification_criteria
-      @marketplace_tender_qualification_criteria = ::Marketplace::TenderQualificationCriteria.find(params[:id])
+      id = params[:id] || params[:marketplace_tender_qualification_criteria_id]
+      @marketplace_tender_qualification_criteria = ::Marketplace::TenderQualificationCriteria.find(id)
     end
 
     def set_tender
