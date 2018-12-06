@@ -75,9 +75,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_qualification_criterias, path: 'qualification_criteria' do
-          collection do
-            delete :files, to: 'tender_qualification_criteria#delete_files'
-          end
+          delete :files, to: 'tender_qualification_criteria#delete_files'
           member do
             post :assign, to: 'tender_qualification_criterias#create_assign'
             patch :assign, to: 'tender_qualification_criterias#update_assign'
