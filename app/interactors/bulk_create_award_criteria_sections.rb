@@ -15,22 +15,23 @@ class BulkCreateAwardCriteriaSections
   private
 
   def create_criteries(params: nil, section: nil, parent: nil)
-
-    params[:award_criteries].each do |_, e|
-      criteria = section.award_criteries.new(
-        order: e[:order],
-        title: e[:title],
-        weight: e[:weight]
-        )
-      criteria.save!
-      if e[:attachments]
-        e[:attachments].each do |k,v|
-          attachment = Attachment.new(file: v)
-          attachment.save
-          criteria.attachments << attachment
+    if params[:award_criteries]
+      params[:award_criteries].each do |_, e|
+        criteria = section.award_criteries.new(
+          order: e[:order],
+          title: e[:title],
+          weight: e[:weight]
+          )
+        criteria.save!
+        if e[:attachments]
+          e[:attachments].each do |k,v|
+            attachment = Attachment.new(file: v)
+            attachment.save
+            criteria.attachments << attachment
+          end
         end
+        create_criteries(params: e, section: section, parent: criteria) if e[:criteries]
       end
-      create_criteries(params: e, section: section, parent: criteria) if e[:criteries]
     end
   end
 
