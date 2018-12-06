@@ -51,6 +51,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_later
+      add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
       render json: @marketplace_collaboration, status: :created
     else
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
@@ -70,6 +71,17 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # DELETE /marketplace/collaborations/1
   def destroy
     @marketplace_collaboration.destroy
+  end
+
+  def add_collaboration_to_user_status(user,tender, collaboration)
+    user_status = ::Marketplace::UserTenderStatus.find_by(user_id: user.id, tender_id: tender.id)
+    unless user_status.present?
+      same_collaboration_status = Marketplace::UserTenderStatus.where(collaboration_id: collaboration.id).first.status
+      user_status = ::Marketplace::UserTenderStatus.create(user_id: user.id, tender_id: tender.id,
+                                                            status: same_collaboration_status)
+     end
+      user_status.collaboration_id = collaboration.id
+      user_status.save
   end
 
   private

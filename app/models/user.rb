@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_many :user_favourite_tenders
   has_many :favourite_tenders, through: :user_favourite_tenders, source: :tender, class_name: 'Core::Tender'
   enum role: [:admin, :standart, :basic, :free]
+  has_many :tender_status, class_name: 'Marketplace::UserTenderStatus'
 
   after_initialize :set_default_role, :if => :new_record?
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i

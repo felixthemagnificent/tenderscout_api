@@ -48,6 +48,7 @@ Rails.application.routes.draw do
           put :add_favourite, to: 'tenders#add_favourite'
           delete :delete_favourite, to: 'tenders#delete_favourite'
           get :bid_result
+          post :user_awaiting_result_tender
         end
         member do
           scope :compete do

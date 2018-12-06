@@ -1,4 +1,5 @@
 class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationController
+  include UserTenderStatusChanger
   before_action :set_tender
   before_action :set_marketplace_tender_award_criteria_section, only: [:show, :update, :destroy]
   after_action :verify_authorized, except: [:bulk_create]
@@ -20,6 +21,8 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
     @marketplace_tender_award_criteria_section = @tender.award_criteria_sections.new(marketplace_tender_award_criteria_section_params)
     authorize @marketplace_tender_award_criteria_section
     if @marketplace_tender_award_criteria_section.save
+      user_competing_tender(marketplace_tender_award_criteria_section_params[:tender_id],
+                            marketplace_tender_award_criteria_section_params[:collaboration_id])
       render json: @marketplace_tender_award_criteria_section, status: :created
     else
       render json: @marketplace_tender_award_criteria_section.errors, status: :unprocessable_entity
