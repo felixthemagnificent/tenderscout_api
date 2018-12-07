@@ -21,6 +21,16 @@ class V1::UsersController < ApplicationController
           each_serializer: UserSerializer, current_user: current_user)}
   end
 
+  def upgrade
+    authorize current_user
+    uur = current_user.user_upgrade_requests.new
+    if uur.save
+      render json: nil, status: :ok
+    else
+      render json: nil, status: :unprocessable_entity
+    end
+  end
+
   def my_tenders
     my_tenders = current_user.my_tender_list
     status = params[:status]

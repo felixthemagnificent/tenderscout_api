@@ -43,6 +43,8 @@ group :development, :test do
   #SimpleCov is a code coverage analysis tool for Ruby.
   gem 'simplecov', require: false
   gem 'rubocop-rspec'
+  gem 'rspec_api_documentation'
+  gem 'guard-rspec', require: false
 end
 
 group :development do
