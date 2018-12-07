@@ -94,6 +94,10 @@ class TenderSerializer < ActiveModel::Serializer
     end
   end
 
+  attribute(:user_status) do
+    Marketplace::UserTenderStatus.find_by(user_id: current_user.id, tender_id: object.id).try(:status)
+  end
+
   def current_user
     @instance_options[:current_user] || @instance_options[:scope]
   end

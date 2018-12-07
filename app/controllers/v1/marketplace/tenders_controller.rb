@@ -1,12 +1,15 @@
 class V1::Marketplace::TendersController < ApplicationController
+  include UserTenderStatusChanger
   include ActionController::Serialization
   before_action :set_tender, only: [:show, :update, :destroy, :set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
-                                    :similar_opportunities_tenders, :add_favourite, :delete_favourite, :bid_result]
+                                    :similar_opportunities_tenders, :add_favourite, :delete_favourite, :bid_result,
+                                    :user_awaiting_result_tender]
   after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish, :get_bnb_data,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
                                             :current_buyer_company_won_list, :similar_opportunities_tenders,
-                                            :add_favourite, :delete_favourite, :my_favourites, :bid_result]
+                                            :add_favourite, :delete_favourite, :my_favourites, :bid_result,
+                                            :user_awaiting_result_tender]
   # GET /profiles
   def index
     authorize Core::Tender
@@ -21,15 +24,16 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def process_bnb_data
-    answer = Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
-    question = Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
+    answer = ::Marketplace::BidNoBidAnswer.find_by_id params[:answer_id]
+    question = ::Marketplace::BidNoBidQuestion.find_by_id params[:question_id]
     if answer.bid_no_bid_question == question
       @tender.bid_no_bid_compete_answers.create!({
         bid_no_bid_answer: answer,
         bid_no_bid_question: question,
         user: current_user
-        
+
         })
+      user_qualifying_tender(current_user, @tender)
       render json: @tender.get_bnb_data
     else
       render json: nil, status: :unprocessable_entity
@@ -39,6 +43,7 @@ class V1::Marketplace::TendersController < ApplicationController
   # GET /profiles/1
   def show
     authorize @tender
+    user_read_tender(current_user, @tender)
     render json: @tender
   end
 
@@ -129,9 +134,15 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def bid_result
-
     render json: @tender.award_criteria_sections, each_serializer: TenderBidResultSerializer#, root: :tender_bidresult
+  end
 
+  def user_awaiting_result_tender
+    users_status = ::Marketplace::UserTenderStatus.where(tender_id: @tender.id, collaboration_id: params[:collaboration_id]).where.not(status: 'awaiting_result')
+    users_status.each do |user|
+      break if user.status == 'won_lost'
+      user.update(status: 'awaiting_result')
+    end
   end
 
   private
