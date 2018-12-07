@@ -132,6 +132,13 @@ Rails.application.routes.draw do
     put :update_password, to: 'users#update_password', path: 'users/password/update'
     get :my_compete_tenders, to: 'users#my_compete_tenders'
     resources :assistances
+    namespace :users do
+      resources :upgrade_requests, only: [:index, :destroy] do
+        member do
+          post :approve
+        end
+      end
+    end
     resources :users do
       collection do
         get :available_in_marketplace
@@ -163,6 +170,7 @@ Rails.application.routes.draw do
     end
     resources :notes
     resources :profiles, path: 'my/profiles'
+    get 'my/upgrade', to: 'users#upgrade'
     resources :search_monitors, path: 'bidder/monitor' do
       member do
         put :archive

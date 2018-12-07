@@ -1,4 +1,4 @@
-class UserPolicy
+class UserUpgradeRequestPolicy
   attr_reader :user, :record
 
   def initialize(user, record)
@@ -10,30 +10,14 @@ class UserPolicy
     @user.admin?
   end
 
-  def upgrade?
-    @user.free?
-  end
-
-  def show?
-    index?
-  end
-
-  def create?
-    index?
-  end
-
-  def update?
-    index?
+  def approve?
+    @user.admin?
   end
 
   def destroy?
-    index?
+    @user.admin?
   end
 
-  def available_in_marketplace?
-    !@user.free?
-  end
-  
   class Scope
     attr_reader :user, :scope
 
