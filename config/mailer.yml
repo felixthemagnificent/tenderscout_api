@@ -18,6 +18,7 @@ default: &default
     assignment_invite: '8922900'
     user_confirmation: '8923193'
     admin_assistance_notifier: '9178405'
+    user_upgrade_request: '9274146'
   uri:
     admin_sign_up: '/users/signup-requests'
     tender_details: ''
