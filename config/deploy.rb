@@ -39,3 +39,5 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 # set :ssh_options, verify_host_key: :secure
 
 set :rvm_ruby_version, '2.2.8'
+
+set :sidekiq_config, "config/sidekiq.yml"
