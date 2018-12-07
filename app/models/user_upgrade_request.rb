@@ -20,4 +20,5 @@ class UserUpgradeRequest < ApplicationRecord
         }
       ).deliver_later
   	end
+  end
 end
