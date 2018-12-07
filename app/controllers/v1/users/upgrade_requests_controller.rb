@@ -11,14 +11,10 @@ class V1::Users::UpgradeRequestsController < ApplicationController
 
   def approve
   	authorize @uur
-  	begin
-	  	@uur.transaction do
-		  	@uur.user.standart!
-		  	@uur.updated_at = DateTime.now
-		  	@uur.save!
-		  end
+    @uur.upgraded_at = DateTime.now
+		if @uur.save
 		  render json: nil, status: :ok
-		rescue
+		else
 			render json: nil, status: :unprocessable_entity
 		end
   end
