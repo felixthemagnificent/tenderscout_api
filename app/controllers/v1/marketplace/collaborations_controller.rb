@@ -22,6 +22,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
   # POST /marketplace/collaborations
   def apply
+    
     render json: nil
     return
     # user = User.find_by_id params[:user_id]
