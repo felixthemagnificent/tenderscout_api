@@ -61,7 +61,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
       Rails.logger.warn  @tender
       Rails.logger.warn @marketplace_collaboration
       add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
-      render json: @marketplace_collaboration, status: :created
+      render json: {collaboration: @marketplace_collaboration, user: user, tender: @tender}, status: :created
     else
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
     end
