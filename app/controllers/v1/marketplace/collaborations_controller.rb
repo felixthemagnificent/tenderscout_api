@@ -51,6 +51,9 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_later
+      p(user)
+      p(@tender)
+      p(@marketplace_collaboration)
       add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
       render json: @marketplace_collaboration, status: :created
     else
