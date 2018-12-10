@@ -1,6 +1,9 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
-  
+  mount Sidekiq::Web => '/sidekiq_web'
+
   resources :contacts
   # use_doorkeeper
   devise_for :users,controllers: { confirmations: 'users/confirmations'}, defaults: { format: :json }
