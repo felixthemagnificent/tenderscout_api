@@ -121,8 +121,8 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   end
 
   def delete_files
-    if params[:index].present?
-      @marketplace_tender_qualification_criteria.attachments.where(id: params[:index]).each { |e| e.destroy }
+    if params[:file_id].present?
+      @marketplace_tender_qualification_criteria.attachments.where(id: params[:file_id]).each { |e| e.destroy }
     else
       @marketplace_tender_qualification_criteria.attachments.each { |e| e.destroy }
     end
