@@ -130,7 +130,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   end
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_tender_award_criterium
-    id = params[:id] || params[:marketplace_tender_award_criterium_id]
+    id = params[:id] || params[:marketplace_tender_award_criterium_id] || params[:tender_award_criterium_id]
     @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(id)
   end
 
