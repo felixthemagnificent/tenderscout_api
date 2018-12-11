@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181206131935) do
+ActiveRecord::Schema.define(version: 20181211133837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -872,6 +872,13 @@ ActiveRecord::Schema.define(version: 20181206131935) do
     t.index ["tender_id"], name: "index_marketplace_tender_q_c_sections_on_tender_id"
   end
 
+  create_table "marketplace_user_tender_statuses", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "tender_id"
+    t.integer "collaboration_id"
+    t.integer "status", default: 0
+  end
+
   create_table "ngip_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
@@ -1112,9 +1119,9 @@ ActiveRecord::Schema.define(version: 20181206131935) do
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "attachments_marketplace_tender_award_criteria", "attachments"
-  add_foreign_key "attachments_marketplace_tender_award_criteria", "marketplace_tender_award_criteria", column: "tender_award_criterium_id"
+  add_foreign_key "attachments_marketplace_tender_award_criteria", "marketplace_tender_award_criteria", column: "tender_award_criterium_id", on_delete: :cascade
   add_foreign_key "attachments_marketplace_tender_qualification_criteria", "attachments"
-  add_foreign_key "attachments_marketplace_tender_qualification_criteria", "marketplace_tender_qualification_criteria", column: "tender_qualification_criteria_id"
+  add_foreign_key "attachments_marketplace_tender_qualification_criteria", "marketplace_tender_qualification_criteria", column: "tender_qualification_criteria_id", on_delete: :cascade
   add_foreign_key "bidsense_results", "core_tenders", column: "tender_id"
   add_foreign_key "bidsense_results", "profiles"
   add_foreign_key "case_studies", "profiles"
