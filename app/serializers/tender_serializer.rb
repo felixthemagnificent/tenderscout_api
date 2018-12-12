@@ -72,6 +72,10 @@ class TenderSerializer < ActiveModel::Serializer
     Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
   end
   attribute(:bid_no_bid) do
+    if current_user.free? || current_user.basic?
+      nil
+      else
+
     result = []
     Marketplace::BidNoBidQuestion.all.each do |question|
       result << question.as_json
@@ -80,6 +84,7 @@ class TenderSerializer < ActiveModel::Serializer
     end
 
     result
+    end
     end
 
   attribute(:complete_status) do
