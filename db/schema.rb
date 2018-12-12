@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181211134401) do
+ActiveRecord::Schema.define(version: 20181212073446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1029,6 +1029,7 @@ ActiveRecord::Schema.define(version: 20181211134401) do
     t.integer "tenders_count"
     t.datetime "submission_date_to"
     t.datetime "submission_date_from"
+    t.integer "monitor_type"
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 
@@ -1118,8 +1119,6 @@ ActiveRecord::Schema.define(version: 20181211134401) do
   add_foreign_key "assistances", "users"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
-  add_foreign_key "attachments_marketplace_tender_award_criteria", "attachments"
-  add_foreign_key "attachments_marketplace_tender_qualification_criteria", "attachments"
   add_foreign_key "bidsense_results", "core_tenders", column: "tender_id"
   add_foreign_key "bidsense_results", "profiles"
   add_foreign_key "case_studies", "profiles"

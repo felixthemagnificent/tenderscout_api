@@ -1,17 +1,17 @@
 class SearchMonitorPolicy
-  attr_reader :user, :record
+  attr_reader :user, :monitor
 
-  def initialize(user, record)
+  def initialize(user, monitor)
     @user = user
-    @record = record
+    @monitor = monitor
   end
 
   def index?
-    @user.paid?
+    @user.paid? || @monitor.profile?
   end
 
   def show?
-    @user.paid?
+    @user.paid? || @monitor.profile?
   end
 
   def create?
@@ -19,7 +19,7 @@ class SearchMonitorPolicy
   end
 
   def update?
-    create?
+    create? && !@monitor.profile?
   end
 
   def all_results?
@@ -31,11 +31,11 @@ class SearchMonitorPolicy
   end
 
   def archive?
-    index?
+    index? && !@monitor.profile?
   end
 
   def share?
-    index?
+    index? && !@monitor.profile?
   end
 
   def result?
@@ -49,7 +49,7 @@ class SearchMonitorPolicy
 
 
   def destroy?
-    @user.standart?
+    @user.standart? && !@monitor.profile?
   end
 
   class Scope
