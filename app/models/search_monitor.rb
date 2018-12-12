@@ -3,6 +3,8 @@ class SearchMonitor < ApplicationRecord
   attr_accessor :sort_direction
   mount_uploader :export, MonitorExportUploader
   belongs_to :user
+
+  enum monitor_type: [:profile, :personal, :common]
   
   def downloadable_export_url
     self.export.url(query: {"response-content-disposition" => "attachment;"})
