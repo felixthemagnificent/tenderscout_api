@@ -15,7 +15,7 @@ class SearchMonitorPolicy
   end
 
   def create?
-    @user.standart? || @user.admin?
+    @user.standart? || @user.admin? || @user.basic?
   end
 
   def update?

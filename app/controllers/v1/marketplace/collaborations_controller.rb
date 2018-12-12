@@ -22,54 +22,52 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
   # POST /marketplace/collaborations
   def apply
-    
-    render json: nil
-    return
-    # user = User.find_by_id params[:user_id]
-    # role = params[:role]
-    #
-    # @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
-    # authorize @marketplace_collaboration
-    #
-    # @marketplace_collaboration.tender_collaborators.create(
-    #   user: user,
-    #   role: role,
-    #   status: :pending,
-    #   invited_by_user: current_user
-    # )
-    #
-    # if @marketplace_collaboration.save
-    #   CustomPostmarkMailer.template_email(
-    #     user.email,
-    #     Rails.configuration.mailer['templates']['collaboration_invite'],
-    #     {
-    #       user_name: current_user.profiles.first.fullname,
-    #       tender_name: @tender.title,
-    #       tender_id: @tender.id,
-    #       tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
-    #       invite_link_url: '',
-    #       product_url: Rails.configuration.mailer['product_url'],
-    #       support_url: Rails.configuration.mailer['support'],
-    #       company_name: Rails.configuration.mailer['company_name'],
-    #       company_address: Rails.configuration.mailer['company_address']
-    #     }
-    #   ).deliver_later
-    #   p (user)
-    #   p(@tender)
-    #   p(@marketplace_collaboration)
-    #   puts(user)
-    #   puts(@tender)
-    #   puts(@marketplace_collaboration)
-    #   Rails.logger.warn user
-    #   Rails.logger.warn  @tender
-    #   Rails.logger.warn @marketplace_collaboration
-    #   add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
-    #   render json: {user: user}
-    #   #render json: {collaboration: @marketplace_collaboration, user: user, tender: @tender}, status: :created
-    # else
-    #   render json: {user: user}
-    #   #render json: @marketplace_collaboration.errors, status: :unprocessable_entity
-    #end
+
+    user = User.find_by_id params[:user_id]
+    role = params[:role]
+
+    @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
+    authorize @marketplace_collaboration
+
+    @marketplace_collaboration.tender_collaborators.create(
+      user: user,
+      role: role,
+      status: :pending,
+      invited_by_user: current_user
+    )
+
+    if @marketplace_collaboration.save
+      CustomPostmarkMailer.template_email(
+        user.email,
+        Rails.configuration.mailer['templates']['collaboration_invite'],
+        {
+          user_name: current_user.profiles.first.fullname,
+          tender_name: @tender.title,
+          tender_id: @tender.id,
+          tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
+          invite_link_url: '',
+          product_url: Rails.configuration.mailer['product_url'],
+          support_url: Rails.configuration.mailer['support'],
+          company_name: Rails.configuration.mailer['company_name'],
+          company_address: Rails.configuration.mailer['company_address']
+        }
+      ).deliver_later
+      p (user)
+      p(@tender)
+      p(@marketplace_collaboration)
+      puts(user)
+      puts(@tender)
+      puts(@marketplace_collaboration)
+      Rails.logger.warn user
+      Rails.logger.warn  @tender
+      Rails.logger.warn @marketplace_collaboration
+      add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
+      #render json: {user: user}
+      render json: @marketplace_collaboration
+    else
+      #render json: {user: user}
+      render json: @marketplace_collaboration.errors, status: :unprocessable_entity
+    end
   end
 
   def remove

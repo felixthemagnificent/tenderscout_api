@@ -5,7 +5,7 @@ class V1::Marketplace::TendersController < ApplicationController
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
                                     :similar_opportunities_tenders, :add_favourite, :delete_favourite, :bid_result,
                                     :user_awaiting_result_tender]
-  after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish, :get_bnb_data,
+  after_action :verify_authorized, except: [:set_avatar, :destroy_avatar, :publish,
                                     :process_bnb_data, :best_bidsense_profiles , :complete_organization_tenders_list,
                                             :current_buyer_company_won_list, :similar_opportunities_tenders,
                                             :add_favourite, :delete_favourite, :my_favourites, :bid_result,
@@ -20,6 +20,7 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def get_bnb_data
+    authorize @tender
     render json: @tender.get_bnb_data
   end
 

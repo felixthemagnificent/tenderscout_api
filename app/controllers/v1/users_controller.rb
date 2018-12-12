@@ -14,12 +14,18 @@ class V1::UsersController < ApplicationController
 
   def available_in_marketplace
     authorize User
+    unless current_user.free?
     users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
     users = User.where(id: users)
     users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(users, 
           each_serializer: UserSerializer, current_user: current_user)}
-  end
+    else
+      users = User.where(id: current_user.id)
+      render json: {count: 1, data: ActiveModel::Serializer::CollectionSerializer.new(users,
+                                                                                                each_serializer: UserSerializer, current_user: current_user)}
+    end
+    end
 
   def upgrade
     authorize current_user

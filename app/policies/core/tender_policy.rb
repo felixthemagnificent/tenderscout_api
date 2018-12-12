@@ -11,7 +11,8 @@ class Core::TenderPolicy
   end
 
   def show?
-    @user.paid? || @user.tender_collaborators.map(&:collaboration).map(&:tender).include?(tender)
+    true
+    #@user.paid? || @user.tender_collaborators.map(&:collaboration).map(&:tender).include?(tender)
   end
 
   def create?
@@ -24,6 +25,10 @@ class Core::TenderPolicy
 
   def destroy?
     create?
+  end
+
+  def get_bnb_data?
+    @user.admin? || @user.standart?
   end
 
   class Scope

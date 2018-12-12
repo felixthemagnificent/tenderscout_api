@@ -1,29 +1,28 @@
-class ProfilePolicy
-  attr_reader :user, :record
-
-  def initialize(user, record)
+class Marketplace::BidNoBidAnswerPolicy
+  attr_reader :user, :bid_no_bid_answer
+  def initialize(user, answer)
     @user = user
-    @record = record
+    @answer = answer
   end
 
   def index?
-    @user.admin? || @user.standart? || @user.basic?
+  @user.admin? || @user.standart?
   end
 
   def show?
-    @user.admin? || @user.standart? || @user.basic?
+    index?
   end
 
   def create?
-    true
+    index?
   end
 
   def update?
-    true
+    index?
   end
 
   def destroy?
-    true
+    index?
   end
 
   class Scope

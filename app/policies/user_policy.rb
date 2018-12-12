@@ -31,7 +31,7 @@ class UserPolicy
   end
 
   def available_in_marketplace?
-    !@user.free?
+    true#!@user.free?
   end
   
   class Scope
