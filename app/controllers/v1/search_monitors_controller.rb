@@ -25,9 +25,41 @@ class V1::SearchMonitorsController < ApplicationController
     }, current_user: current_user
   end
 
-  def all_results
+  def all_monitor_result
     authorize SearchMonitor
-    data, count = preview_search(search_monitor_sort_params)
+    data, count = all_monitors_search(search_monitor_sort_params)
+    render json: {
+      data: data,
+      count: count
+    }, current_user: current_user
+  end
+
+  def profile_monitor_result
+    authorize SearchMonitor
+    search_monitor = SearchMonitor.find_by(monitor_type: :profile, user: current_user)
+    results = search_monitor.results(sort_by: params[:sort_by], sort_direction: params[:sort_direction])
+    data, count = serialize_core_tenders_search(results)
+    render json: {
+      data: data,
+      count: count
+    }, current_user: current_user
+  end
+
+  def compete_monitor_result
+    authorize SearchMonitor
+    result = current_user.tenders.uniq.sort_by(search_monitor_sort_params)
+    data, count = result.my_paginate(paginate_params), result.count
+    render json: {
+      data: data,
+      count: count
+    }, current_user: current_user
+  end
+
+  def favourite_monitor_result
+    authorize SearchMonitor
+    favourite_tenders = current_user.favourite_tenders
+    favourite_tenders = favourite_tenders.sort_by(search_monitor_sort_params)
+    data, count = favourite_tenders.my_paginate(paginate_params), favourite_tenders.count
     render json: {
       data: data,
       count: count
@@ -162,6 +194,10 @@ class V1::SearchMonitorsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_search_monitor
       @search_monitor = SearchMonitor.find(params[:id])
+    end
+
+    def paginate_params
+      params.permit(:page, :page_size)
     end
 
     # Only allow a trusted parameter "white list" through.

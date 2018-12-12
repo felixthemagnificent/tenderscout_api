@@ -184,9 +184,14 @@ Rails.application.routes.draw do
         get :export
       end
       collection do
-        get :all_result, to: 'search_monitors#all_results'
+        get 'all/result', to: 'search_monitors#all_monitor_result'
         post :preview
         get :search
+        get :profile, to: 'search_monitors#profile_monitor'
+        get 'profile/result', to: 'search_monitors#profile_monitor_result'
+        get 'favourite/result', to: 'search_monitors#favourite_monitor_result'
+        get 'compete/result', to: 'search_monitors#compete_monitor_result'
+
       end
     end
     post 'bidder/monitor/preview' => 'search_monitors#preview'
