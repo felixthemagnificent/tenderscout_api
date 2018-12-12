@@ -30,6 +30,10 @@ class SearchMonitorPolicy
     index?
   end
 
+  def profile_monitor_result?
+    index?
+  end
+
   def archive?
     index? && !@monitor.profile?
   end

@@ -174,6 +174,9 @@ Rails.application.routes.draw do
     resources :notes
     resources :profiles, path: 'my/profiles'
     get 'my/upgrade', to: 'users#upgrade'
+    get 'bidder/monitor/profile/result', to: 'search_monitors#profile_monitor_result'
+    get 'bidder/monitor/favourite/result', to: 'search_monitors#favourite_monitor_result'
+    get 'bidder/monitor/compete/result', to: 'search_monitors#compete_monitor_result'
     resources :search_monitors, path: 'bidder/monitor' do
       member do
         put :archive
