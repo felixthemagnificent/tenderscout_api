@@ -27,7 +27,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   def all_monitor_result
     authorize SearchMonitor
-    data, count = all_monitors_search(search_monitor_sort_params)
+    data, count = all_monitors_search
     render json: {
       data: data,
       count: count
@@ -153,8 +153,228 @@ class V1::SearchMonitorsController < ApplicationController
     end
 
     def all_monitors_search
-      data = []
-      current_user.search_monitors.each
+      query = []
+      current_user.search_monitors.each do |sm|
+        matches = []
+        tender_title = sm[:tenderTitle]
+        tender_keywords = sm[:keywordList]
+        tender_value_from = sm[:valueFrom]
+        tender_value_to = sm[:valueTo]
+        tender_countries = sm[:countryList]
+        tender_buyers = sm[:buyer]
+        tender_statuses = sm[:status]
+        tender_submission_date_from = sm[:submission_date_from]
+        tender_submission_date_to = sm[:submission_date_to]
+
+        if tender_value_to
+          matches <<  {
+                        range:
+                        {
+                          high_value:
+                          {
+                           lte: tender_value_to
+                          }
+                        }
+                      } 
+        end
+        if tender_buyers
+          matches << {
+                        match: {
+                          buyers:{
+                                query: tender_buyers,
+                                analyzer: :fullname,
+                                operator: :and
+                                # prefix: 1
+                              }
+                          }
+                        } 
+        end
+
+        if tender_submission_date_from
+          matches << {
+                      range:
+                      {
+                        submission_date:
+                        {
+                          gte: tender_submission_date_from
+                        }
+                      }
+                    } 
+        end
+
+        if tender_submission_date_to
+          matches << {
+                      range:
+                      {
+                        submission_date:
+                        {
+                          lte: tender_submission_date_to
+                        }
+                      }
+                    } 
+        end
+
+        if tender_value_from
+          matches << {
+                        range:
+                        {
+                          low_value:
+                          {
+                            gte: tender_value_from
+                          }
+                        }
+                      } 
+        end
+        unless tender_title.blank?
+          matches << {
+                        bool: 
+                        {
+                          should:[
+                          { 
+                            term:
+                            {
+                              title: 
+                              {
+                                value: tender_title,
+                                boost: 2.5
+                              }
+                            }
+                          }, {
+                            match_phrase:
+                            {
+                              title: {
+                                query: tender_title,
+                                boost: 1.8
+                              }
+                            }
+                          },
+                          { 
+                            term:
+                            {
+                              description: 
+                              {
+                                value: tender_title,
+                                boost: 2.0
+                              }
+                            }
+                          }, {
+                            match_phrase:
+                            {
+                              description: 
+                              {
+                                query: tender_title,
+                                boost: 1.7
+                              }
+                            }
+                          }]
+                        }
+                      } 
+        end
+
+        if tender_keywords
+          match_keywords = []
+          tender_keywords.each do |e|
+            match_keywords << {
+              match:
+              {
+                description: {
+                  query: e,
+                  boost: 1.5
+                }
+              }
+            }
+          end
+          matches << {
+            bool: {
+                should: match_keywords
+              }
+          }
+        end
+
+        if tender_countries
+          match_countries = []
+          tender_countries.each do |e|
+            match_countries << {
+              match:
+              {
+                country_id: e
+              }
+            }
+          end
+          matches << {
+            bool: {
+                should: match_countries
+              }
+          }
+        end
+
+        status_matches = []
+
+        if tender_statuses  
+          if tender_statuses.include? 'awarded'
+            status_matches <<  {
+                  exists:
+                  {
+                    field: :awarded_on
+                  }
+                } 
+          end
+          if tender_statuses.include? 'cancelled'
+            status_matches <<  {
+                  exists:
+                  {
+                    field: :cancelled_on
+                  }
+                } 
+          end
+
+          if tender_statuses.include? 'open'
+            status_matches <<  {
+                          range:
+                          {
+                            submission_date:
+                            {
+                             gt: DateTime.now
+                            }
+                          }
+                        } 
+          end
+
+          if tender_statuses.include? 'closed'
+            status_matches <<  {
+                          range:
+                          {
+                            submission_date:
+                            {
+                             lte: DateTime.now
+                            }
+                          }
+                        } 
+          end
+          matches << {
+            bool: {
+              should: status_matches
+            }
+          }
+        end
+        query << matches
+      end
+
+      result_query = {}
+      query.each { |e| result_query.merge!({must: e}) }
+      results = TendersIndex.query(bool: result_query)
+      if params[:sort_by].present? and params[:sort_direction].present?
+        results = results.order(
+          params[:sort_by].to_sym => 
+          {
+            order: params[:sort_direction] 
+          }
+        )
+      else
+        results = results.order(created_at: { order: :desc })
+      end
+
+      serialize_core_tenders_search(results)
     end
 
     def preview_search(search_monitor_params)
