@@ -266,7 +266,7 @@ class Core::Tender < ApplicationRecord
           match:
           {
             description: {
-              value: e,
+              query: e,
               boost: 1.5
             }
           }
