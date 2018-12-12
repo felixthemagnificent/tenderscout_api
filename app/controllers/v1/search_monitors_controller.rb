@@ -152,6 +152,11 @@ class V1::SearchMonitorsController < ApplicationController
       return tenders, results.count
     end
 
+    def all_monitors_search
+      data = []
+      current_user.search_monitors.each
+    end
+
     def preview_search(search_monitor_params)
       tender_title = search_monitor_params[:tenderTitle]
       tender_keywords = search_monitor_params[:keywordList]
