@@ -7,6 +7,23 @@ class CreateProfile
                     code: :unauthorized
     end
 
+    if context.user.free? && keyword_params.count > 5
+      context.fail! errors: { error_description: "Free user can't add more 5 keywords"},
+                    code: 403
+    end
+
+    if context.user.free? && profile_params[:description].present?
+      if profile_params[:description].length > 200
+        context.fail! errors: { error_description: "Free user can't add more 200 characters in description"},
+                      code: 403
+      end
+    end
+
+    if context.user.free? && country_params.count > 1
+      context.fail! errors: { error_description: "Free user can't add more 3 countries"},
+                    code: 403
+    end
+
     context.profile = context.user.profiles.new(profile_params)
     unless context.profile.save
       context.fail! errors: context.profile.errors,

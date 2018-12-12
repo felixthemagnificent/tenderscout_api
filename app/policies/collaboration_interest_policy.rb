@@ -1,31 +1,25 @@
-class ProfilePolicy
-  attr_reader :user, :record
+class CollaborationInterestPolicy# < Marketplace::TenderCompetePolicy
+  attr_reader :user, :collaboration_interest
 
-  def initialize(user, record)
+  def initialize(user, collaboration_interest)
     @user = user
-    @record = record
+    @collaboration_interest = collaboration_interest
   end
-
   def index?
     @user.admin? || @user.standart? || @user.basic?
   end
-
   def show?
-    @user.admin? || @user.standart? || @user.basic?
+  index?
   end
-
   def create?
-    true
+    index?
   end
-
   def update?
-    true
+    index?
   end
-
   def destroy?
-    true
+    index?
   end
-
   class Scope
     attr_reader :user, :scope
 
