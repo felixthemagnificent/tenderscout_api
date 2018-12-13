@@ -153,19 +153,33 @@ class V1::SearchMonitorsController < ApplicationController
     end
 
     def all_monitors_search
+      subqueries = {}
+      subqueries[:tender_titles] = prepare_tender_title_search
+      subqueries[:tender_value_from] = prepare_tender_value_from
+      subqueries[:tender_value_to] = prepare_tender_value_to
+      subqueries[:tender_submission_date_from] = prepare_tender_submission_date_from
+      subqueries[:tender_submission_date_to] = prepare_tender_submission_date_to
+      subqueries[:tender_buyers] = prepare_tender_buyers
+      subqueries[:tender_keywords] = prepare_tender_keywords
+      subqueries[:tender_countries] = prepare_tender_countries
+      subqueries[:tender_statuses] = prepare_tender_statuses
+      search_components = []
+      subqueries.each do |_,sq|
+        if sq.count
+          search_components << {
+            bool: 
+            {
+              should: sq
+            }
+          }
+        end
+      end
+
       query = 
       {
         bool:
         {
-          must: 
-          [
-            { #tenderTitle
-              bool: 
-              {
-                should: []
-              }
-            }
-          ]
+          must: search_components
         }
       }
 
@@ -184,52 +198,208 @@ class V1::SearchMonitorsController < ApplicationController
       serialize_core_tenders_search(results)
     end
 
-    def prepare_tender_title_search(monitors)
+    def prepare_tender_countries
+      countries = []
       matches = []
       current_user.search_monitors.each do |e|
-              matches << {
-                    bool: 
-                    {
-                      should:[
-                      { 
-                        term:
-                        {
-                          title: 
-                          {
-                            value: e.tenderTitle,
-                            boost: 2.5
-                          }
-                        }
-                      }, {
-                        match_phrase:
-                        {
-                          title: {
-                            query: e.tenderTitle,
-                            boost: 1.8
-                          }
-                        }
-                      },
-                      { 
-                        term:
-                        {
-                          description: 
-                          {
-                            value: e.tenderTitle,
-                            boost: 2.0
-                          }
-                        }
-                      }, {
-                        match_phrase:
-                        {
-                          description: 
-                          {
-                            query: e.tenderTitle,
-                            boost: 1.7
-                          }
-                        }
-                      }]
-                    }
+        countries += e.countryList
+      end
+      countries.flatten!
+      countries.uniq!
+      if countries.count
+        match_countries = []
+        countries.each do |e|
+          match_countries << {
+            match:
+            {
+              country_id: e
+            }
+          }
+        end
+        matches << {
+          bool: {
+              should: match_countries
+            }
+        }
+      end
+
+      matches
+    end
+
+    def prepare_tender_keywords
+      keywords = []
+      matches = []
+      current_user.search_monitors.each do |e|
+        keywords += e.keywordList
+      end
+      keywords.flatten!
+      keywords.uniq!
+      if keywords.count
+        match_keywords = []
+        keywords.each do |e|
+          match_keywords << {
+            match:
+            {
+              description: {
+                query: e,
+                boost: 1.5
+              }
+            }
+          }
+        end
+        matches << {
+          bool: {
+              should: match_keywords
+            }
+        }
+      end
+
+      matches
+    end
+
+    def prepare_tender_submission_date_to
+      matches = []
+      current_user.search_monitors.each do |e|
+        if e.submission_date_from
+          matches << {
+              range:
+              {
+                high_value:
+                {
+                  lte: e.submission_date_to
+                }
+              }
+            } 
+        end
+      end
+      matches
+    end
+
+    def prepare_tender_submission_date_from
+      matches = []
+      current_user.search_monitors.each do |e|
+        if e.submission_date_from
+          matches << {
+              range:
+              {
+                high_value:
+                {
+                  gte: e.submission_date_from
+                }
+              }
+            } 
+        end
+      end
+      matches
+    end
+
+    def prepare_tender_buyers
+      matches = []
+      current_user.search_monitors.each do |e|
+        if e.buyer
+          matches << 
+          {
+            match: 
+            {
+              buyers:
+              {
+                query: e.buyer,
+                analyzer: :fullname,
+                operator: :and
+                    # prefix: 1
+              }
+            }
+          } 
+        end
+      end
+      matches
+    end
+
+    def prepare_tender_value_to
+      matches = []
+      current_user.search_monitors.each do |e|
+        if e.valueTo
+          matches << {
+              range:
+              {
+                high_value:
+                {
+                  lte: e.valueTo
+                }
+              }
+            } 
+        end
+      end
+      matches
+    end
+
+    def prepare_tender_value_from
+      matches = []
+      current_user.search_monitors.each do |e|
+        if e.valueFrom
+          matches << {
+              range:
+              {
+                low_value:
+                {
+                  gte: e.valueFrom
+                }
+              }
+            } 
+        end
+      end
+      matches
+    end
+
+    def prepare_tender_title_search
+      matches = []
+      current_user.search_monitors.each do |e|
+        if e.tenderTitle
+          matches << 
+          {
+            bool: 
+            {
+              should:[
+              { 
+                term:
+                {
+                  title: 
+                  {
+                    value: e.tenderTitle,
+                    boost: 2.5
                   }
+                }
+              }, {
+                match_phrase:
+                {
+                  title: {
+                    query: e.tenderTitle,
+                    boost: 1.8
+                  }
+                }
+              },
+              { 
+                term:
+                {
+                  description: 
+                  {
+                    value: e.tenderTitle,
+                    boost: 2.0
+                  }
+                }
+              }, {
+                match_phrase:
+                {
+                  description: 
+                  {
+                    query: e.tenderTitle,
+                    boost: 1.7
+                  }
+                }
+              }]
+            }
+          }
+        end
       end
       matches
     end
