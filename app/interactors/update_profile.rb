@@ -7,27 +7,12 @@ class UpdateProfile
                     code: :unauthorized
     end
 
-    if context.user.free? && keyword_params.count > 5
-      context.fail! errors: { error_description: "Free user can't add more 5 keywords"},
-                    code: 403
-    end
-
-    if context.user.free? && profile_params[:description].present?
-      if profile_params[:description].length > 200
-      context.fail! errors: { error_description: "Free user can't add more 200 characters in description"},
-                    code: 403
-        end
-    end
-
-    if context.user.free? && country_params.count > 1
-      context.fail! errors: { error_description: "Free user can't add more 3 countries"},
-                    code: 403
-    end
-
     if contact_params
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:contact_type], value: e[:value])}
     end
+    ActiveRecord::Base.transaction do
+      begin
 
     if keyword_params
       context.profile.keywords.destroy_all
@@ -66,6 +51,11 @@ class UpdateProfile
     unless context.profile.update(profile_params)
       context.fail! errors: context.profile.errors,
                     code: :unprocessable_entity
+    end
+      rescue
+        context.fail! errors: context.profile.errors,
+                      code: :unprocessable_entity
+      end
     end
   end
 
