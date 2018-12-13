@@ -25,6 +25,7 @@ class User < ApplicationRecord
   has_many :tender_status, class_name: 'Marketplace::UserTenderStatus'
 
   after_initialize :set_default_role, :if => :new_record?
+  before_save :update_flags
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
   # scope :paginate, ->(page, page_size) { page(page).per(page_size) }
 
@@ -62,6 +63,15 @@ class User < ApplicationRecord
   def tender_qualification_criteria_answer_completed_count(tender)
     collaboration =  Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: tender.id), user: self.id).first.collaboration
     Marketplace::TenderQualificationCriteriaAnswer.where(tender_id: tender.id, collaboration_id: collaboration.id).where(closed: true).uniq(&:tender_qualification_criteria_id).count
+  end
+
+  def update_flags
+    if self.free?
+      self.flags.delete_if? { |e| e == 'verified'}
+    else
+      self.flags << 'verified'
+    end
+    self.flags.uniq!
   end
 
   def tender_award_criteria_answer_completed_count(tender)
