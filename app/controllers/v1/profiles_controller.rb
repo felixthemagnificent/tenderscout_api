@@ -8,7 +8,7 @@ class V1::ProfilesController < ApplicationController
   # GET /profiles
   def index
     authorize Profile
-    @profiles = @user.profiles
+    @profiles = ProfilePolicy::Scope.new(current_user, @user.profiles).resolve
     render json: @profiles
   end
 
