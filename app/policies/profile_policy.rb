@@ -7,11 +7,11 @@ class ProfilePolicy
   end
 
   def index?
-    @user.admin? || @user.standart? || @user.basic?
+    true
   end
 
   def show?
-    @user.admin? || @user.standart? || @user.basic? || (@profile.user == @user)
+    true
   end
 
   def create?
