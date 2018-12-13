@@ -158,8 +158,12 @@ class V1::SearchMonitorsController < ApplicationController
       end
       ids.uniq!
       results = Core::Tender.where(id: ids)
-      results = results.sort_by(params)
-      render json: {count: results.count, data: results.my_paginate(paginate_params)}
+      if params[:sort_field] && params[:sort_direction]
+        results = results.order(params[:sort_field].to_sym => params[:sort_direction].to_sym)
+      else
+        results = results.order(created_at: :desc)
+      end
+      [results.my_paginate(paginate_params), results.count]
     end
 
     def preview_search(search_monitor_params)
