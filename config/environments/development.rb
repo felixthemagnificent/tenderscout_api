@@ -45,4 +45,5 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.action_cable.allowed_request_origins = [/http:\/\/*/, /https:\/\/*/,/chrome-extension:\/\/*/]
   TENDERSCOUTHOST = 'http://dev.tenderscout.braincode.xyz'
+  ADMINPANELHOST = 'http://admin.dev.tenderscout.braincode.xyz'
 end

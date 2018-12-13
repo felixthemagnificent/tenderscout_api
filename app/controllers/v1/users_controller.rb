@@ -9,26 +9,45 @@ class V1::UsersController < ApplicationController
     authorize User
     users = User.all
     @users = users.my_paginate(paginate_params)
-    render json: {count: users.count, data: @users}
+
+    render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(@users,
+          each_serializer: UserSerializer, current_user: current_user)}
   end
 
   def available_in_marketplace
     authorize User
+    unless current_user.free?
     users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
     users = User.where(id: users)
     users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(users, 
           each_serializer: UserSerializer, current_user: current_user)}
+    else
+      users = User.where(id: current_user.id)
+      render json: {count: 1, data: ActiveModel::Serializer::CollectionSerializer.new(users,
+                                                                                                each_serializer: UserSerializer, current_user: current_user)}
+    end
+    end
+
+  def upgrade
+    authorize current_user
+    uur = current_user.user_upgrade_requests.new
+    if uur.save
+      render json: nil, status: :ok
+    else
+      render json: nil, status: :unprocessable_entity
+    end
   end
 
   def my_tenders
     my_tenders = current_user.my_tender_list
     status = params[:status]
     my_tenders = my_tenders.where(status: status.to_sym) if Core::Tender.statuses.keys.include?(status)
+    my_tenders = my_tenders.with_relations
     sort_field = params[:sort_field]
     sort_direction = params[:sort_direction]
     if (%w(desc asc).include?(sort_direction) and %w(created_at dispatch_date submission_date).include?(sort_field))
-      my_tenders.order(sort_direction.to_sym => sort_direction.to_sym)
+      my_tenders = my_tenders.order(sort_field.to_sym => sort_direction.to_sym)
     end
     render json: ActiveModel::Serializer::CollectionSerializer.new(my_tenders, 
       each_serializer: TenderSerializer, current_user: current_user)

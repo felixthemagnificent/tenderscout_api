@@ -1,6 +1,9 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
-  
+  mount Sidekiq::Web => '/sidekiq_web'
+
   resources :contacts
   # use_doorkeeper
   devise_for :users,controllers: { confirmations: 'users/confirmations'}, defaults: { format: :json }
@@ -48,6 +51,7 @@ Rails.application.routes.draw do
           put :add_favourite, to: 'tenders#add_favourite'
           delete :delete_favourite, to: 'tenders#delete_favourite'
           get :bid_result
+          post :user_awaiting_result_tender
         end
         member do
           scope :compete do
@@ -67,6 +71,7 @@ Rails.application.routes.draw do
         resources :collaboration_interests  
         resources :tender_collaborators, path: 'collaborators'
         resources :tender_award_criteria, path: 'award_criteries' do
+          delete :files, to: 'tender_award_criterias#delete_files'
           resources :tender_award_criteria_answer, path: 'answers' do
             member do
               put :close
@@ -74,6 +79,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_qualification_criterias, path: 'qualification_criteria' do
+          delete :files, to: 'tender_qualification_criterias#delete_files'
           member do
             post :assign, to: 'tender_qualification_criterias#create_assign'
             patch :assign, to: 'tender_qualification_criterias#update_assign'
@@ -129,6 +135,13 @@ Rails.application.routes.draw do
     put :update_password, to: 'users#update_password', path: 'users/password/update'
     get :my_compete_tenders, to: 'users#my_compete_tenders'
     resources :assistances
+    namespace :users do
+      resources :upgrade_requests, only: [:index, :destroy] do
+        member do
+          post :approve
+        end
+      end
+    end
     resources :users do
       collection do
         get :available_in_marketplace
@@ -160,6 +173,11 @@ Rails.application.routes.draw do
     end
     resources :notes
     resources :profiles, path: 'my/profiles'
+    get 'my/upgrade', to: 'users#upgrade'
+    get 'bidder/monitor/all/result', to: 'search_monitors#all_monitor_result'
+    get 'bidder/monitor/profile/result', to: 'search_monitors#profile_monitor_result'
+    get 'bidder/monitor/favourite/result', to: 'search_monitors#favourite_monitor_result'
+    get 'bidder/monitor/compete/result', to: 'search_monitors#compete_monitor_result'
     resources :search_monitors, path: 'bidder/monitor' do
       member do
         put :archive
@@ -170,9 +188,14 @@ Rails.application.routes.draw do
         get :export
       end
       collection do
-        get :all_result, to: 'search_monitors#all_results'
+        get 'all_result', to: 'search_monitors#all_monitor_result'
         post :preview
         get :search
+        get :profile, to: 'search_monitors#profile_monitor'
+        get 'profile/result', to: 'search_monitors#profile_monitor_result'
+        get 'favourite/result', to: 'search_monitors#favourite_monitor_result'
+        get 'compete/result', to: 'search_monitors#compete_monitor_result'
+
       end
     end
     post 'bidder/monitor/preview' => 'search_monitors#preview'

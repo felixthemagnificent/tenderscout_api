@@ -6,7 +6,7 @@ class V2::Marketplace::CollaborationInterestsController < ApplicationController
 
   def index
     collaborations = GetCollaborations.call(params: index_params, user: current_user)
-    result = collaborations.results
+    result = []
     collaborations.results.map do |e| 
       is_collaborated = false
       collaboration = Marketplace::Collaboration.where(tender: @tender).try(:first)

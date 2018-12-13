@@ -2,7 +2,7 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   include AssignmentNotifier
   before_action :set_marketplace_tender_award_criterium, only: [:show, :update, :destroy, :tender_award_criteria_comments,
                                                                 :tender_award_criteria_notes, :update_deadline,
-                                                                :create_assign, :update_assign, :delete_assign]
+                                                                :create_assign, :update_assign, :delete_assign, :delete_files]
   before_action :set_tender
 
   # GET /marketplace/tender_award_criteria
@@ -20,6 +20,13 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   # POST /marketplace/tender_award_criteria
   def create
     @marketplace_tender_award_criterium = @tender.award_criteries.new(marketplace_tender_award_criterium_params)
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_award_criterium.attachments << attachment
+      end
+    end
 
     if @marketplace_tender_award_criterium.save
       render json: @marketplace_tender_award_criterium, status: :created
@@ -30,6 +37,13 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
 
   # PATCH/PUT /marketplace/tender_award_criteria/1
   def update
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_award_criterium.attachments << attachment
+      end
+    end
     if @marketplace_tender_award_criterium.update(marketplace_tender_award_criterium_params)
       render json: @marketplace_tender_award_criterium
     else
@@ -97,6 +111,15 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
     end
   end
 
+  def delete_files
+    if params[:file_id].present?
+      @marketplace_tender_award_criterium.attachments.where(id: params[:file_id]).each { |e| e.destroy }
+    else
+      @marketplace_tender_award_criterium.attachments.each { |e| e.destroy }
+    end
+  end
+
+
   def delete_assign
     @marketplace_tender_award_criterium.assignment.destroy
   end
@@ -107,7 +130,8 @@ class V1::Marketplace::TenderAwardCriteriaController < ApplicationController
   end
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_tender_award_criterium
-    @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(params[:id])
+    id = params[:id] || params[:marketplace_tender_award_criterium_id] || params[:tender_award_criterium_id]
+    @marketplace_tender_award_criterium = ::Marketplace::TenderAwardCriterium.find(id)
   end
 
   # Only allow a trusted parameter "white list" through.

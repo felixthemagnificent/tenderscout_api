@@ -22,6 +22,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
   # POST /marketplace/collaborations
   def apply
+
     user = User.find_by_id params[:user_id]
     role = params[:role]
 
@@ -29,8 +30,8 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     authorize @marketplace_collaboration
 
     @marketplace_collaboration.tender_collaborators.create(
-      user: user, 
-      role: role, 
+      user: user,
+      role: role,
       status: :pending,
       invited_by_user: current_user
     )
@@ -51,8 +52,20 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_later
-      render json: @marketplace_collaboration, status: :created
+      p (user)
+      p(@tender)
+      p(@marketplace_collaboration)
+      puts(user)
+      puts(@tender)
+      puts(@marketplace_collaboration)
+      Rails.logger.warn user
+      Rails.logger.warn  @tender
+      Rails.logger.warn @marketplace_collaboration
+      add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
+      #render json: {user: user}
+      render json: @marketplace_collaboration
     else
+      #render json: {user: user}
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
     end
   end
@@ -70,6 +83,17 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # DELETE /marketplace/collaborations/1
   def destroy
     @marketplace_collaboration.destroy
+  end
+
+  def add_collaboration_to_user_status(user,tender, collaboration)
+    user_status = ::Marketplace::UserTenderStatus.find_by(user_id: user.id, tender_id: tender.id)
+    unless user_status.present?
+      same_collaboration_status = Marketplace::UserTenderStatus.where(collaboration_id: collaboration.id).first.status
+      user_status = ::Marketplace::UserTenderStatus.create(user_id: user.id, tender_id: tender.id,
+                                                            status: same_collaboration_status)
+     end
+      user_status.collaboration_id = collaboration.id
+      user_status.save
   end
 
   private

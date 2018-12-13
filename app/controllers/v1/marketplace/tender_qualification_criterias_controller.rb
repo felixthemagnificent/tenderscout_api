@@ -2,10 +2,10 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   include ActionController::Serialization
   before_action :set_marketplace_tender_qualification_criteria, only: [:show, :update, :destroy, :tender_qualification_criteria_comments,
                                                      :tender_qualification_criteria_notes, :update_deadline, :create_assign, :update_assign,
-                                                     :delete_assign]
+                                                     :delete_assign, :delete_files]
   before_action :set_tender
   after_action :verify_authorized, except: [:tender_qualification_criteria_comments, :tender_qualification_criteria_notes, :update_deadline,
-                                            :create_assign, :update_assign, :delete_assign]
+                                            :create_assign, :update_assign, :delete_assign, :delete_files]
   # GET /marketplace/tender_qualification_criterias
   def index
     @marketplace_tender_qualification_criterias = @tender.qualification_criterias.all
@@ -24,6 +24,14 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
     authorize ::Marketplace::TenderQualificationCriteria
     @marketplace_tender_qualification_criteria = @tender.qualification_criterias.new(marketplace_tender_qualification_criteria_params)
 
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_qualification_criteria.attachments << attachment
+      end
+    end
+
     if @marketplace_tender_qualification_criteria.save
       render json: @marketplace_tender_qualification_criteria, status: :created
     else
@@ -34,6 +42,13 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
   # PATCH/PUT /marketplace/tender_qualification_criterias/1
   def update
     authorize @marketplace_tender_qualification_criteria
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @marketplace_tender_qualification_criteria.attachments << attachment
+      end
+    end
     if @marketplace_tender_qualification_criteria.update(marketplace_tender_qualification_criteria_params)
       render json: @marketplace_tender_qualification_criteria
     else
@@ -105,10 +120,20 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
     @marketplace_tender_qualification_criteria.assignment.destroy
   end
 
+  def delete_files
+    if params[:file_id].present?
+      @marketplace_tender_qualification_criteria.attachments.where(id: params[:file_id]).each { |e| e.destroy }
+    else
+      @marketplace_tender_qualification_criteria.attachments.each { |e| e.destroy }
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_marketplace_tender_qualification_criteria
-      @marketplace_tender_qualification_criteria = ::Marketplace::TenderQualificationCriteria.find(params[:id])
+      id = params[:tender_qualification_criteria_id] || params[:marketplace_tender_qualification_criteria_id] || params[:id]
+      @marketplace_tender_qualification_criteria = ::Marketplace::TenderQualificationCriteria.find(id)
     end
 
     def set_tender
