@@ -157,7 +157,7 @@ class V1::SearchMonitorsController < ApplicationController
         ids += e.results.map {|e| e.attributes['id']} .map(&:to_i) 
       end
       ids.uniq!
-      results = Core::Tenders.where(id: ids)
+      results = Core::Tender.where(id: ids)
       results = results.sort_by(params)
       render json: {count: results.count, data: results.my_paginate(paginate_params)}
     end
