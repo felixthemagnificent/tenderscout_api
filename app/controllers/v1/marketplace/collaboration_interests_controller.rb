@@ -1,10 +1,11 @@
 class V1::Marketplace::CollaborationInterestsController < ApplicationController
   include ActionController::Serialization
-  # after_action :verify_authorized
+  after_action :verify_authorized
   before_action :set_collaboration_interest, only: [:show, :destroy]
   before_action :set_tender
 
   def index
+    authorize CollaborationInterest
     collaborations = GetCollaborations.call(params: index_params, user: current_user)
     result = collaborations.results
     # collaborations.results.map do |e| 
@@ -20,10 +21,12 @@ class V1::Marketplace::CollaborationInterestsController < ApplicationController
   end
 
   def show
+    authorize CollaborationInterest
     render json: @collaboration_interest
   end
 
   def create
+    authorize CollaborationInterest
     result = CreateInterestToCollaborate.call(params: interest_params, user: current_user)
     if result.success?
       render json: nil, status: :created
@@ -33,6 +36,7 @@ class V1::Marketplace::CollaborationInterestsController < ApplicationController
   end
 
   def update
+    authorize CollaborationInterest
     # result = UpdateProfile.call(profile: @profile, params: params, user: current_user)
     # if result.success?
     #   render json: result.profile
@@ -42,6 +46,7 @@ class V1::Marketplace::CollaborationInterestsController < ApplicationController
   end
 
   def destroy
+    authorize CollaborationInterest
     # @profile.destroy
   end
 

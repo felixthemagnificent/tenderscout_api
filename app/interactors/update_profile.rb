@@ -11,6 +11,8 @@ class UpdateProfile
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:contact_type], value: e[:value])}
     end
+    ActiveRecord::Base.transaction do
+      begin
 
     if keyword_params
       context.profile.keywords.destroy_all
@@ -50,6 +52,11 @@ class UpdateProfile
       context.fail! errors: context.profile.errors,
                     code: :unprocessable_entity
     end
+      rescue
+        context.fail! errors: context.profile.errors,
+                      code: :unprocessable_entity
+      end
+    end
   end
 
   private
@@ -59,7 +66,7 @@ class UpdateProfile
       :fullname, :display_name, :profile_type, :city, :timezone,
       :do_marketplace_available, :company, :company_size, :turnover,
       :valueFrom, :valueTo, :tender_level, :number_public_contracts,
-      :industry_id, :country_id, :description
+      :industry_id, :country_id, :description, profile_type: []
     )
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120091300) do
+ActiveRecord::Schema.define(version: 20181212112206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,20 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.bigint "tender_id"
     t.index ["attachment_id"], name: "index_attachments_core_tenders_on_attachment_id"
     t.index ["tender_id"], name: "index_attachments_core_tenders_on_tender_id"
+  end
+
+  create_table "attachments_marketplace_tender_award_criteria", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "tender_award_criterium_id"
+    t.index ["attachment_id"], name: "index_attachments_tender_a_criterium_on_attachment_id"
+    t.index ["tender_award_criterium_id"], name: "index_attachments_tender_a_criterium_on_award_criterium_id"
+  end
+
+  create_table "attachments_marketplace_tender_qualification_criteria", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "tender_qualification_criteria_id"
+    t.index ["attachment_id"], name: "index_attachments_tender_q_criteria_on_attachment_id"
+    t.index ["tender_qualification_criteria_id"], name: "index_attachments_tender_q_criteria_on_award_criteria_id"
   end
 
   create_table "bidsense_results", force: :cascade do |t|
@@ -706,6 +720,18 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.index ["tender_id"], name: "index_marketplace_bid_no_bid_questions_on_tender_id"
   end
 
+  create_table "marketplace_bid_results", force: :cascade do |t|
+    t.integer "estimate_score"
+    t.integer "actual_score"
+    t.integer "winning_score"
+    t.integer "award_criteria_answer_id"
+    t.integer "tender_award_criteria_id"
+    t.bigint "marketplace_collaboration_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["marketplace_collaboration_id"], name: "index_marketplace_bid_results_on_marketplace_collaboration_id"
+  end
+
   create_table "marketplace_collaborations", force: :cascade do |t|
     t.bigint "tender_id"
     t.datetime "created_at", null: false
@@ -846,6 +872,13 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.index ["tender_id"], name: "index_marketplace_tender_q_c_sections_on_tender_id"
   end
 
+  create_table "marketplace_user_tender_statuses", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "tender_id"
+    t.integer "collaboration_id"
+    t.integer "status", default: 0
+  end
+
   create_table "ngip_codes", force: :cascade do |t|
     t.string "code", default: "", null: false
     t.string "description", default: "", null: false
@@ -916,7 +949,6 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "profile_type", default: 0, null: false
     t.string "avatar"
     t.string "cover_img"
     t.string "city", default: "", null: false
@@ -931,6 +963,7 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.string "number_public_contracts", default: "0", null: false
     t.string "company"
     t.text "description"
+    t.string "profile_type", default: ["consultant"], array: true
     t.index ["country_id"], name: "index_profiles_on_country_id"
     t.index ["industry_id"], name: "index_profiles_on_industry_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -993,6 +1026,10 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.string "buyer"
     t.string "export"
     t.string "status", default: [], array: true
+    t.integer "tenders_count"
+    t.datetime "submission_date_to"
+    t.datetime "submission_date_from"
+    t.integer "monitor_type"
     t.index ["user_id"], name: "index_search_monitors_on_user_id"
   end
 
@@ -1041,6 +1078,14 @@ ActiveRecord::Schema.define(version: 20181120091300) do
     t.datetime "updated_at", null: false
     t.index ["tender_id"], name: "index_user_favourite_tenders_on_tender_id"
     t.index ["user_id"], name: "index_user_favourite_tenders_on_user_id"
+  end
+
+  create_table "user_upgrade_requests", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "upgraded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_upgrade_requests_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -1112,6 +1157,7 @@ ActiveRecord::Schema.define(version: 20181120091300) do
   add_foreign_key "keywords_profiles", "profiles"
   add_foreign_key "marketplace_bid_no_bid_answers", "marketplace_bid_no_bid_questions", column: "bid_no_bid_question_id"
   add_foreign_key "marketplace_bid_no_bid_questions", "core_tenders", column: "tender_id"
+  add_foreign_key "marketplace_bid_results", "marketplace_collaborations"
   add_foreign_key "marketplace_collaborations", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "core_tenders", column: "tender_id"
   add_foreign_key "marketplace_compete_bid_no_bid_answers", "marketplace_bid_no_bid_answers", column: "bid_no_bid_answer_id", name: "index_compete_bnb_answers_on_bnb_answer"
@@ -1146,4 +1192,5 @@ ActiveRecord::Schema.define(version: 20181120091300) do
   add_foreign_key "suppliers", "users"
   add_foreign_key "user_favourite_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "user_favourite_tenders", "users"
+  add_foreign_key "user_upgrade_requests", "users"
 end

@@ -85,4 +85,5 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
   TENDERSCOUTHOST = 'http://tenderscout.braincode.xyz'
+  ADMINPANELHOST = 'http://admin.tenderscout.braincode.xyz'
 end

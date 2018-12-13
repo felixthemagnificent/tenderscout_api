@@ -63,11 +63,19 @@ class TenderSerializer < ActiveModel::Serializer
     } if collaboration
     # Marketplace::CollaborationSerializer.new(collaboration) if collaboration
   end
+
+  attribute(:collaboration_count) do
+    object.collaborations.count
+  end
   
   attribute(:bidsense) do
     Bidsense.score(profile: current_user.profiles.first, tender: object, search_monitor: @instance_options[:search_monitor])
   end
   attribute(:bid_no_bid) do
+    if current_user.free? || current_user.basic?
+      nil
+      else
+
     result = []
     Marketplace::BidNoBidQuestion.all.each do |question|
       result << question.as_json
@@ -76,6 +84,7 @@ class TenderSerializer < ActiveModel::Serializer
     end
 
     result
+    end
     end
 
   attribute(:complete_status) do
@@ -88,6 +97,10 @@ class TenderSerializer < ActiveModel::Serializer
     else
       false
     end
+  end
+
+  attribute(:user_status) do
+    Marketplace::UserTenderStatus.find_by(user_id: current_user.id, tender_id: object.id).try(:status)
   end
 
   def current_user

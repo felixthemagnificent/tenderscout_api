@@ -10,6 +10,10 @@ class UserPolicy
     @user.admin?
   end
 
+  def upgrade?
+    @user.free? || @user.basic? || @user.standart?
+  end
+
   def show?
     index?
   end
@@ -27,7 +31,7 @@ class UserPolicy
   end
 
   def available_in_marketplace?
-    !@user.free?
+    true#!@user.free?
   end
   
   class Scope

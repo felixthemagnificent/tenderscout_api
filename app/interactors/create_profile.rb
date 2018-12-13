@@ -7,6 +7,8 @@ class CreateProfile
                     code: :unauthorized
     end
 
+    ActiveRecord::Base.transaction do
+      begin
     context.profile = context.user.profiles.new(profile_params)
     unless context.profile.save
       context.fail! errors: context.profile.errors,
@@ -48,6 +50,11 @@ class CreateProfile
       context.user.email = user_email_params
       context.user.save
     end
+      rescue
+        context.fail! errors: context.profile.errors,
+                      code: :unprocessable_entity
+      end
+    end
   end
 
   private
@@ -57,7 +64,7 @@ class CreateProfile
       :fullname, :display_name, :profile_type, :city, :timezone,
       :do_marketplace_available, :company, :company_size, :turnover,
       :valueFrom, :valueTo, :tender_level, :number_public_contracts, :description,
-      :industry_id, :country_id, values: []
+      :industry_id, :country_id, values: [], profile_type: []
     )
   end
 

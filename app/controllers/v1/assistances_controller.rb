@@ -1,4 +1,5 @@
 class V1::AssistancesController < ApplicationController
+  include AdminAssistanceNotifier
   before_action :set_assistance, only: [:show]
   after_action :verify_authorized
 
@@ -25,6 +26,7 @@ class V1::AssistancesController < ApplicationController
     # assistance.tender = Core::Tender.find_by_id params[:tender_id]
     assistance.user = current_user
     if assistance.save
+      send_admin_assistance_notice(assistance.user)
       render json: assistance, status: :created
     else
       render json: assistance.errors, status: :unprocessable_entity

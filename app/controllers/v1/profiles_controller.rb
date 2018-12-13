@@ -8,7 +8,7 @@ class V1::ProfilesController < ApplicationController
   # GET /profiles
   def index
     authorize Profile
-    @profiles = @user.profiles
+    @profiles = ProfilePolicy::Scope.new(current_user, @user.profiles).resolve
     render json: @profiles
   end
 
@@ -95,7 +95,7 @@ class V1::ProfilesController < ApplicationController
       :do_marketplace_available, :company_size, :turnover, :email,
       :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
       :tender_level, :number_public_contracts, :company, :description,
-      keywords: [], countries: [], industries: []
+      keywords: [], countries: [], industries: [], profile_type: []
     )
   end
 

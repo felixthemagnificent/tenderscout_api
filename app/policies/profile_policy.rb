@@ -1,9 +1,9 @@
 class ProfilePolicy
-  attr_reader :user, :record
+  attr_reader :user, :profile
 
-  def initialize(user, record)
+  def initialize(user, profile)
     @user = user
-    @record = record
+    @profile = profile
   end
 
   def index?
@@ -35,7 +35,11 @@ class ProfilePolicy
     end
 
     def resolve
-      scope.all
+      if @user.free?
+        scope.where(user: @user)
+      else
+        scope.all
+      end
     end
   end
 end
