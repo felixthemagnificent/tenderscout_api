@@ -1,9 +1,9 @@
 class ProfilePolicy
-  attr_reader :user, :record
+  attr_reader :user, :profile
 
-  def initialize(user, record)
+  def initialize(user, profile)
     @user = user
-    @record = record
+    @profile = profile
   end
 
   def index?
@@ -11,7 +11,7 @@ class ProfilePolicy
   end
 
   def show?
-    @user.admin? || @user.standart? || @user.basic?
+    @user.admin? || @user.standart? || @user.basic? || (@profile.user == @user)
   end
 
   def create?
