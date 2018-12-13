@@ -67,7 +67,7 @@ class User < ApplicationRecord
 
   def update_flags
     if self.free?
-      self.flags.delete_if? { |e| e == 'verified'}
+      self.flags.delete('verified')
     else
       self.flags << 'verified'
     end
