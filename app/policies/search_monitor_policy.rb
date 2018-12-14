@@ -7,7 +7,7 @@ class SearchMonitorPolicy
   end
 
   def index?
-    @user.paid? || @monitor.profile?
+    true || @monitor.profile?
   end
 
   def show?
