@@ -29,4 +29,15 @@ def user_won_lost_tender(collaboration)
   end
 end
 
+def add_collaboration_to_user_status(user,tender, collaboration)
+  user_status = ::Marketplace::UserTenderStatus.find_by(user_id: user.id, tender_id: tender.id)
+  unless user_status.present?
+    same_collaboration_status = Marketplace::UserTenderStatus.where(collaboration_id: collaboration.id).first.status
+    user_status = ::Marketplace::UserTenderStatus.create(user_id: user.id, tender_id: tender.id,
+                                                         status: same_collaboration_status)
+  end
+  user_status.collaboration_id = collaboration.id
+  user_status.save
+end
+
 end

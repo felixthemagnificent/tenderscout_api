@@ -1,4 +1,5 @@
 class V1::Marketplace::CollaborationsController < ApplicationController
+  include UserTenderStatusChanger
   before_action :set_tender
   before_action :set_marketplace_collaboration, only: [:accept, :ignore]
   after_action :verify_authorized, except: [:index, :accept, :ignore]
@@ -22,15 +23,14 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
   # POST /marketplace/collaborations
   def apply
-
-    user = User.find_by_id params[:user_id]
+    @user = User.find_by_id params[:user_id]
     role = params[:role]
 
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
     authorize @marketplace_collaboration
 
     @marketplace_collaboration.tender_collaborators.create(
-      user: user,
+      user: @user,
       role: role,
       status: :pending,
       invited_by_user: current_user
@@ -38,7 +38,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
     if @marketplace_collaboration.save
       CustomPostmarkMailer.template_email(
-        user.email,
+        @user.email,
         Rails.configuration.mailer['templates']['collaboration_invite'],
         {
           user_name: current_user.profiles.first.fullname,
@@ -52,20 +52,9 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_later
-      p (user)
-      p(@tender)
-      p(@marketplace_collaboration)
-      puts(user)
-      puts(@tender)
-      puts(@marketplace_collaboration)
-      Rails.logger.warn user
-      Rails.logger.warn  @tender
-      Rails.logger.warn @marketplace_collaboration
-      add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
-      #render json: {user: user}
+      add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
       render json: @marketplace_collaboration
     else
-      #render json: {user: user}
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
     end
   end
@@ -85,16 +74,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     @marketplace_collaboration.destroy
   end
 
-  def add_collaboration_to_user_status(user,tender, collaboration)
-    user_status = ::Marketplace::UserTenderStatus.find_by(user_id: user.id, tender_id: tender.id)
-    unless user_status.present?
-      same_collaboration_status = Marketplace::UserTenderStatus.where(collaboration_id: collaboration.id).first.status
-      user_status = ::Marketplace::UserTenderStatus.create(user_id: user.id, tender_id: tender.id,
-                                                            status: same_collaboration_status)
-     end
-      user_status.collaboration_id = collaboration.id
-      user_status.save
-  end
+
 
   private
     def set_tender
