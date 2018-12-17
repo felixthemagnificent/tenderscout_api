@@ -13,7 +13,7 @@ class V2::Marketplace::CollaborationInterestsController < ApplicationController
       result << {
         is_collaborated: is_collaborated,
         is_tender_owner: (@tender.creator == current_user),
-        profile: ProfileSerializer.new(e)
+        profile: UserSerializer.new(e.user)
       }
     end
     result = result.partition{|v| v[:is_collaborated] == true}.flatten
