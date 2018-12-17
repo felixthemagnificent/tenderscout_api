@@ -11,11 +11,12 @@ class V2::Marketplace::CollaborationInterestsController < ApplicationController
       user = e.user
       is_collaborated = false
       is_collaborated = true if @tender.tender_collaborators.where(user: user).count > 0
+      serialized_user = UserSerializer.new(user) rescue nil
       result << {
         is_collaborated: is_collaborated,
         is_tender_owner: (@tender.creator == user),
         # profile: ProfileSerializer.new(e),
-        user: UserSerializer.new(user)
+        user: serialized_user
       }
     end
     result = result.partition{|v| v[:is_collaborated] == true}.flatten
