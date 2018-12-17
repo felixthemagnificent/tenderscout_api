@@ -136,6 +136,7 @@ Rails.application.routes.draw do
     get :my_compete_tenders, to: 'users#my_compete_tenders'
     resources :assistances
     namespace :users do
+      get :current
       resources :upgrade_requests, only: [:index, :destroy] do
         member do
           post :approve
