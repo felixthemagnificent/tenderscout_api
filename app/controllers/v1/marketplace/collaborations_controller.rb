@@ -23,7 +23,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   # POST /marketplace/collaborations
   def apply
 
-    user = User.find_by_id params[:user_id]
+    user = User.find_by_id params[:user_id] || current_user
     role = params[:role]
 
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
@@ -52,15 +52,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_later
-      p (user)
-      p(@tender)
-      p(@marketplace_collaboration)
-      puts(user)
-      puts(@tender)
-      puts(@marketplace_collaboration)
-      Rails.logger.warn user
-      Rails.logger.warn  @tender
-      Rails.logger.warn @marketplace_collaboration
+
       add_collaboration_to_user_status(user, @tender, @marketplace_collaboration)
       #render json: {user: user}
       render json: @marketplace_collaboration
@@ -88,12 +80,12 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   def add_collaboration_to_user_status(user,tender, collaboration)
     user_status = ::Marketplace::UserTenderStatus.find_by(user_id: user.id, tender_id: tender.id)
     unless user_status.present?
-      same_collaboration_status = Marketplace::UserTenderStatus.where(collaboration_id: collaboration.id).first.status
+      same_collaboration_status = Marketplace::UserTenderStatus.where(collaboration_id: collaboration.id).first.status rescue nil
       user_status = ::Marketplace::UserTenderStatus.create(user_id: user.id, tender_id: tender.id,
                                                             status: same_collaboration_status)
      end
-      user_status.collaboration_id = collaboration.id
-      user_status.save
+    user_status.collaboration_id = collaboration.id
+    user_status.save
   end
 
   private
