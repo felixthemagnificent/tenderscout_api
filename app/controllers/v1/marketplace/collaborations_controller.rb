@@ -53,7 +53,6 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_later
-      #render json: {user: user}
       render json: @marketplace_collaboration
     else
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
@@ -74,7 +73,6 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   def destroy
     @marketplace_collaboration.destroy
   end
-
 
   private
     def set_tender
