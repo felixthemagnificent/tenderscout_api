@@ -49,6 +49,7 @@ class Core::Tender < ApplicationRecord
   has_many :qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
   has_many :award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
   has_many :tender_collaborators, through: :collaborations, class_name: 'Marketplace::TenderCollaborator'
+  has_many :tender_collaboration_documents
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
