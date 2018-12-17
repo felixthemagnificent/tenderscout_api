@@ -79,6 +79,10 @@ gem 'slack-notifier'
 gem 'lograge'
 gem 'logstash-event'
 gem 'logstash-logger'
+gem 'whenever', require: false
+gem 'whenever-web'
+gem 'haml'
+
 
 group :development do
   gem 'capistrano'
