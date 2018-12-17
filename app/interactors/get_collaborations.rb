@@ -22,7 +22,7 @@ class GetCollaborations
     end
 
     if index_params[:type] and index_params[:type] != 'all'
-      profiles = profiles.where(profile_type: Profile.profile_types[index_params[:type]])
+      profiles = profiles.where("profile_type @> ?", index_params[:type])
     end
     profiles.each { |item| context.results.push(item) }
     context.results = profiles
