@@ -10,7 +10,7 @@ class V2::Marketplace::CollaborationInterestsController < ApplicationController
     collaborations.results.map do |e| 
       is_collaborated = false
       collaboration = Marketplace::Collaboration.where(tender: @tender).try(:first)
-      is_collaborated = true if collaboration && collaboration.tender_collaborators.where(user: current_user).count > 0
+      is_collaborated = true if collaboration && @tender.tender_collaborators.where(user: current_user).count > 0
       result << {
         is_collaborated: is_collaborated,
         is_tender_owner: (@tender.creator == current_user),
