@@ -32,6 +32,9 @@ Rails.application.routes.draw do
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
         member do
+          post :assign, to: 'bid_no_bid_questions#create_assign'
+          patch :assign, to: 'bid_no_bid_questions#update_assign'
+          delete :assign, to: 'bid_no_bid_questions#delete_assign'
           get :bid_no_bid_question_comments, to: 'bid_no_bid_questions#bid_no_bid_question_comments'
           get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
         end

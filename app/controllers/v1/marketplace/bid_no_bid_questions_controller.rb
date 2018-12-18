@@ -1,6 +1,8 @@
 class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
+  include AssignmentNotifier
   before_action :set_marketplace_bid_no_bid_question, only: [:show, :update, :destroy, :bid_no_bid_question_comments,
-                                                             :bid_no_bid_question_notes]
+                                                             :bid_no_bid_question_notes, :create_assign,
+                                                             :update_assign, :delete_assign]
 
   # GET /marketplace/bid_no_bid_questions
   def index
@@ -66,6 +68,41 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
     render json: { notes: notes, profiles: profiles }
   end
 
+  def create_assign
+    role = Marketplace::TenderCollaborator.where(collaboration_id: assignments_params[:collaboration_id], user_id: current_user.id).first
+    if role.admin? || role.owner?
+    @assignment = @marketplace_bid_no_bid_question.assignments.new(assignments_params)
+    if @assignment.save
+      send_bnb_question_notice(@assignment, assignments_params[:collaboration_id], @marketplace_bid_no_bid_question)
+      render json: @assignment, status: :ok
+    else
+      render json: @assignment.errors, status: :unprocessable_entity
+    end
+    else
+      render json: {error: ['You can\'t assign to collaboration'] }, status: :unprocessable_entity
+      end
+  end
+
+  def update_assign
+    role = Marketplace::TenderCollaborator.where(collaboration_id: assignments_params[:collaboration_id], user_id: current_user.id).first
+    if role.admin? || role.owner?
+    @assignment = @marketplace_bid_no_bid_question.assignments.where(collaboration_id: assignments_params[:collaboration_id]).first
+     if @assignment.update(assignments_params)
+       send_bnb_question_notice(@assignment, assignments_params[:collaboration_id], @marketplace_bid_no_bid_question)
+       render json: @assignment
+     else
+       render json: @assignment.errors, status: :unprocessable_entity
+     end
+    else
+      render json: {error: ['You can\'t assign to collaboration'] }, status: :unprocessable_entity
+    end
+  end
+
+  def delete_assign
+    @marketplace_bid_no_bid_question.assignments.where(collaboration_id: assignments_params[:collaboration_id],
+                                                       user_id: assignments_params[:user_id]).first.destroy
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_bid_no_bid_question
@@ -75,5 +112,9 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def marketplace_bid_no_bid_question_params
     params.permit(:question_text, :position, :tender_id)
+  end
+
+  def assignments_params
+    params.permit( :user_id, :collaboration_id)
   end
 end
