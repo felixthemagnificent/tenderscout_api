@@ -115,6 +115,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_attachments
+        resources :tender_collaboration_documents
         resources :tender_qualification_criteria_sections, path: 'qualification_criteria_sections' do
           collection do
             post :bulk_create
