@@ -28,6 +28,11 @@ class V1::SearchMonitorsController < ApplicationController
   def all_monitor_result
     authorize SearchMonitor
     data, count = all_monitors_search
+    data = data.map do |tender|
+      # options = {serializer: TenderSerializer, scope: {current_user: current_user, search_monitor: @search_monitor} }
+      # ActiveModelSerializers::SerializableResource.new(tender, options).serializer.attributes
+      TenderSerializer.new(tender, current_user: current_user, search_monitor: nil).attributes
+    end
     render json: {
       data: data,
       count: count
