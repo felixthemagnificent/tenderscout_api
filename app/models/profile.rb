@@ -65,7 +65,8 @@ class Profile < ApplicationRecord
   end
 
   def change_profile_monitor
-    monitor = self.user.search_monitors.where(monitor_type: :profile)
+    monitor = self.user.search_monitors.find_or_initialize_by(monitor_type: :profile)
+    monitor.title = 'Profile monitor'
     monitor.countryList = []
     monitor.countryList << profile.country.id if profile.country
     monitor.keywordList = profile.keywords.pluck :name

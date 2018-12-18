@@ -36,7 +36,7 @@ class V1::SearchMonitorsController < ApplicationController
 
   def profile_monitor_result
     authorize SearchMonitor
-    search_monitor = SearchMonitor.find_by(monitor_type: :profile, user: current_user)
+    search_monitor = current_user.search_monitors.where(monitor_type: :profile)
     results = search_monitor.results(sort_by: params[:sort_by], sort_direction: params[:sort_direction])
     data, count = serialize_core_tenders_search(results)
     render json: {
