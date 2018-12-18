@@ -2,7 +2,6 @@ class TenderCollaborationDocument < ApplicationRecord
   belongs_to :tender, class_name: 'Core::Tender'
   mount_uploader :file, TenderCollaborationDocumentUploader
   validates_presence_of :file
-  before_create :file_size_validation#, file_size: { less_than: 1.megabytes }
   before_save :update_file_attributes
 
   private
