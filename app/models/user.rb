@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :assignments, :class_name => 'Marketplace::Assignment'
   has_many :user_favourite_tenders
   has_many :favourite_tenders, through: :user_favourite_tenders, source: :tender, class_name: 'Core::Tender'
-  has_many :user_upgrade_requests
+  has_many :user_upgrade_requests, dependent: :destroy
   enum role: [:admin, :standart, :basic, :free]
   has_many :tender_status, class_name: 'Marketplace::UserTenderStatus'
 
