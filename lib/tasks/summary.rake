@@ -13,7 +13,12 @@ namespace :summary do
       p "Found #{results.count} tenders"
       if results.count
         tenders = []
-        results.each { |e| tenders << { title: e.title, url: e.tender_urls.try(:first) }  }
+        results.each do |e| 
+          tenders << { 
+            title: e.title, 
+            url: Rails.configuration.mailer['tender_details_url'] % {id: e.id}
+          }  
+        end
         CustomPostmarkMailer.template_email(
           user.email,
           Rails.configuration.mailer['templates']['summary_tenders'],
