@@ -33,6 +33,8 @@ Rails.application.routes.draw do
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
         member do
+          post :create_deadline
+          patch :update_deadline
           post :assign, to: 'bid_no_bid_questions#create_assign'
           patch :assign, to: 'bid_no_bid_questions#update_assign'
           delete :assign, to: 'bid_no_bid_questions#delete_assign'
