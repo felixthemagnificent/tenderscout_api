@@ -5,6 +5,7 @@ class Marketplace::BidNoBidQuestion < ApplicationRecord
   has_many :comments, as: :commentable
   has_many :notes, as: :notable
   has_many :assignments, class_name: 'Marketplace::Assignment', as: :assignable, dependent: :destroy
+  has_many :deadlines, :class_name => 'Marketplace::BidNoBidDeadline'
 
   def available_answers
     Marketplace::BidNoBidAnswer.where(bid_no_bid_question: self)

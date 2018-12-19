@@ -2,7 +2,8 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
   include AssignmentNotifier
   before_action :set_marketplace_bid_no_bid_question, only: [:show, :update, :destroy, :bid_no_bid_question_comments,
                                                              :bid_no_bid_question_notes, :create_assign,
-                                                             :update_assign, :delete_assign]
+                                                             :update_assign, :delete_assign, :create_deadline,
+                                                             :update_deadline]
 
   # GET /marketplace/bid_no_bid_questions
   def index
@@ -103,6 +104,34 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
                                                        user_id: assignments_params[:user_id]).first.destroy
   end
 
+  def create_deadline
+    role = Marketplace::TenderCollaborator.where(collaboration_id: deadline_params[:collaboration_id], user_id: current_user.id).first
+    if role.admin? || role.owner?
+      @deadline = @marketplace_bid_no_bid_question.deadlines.new(deadline_params)
+      if @deadline.save
+        render json: @deadline, status: :ok
+      else
+        render json: @deadline.errors, status: :unprocessable_entity
+      end
+    else
+      render json: {error: ['You can\'t assign to collaboration'] }, status: :unprocessable_entity
+    end
+  end
+
+  def update_deadline
+    role = Marketplace::TenderCollaborator.where(collaboration_id: deadline_params[:collaboration_id], user_id: current_user.id).first
+    if role.admin? || role.owner?
+      @deadline = @marketplace_bid_no_bid_question.deadlines.where(collaboration_id: deadline_params[:collaboration_id]).first
+      if @deadline.update(deadline_params)
+        render json: @deadline
+      else
+        render json: @deadline.errors, status: :unprocessable_entity
+      end
+     else
+       render json: {error: ['You can\'t assign to collaboration'] }, status: :unprocessable_entity
+     end
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_marketplace_bid_no_bid_question
@@ -116,5 +145,9 @@ class V1::Marketplace::BidNoBidQuestionsController < ApplicationController
 
   def assignments_params
     params.permit( :user_id, :collaboration_id)
+  end
+
+  def deadline_params
+    params.permit( :deadline, :collaboration_id)
   end
 end
