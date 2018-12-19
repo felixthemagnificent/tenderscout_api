@@ -9,6 +9,7 @@ default: &default
   api_url: 'http://api.dev.tenderscout.braincode.xyz'
   reset_password_link: 'http://dev.tenderscout.braincode.xyz/auth/reset?reset_password_token=%{token}'
   admin_url: 'http://admin.dev.tenderscout.braincode.xyz'
+  all_results_url: 'http://dev.tenderscout.braincode.xyz/monitor/results/all'
   templates:
     password_reset: '8922902'
     supplier_invite: '8923197'
@@ -19,6 +20,8 @@ default: &default
     user_confirmation: '8923193'
     admin_assistance_notifier: '9178405'
     user_upgrade_request: '9274146'
+    empty_summary_tenders: '9428393'
+    summary_tenders: '9428058'
   uri:
     admin_sign_up: '/users/signup-requests'
     tender_details: ''
