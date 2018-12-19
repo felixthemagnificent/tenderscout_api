@@ -49,6 +49,7 @@ class Core::Tender < ApplicationRecord
   has_many :qualification_criteria_answers, class_name: 'Marketplace::TenderQualificationCriteriaAnswer'
   has_many :award_criteria_answers, class_name: 'Marketplace::TenderAwardCriteriaAnswer'
   has_many :tender_collaborators, through: :collaborations, class_name: 'Marketplace::TenderCollaborator'
+  has_many :tender_collaboration_documents
   belongs_to :industry, optional: true
   belongs_to :creator, class_name: 'User', optional: true
   has_and_belongs_to_many :buyers, class_name: 'User'
@@ -112,7 +113,10 @@ class Core::Tender < ApplicationRecord
 
   def get_bnb_data
     data = []
+    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: self), user: Current.user).try(:first).try(:collaboration).try(:id)
     Marketplace::BidNoBidQuestion.all.each do |question|
+      assigned_user_id = question.assignments.where(collaboration_id: collaboration).try(:first).try(:user_id)
+      profile = User.where(id: assigned_user_id).try(:first).try(:profiles).try(:first)
       _tmp = {}
       answers = question.bid_no_bid_answers.map do |e|
         {
@@ -137,7 +141,8 @@ class Core::Tender < ApplicationRecord
         question_text: question.question_text,
         title: question.title,
         available_answers: answers,
-        answered: answered
+        answered: answered,
+        assigment_profile: profile
       }
       data << _tmp
     end

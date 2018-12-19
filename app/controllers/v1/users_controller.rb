@@ -2,7 +2,7 @@ class V1::UsersController < ApplicationController
   include ActionController::Serialization
   before_action :set_user, only: [:show, :update, :destroy, :change_user_role]
   after_action :verify_authorized, except: [:search, :user_tender_statistic, :update_password, :invites, :requests,
-                                           :my_compete_tenders, :my_tenders, :invited_by_me, :change_user_role, :available_in_marketplace]
+                                           :my_compete_tenders, :my_tenders, :invited_by_me, :change_user_role, :available_in_marketplace, :current]
 
   # GET /users
   def index
@@ -57,6 +57,11 @@ class V1::UsersController < ApplicationController
   def show
     authorize @user
     render json: @user
+  end
+
+  def current
+    authorize current_user
+    render json: current_user
   end
 
   def search

@@ -18,6 +18,10 @@ class UserPolicy
     index?
   end
 
+  def current?
+    true
+  end
+
   def create?
     index?
   end

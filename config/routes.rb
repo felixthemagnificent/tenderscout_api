@@ -3,6 +3,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
   mount Sidekiq::Web => '/sidekiq_web'
+  mount Whenever::Web => '/whenever'
 
   resources :contacts
   # use_doorkeeper
@@ -32,6 +33,9 @@ Rails.application.routes.draw do
       resources :bid_no_bid_answers
       resources :bid_no_bid_questions do
         member do
+          post :assign, to: 'bid_no_bid_questions#create_assign'
+          patch :assign, to: 'bid_no_bid_questions#update_assign'
+          delete :assign, to: 'bid_no_bid_questions#delete_assign'
           get :bid_no_bid_question_comments, to: 'bid_no_bid_questions#bid_no_bid_question_comments'
           get :bid_no_bid_question_notes, to: 'bid_no_bid_questions#bid_no_bid_question_notes'
         end
@@ -115,6 +119,7 @@ Rails.application.routes.draw do
           end
         end
         resources :tender_attachments
+        resources :tender_collaboration_documents
         resources :tender_qualification_criteria_sections, path: 'qualification_criteria_sections' do
           collection do
             post :bulk_create
@@ -136,6 +141,7 @@ Rails.application.routes.draw do
     get :my_compete_tenders, to: 'users#my_compete_tenders'
     resources :assistances
     namespace :users do
+      get :current
       resources :upgrade_requests, only: [:index, :destroy] do
         member do
           post :approve

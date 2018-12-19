@@ -8,15 +8,18 @@ class V2::Marketplace::CollaborationInterestsController < ApplicationController
     collaborations = GetCollaborations.call(params: index_params, user: current_user)
     result = []
     collaborations.results.map do |e| 
+      user = e.user
       is_collaborated = false
-      collaboration = Marketplace::Collaboration.where(tender: @tender).try(:first)
-      is_collaborated = true if collaboration && collaboration.tender_collaborators.where(user: current_user).count > 0
+      is_collaborated = true if @tender.tender_collaborators.where(user: user).count > 0
+      serialized_user = user ? UserSerializer.new(user) : nil
       result << {
         is_collaborated: is_collaborated,
-        is_tender_owner: (@tender.creator == current_user),
-        profile: ProfileSerializer.new(e)
+        is_tender_owner: (@tender.creator == user),
+        # profile: ProfileSerializer.new(e),
+        user: serialized_user
       }
     end
+    result = result.partition{|v| v[:is_collaborated] == true}.flatten
     render json: result
   end
 

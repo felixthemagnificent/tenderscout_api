@@ -25,6 +25,7 @@ class Profile < ApplicationRecord
   #validates_presence_of :company_size, :turnover unless :profile_type != :consultant
 
   after_save :recalculate_bidsense
+  after_save :change_profile_monitor
 
   def owner?(current_user)
     user == current_user
@@ -61,5 +62,16 @@ class Profile < ApplicationRecord
   
   def recalculate_bidsense
     Bidsense::RecalculateScoreJob.perform_later profile: self
+  end
+
+  def change_profile_monitor
+    monitor = self.user.search_monitors.find_or_initialize_by(monitor_type: :profile)
+    monitor.title = 'Profile monitor'
+    monitor.countryList = []
+    monitor.countryList << profile.country.id if profile.country
+    monitor.keywordList = profile.keywords.pluck :name
+    monitor.valueFrom = profile.valueFrom
+    monitor.valueTo = profile.valueTo
+    monitor.save
   end
 end
