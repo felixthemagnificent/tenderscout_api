@@ -1,5 +1,5 @@
 default: &default
-  from: 'tony@tenderscout.com' #FIXME support@tenderscout.com
+  from: 'tony@tenderscout.com'  #FIXME support@tenderscout.com
   company_name: 'TenderScout'
   company_address: '20 Harcourt Street, Dublin 2, Ireland'
   admin_email: 'anton.rogachevskyi@braincode.xyz'
