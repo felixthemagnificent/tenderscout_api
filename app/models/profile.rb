@@ -68,10 +68,10 @@ class Profile < ApplicationRecord
     monitor = self.user.search_monitors.find_or_initialize_by(monitor_type: :profile)
     monitor.title = 'Profile monitor'
     monitor.countryList = []
-    monitor.countryList << profile.country.id if profile.country
-    monitor.keywordList = profile.keywords.pluck :name
-    monitor.valueFrom = profile.valueFrom
-    monitor.valueTo = profile.valueTo
+    monitor.countryList << self.country.id if self.country
+    monitor.keywordList = self.keywords.pluck :name
+    monitor.valueFrom = self.valueFrom
+    monitor.valueTo = self.valueTo
     monitor.save
   end
 end
