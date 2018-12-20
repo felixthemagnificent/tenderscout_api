@@ -1,10 +1,10 @@
 default: &default
   from: 'tony@tenderscout.com' #FIXME support@tenderscout.com
-  company_name: 'Company Name'
-  company_address: 'Company Address'
+  company_name: 'TenderScout'
+  company_address: '20 Harcourt Street, Dublin 2, Ireland'
   admin_email: 'anton.rogachevskyi@braincode.xyz'
   product_url: 'http://dev.tenderscout.braincode.xyz'
-  support: 'http://tenderscout.support.com'
+  support: 'https://tenderscoutsupport.zendesk.com'
   tender_management_url: 'http://tender_management_url'
   api_url: 'http://api.dev.tenderscout.braincode.xyz'
   reset_password_link: 'http://dev.tenderscout.braincode.xyz/auth/reset?reset_password_token=%{token}'

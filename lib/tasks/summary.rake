@@ -9,7 +9,7 @@ namespace :summary do
         ids += e.results.map {|e| e.attributes['id']} .map(&:to_i) 
       end
       ids.uniq!
-      results = Core::Tender.where('created_at >= ?',(DateTime.now - 1.week)).where(id: ids)
+      results = Core::Tender.where('created_at >= ?',(DateTime.now - 1.week)).where(id: ids).last(10)
       p "Found #{results.count} tenders"
       if results.count
         tenders = []

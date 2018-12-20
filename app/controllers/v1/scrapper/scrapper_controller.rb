@@ -33,7 +33,7 @@ class V1::Scrapper::ScrapperController < ApplicationController
 
       organization = Core::Organization.find_or_initialize_by name: org_hash[:name]
       if organization.new_record?
-        organization.country = Country.find_by_name org_hash[:country_name]
+        organization.country = Core::Country.find_by_name org_hash[:country_name]
         raise 'Invalid country!' unless a.country
         organization.save!
       end
