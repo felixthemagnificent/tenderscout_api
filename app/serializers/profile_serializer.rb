@@ -13,7 +13,7 @@ class ProfileSerializer < ActiveModel::Serializer
              :number_public_contracts, :contacts, :keywords, :countries, 
              :profile_type
 
-  attribute(:values) { [object.valueFrom, object.valueTo] }
+  attribute(:values) { [object.try(:valueFrom), object.try(:valueTo)] }
   attribute(:user_id) { object.try(:user).try(:id) }
   attribute(:role) { object.try(:user).try(:role) }
   attribute(:email) { object.try(:user).try(:email) }
