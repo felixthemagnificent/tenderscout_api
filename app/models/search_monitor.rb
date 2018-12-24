@@ -33,4 +33,9 @@ class SearchMonitor < ApplicationRecord
   end
 
 
+  def destroy
+    super unless self.profile?
+  end
+
+
 end
