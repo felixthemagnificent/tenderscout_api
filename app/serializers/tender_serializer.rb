@@ -58,7 +58,7 @@ class TenderSerializer < ActiveModel::Serializer
     end if collaboration
     {
       id: collaboration.id,
-      role: Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:role)
+      role: Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:role),
       count: collaboration.tender_collaborators.count,
       users: collaborators
     } if collaboration
