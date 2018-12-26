@@ -141,7 +141,7 @@ class V1::Marketplace::TendersController < ApplicationController
         result << criteria.try(:marketplace_bid_results) if criteria.marketplace_bid_results.any?
       end
     end
-    render json: { bid_result: result }
+    render json: result.flatten
     #render json: @tender.award_criteria_sections, each_serializer: TenderBidResultSerializer#, root: :tender_bidresult
   end
 
