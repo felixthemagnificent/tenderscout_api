@@ -35,12 +35,23 @@ class V1::UsersController < ApplicationController
       render json: {count: 1, data: ActiveModel::Serializer::CollectionSerializer.new(users,
                                                                                                 each_serializer: UserSerializer, current_user: current_user)}
     end
-    end
+  end
 
   def upgrade
     authorize current_user
     uur = current_user.user_upgrade_requests.new
     if uur.save
+      render json: nil, status: :ok
+    else
+      render json: nil, status: :unprocessable_entity
+    end
+  end
+
+  def add_to_marketplace
+    authorize current_user
+    current_user.pending!
+    umar = current_user.user_marketplace_availability_request.new
+    if umar.save
       render json: nil, status: :ok
     else
       render json: nil, status: :unprocessable_entity
