@@ -135,7 +135,14 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def bid_result
-    render json: @tender.award_criteria_sections, each_serializer: TenderBidResultSerializer#, root: :tender_bidresult
+    result = []
+    @tender.award_criteria_sections.each do |acs|
+      acs.try(:award_criteries).each do |criteria|
+        result << criteria.try(:marketplace_bid_results) if criteria.marketplace_bid_results.any?
+      end
+    end
+    render json: { bid_result: result }
+    #render json: @tender.award_criteria_sections, each_serializer: TenderBidResultSerializer#, root: :tender_bidresult
   end
 
   def user_awaiting_result_tender
