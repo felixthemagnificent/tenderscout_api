@@ -27,6 +27,17 @@ class Profile < ApplicationRecord
   after_save :recalculate_bidsense
   after_save :change_profile_monitor
 
+  scope :by_keywords, ->(keywords) do
+    keyword_profile_ids = []
+    keywords.each do |e|
+      keywords_profile_ids << Keyword.where(name: e).profiles.ids
+    end 
+    keyword_profile_ids.flatten!
+    keyword_profile_ids.uniq!
+    ids = self.ids & keyword_profile_ids
+    self.where(id: ids)
+  end
+
   def owner?(current_user)
     user == current_user
   end
