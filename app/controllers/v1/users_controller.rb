@@ -21,12 +21,12 @@ class V1::UsersController < ApplicationController
     user_keywords = params[:keywords]
     user_industry = params[:industry]
     unless current_user.free?
-    profiles = Profile.where(do_marketplace_available: true)
+    profiles = Profile.all
     profiles = profiles.by_keywords(user_keywords) if user_keywords
     profiles = profiles.where(country: Country.where(name: user_geography).first) if user_geography
     profiles = profiles.where(industry: Industry.where(name: user_industry).first) if user_industry
     users = profiles.select(:user_id).distinct.map(&:user_id)
-    users = User.where(id: users)
+    users = User.where(id: users).available_in_marketplace
     users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(users, 
           each_serializer: UserSerializer, current_user: current_user)}

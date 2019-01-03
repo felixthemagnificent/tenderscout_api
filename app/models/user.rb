@@ -26,6 +26,8 @@ class User < ApplicationRecord
   enum role: [:admin, :standart, :basic, :free]
   enum marketplace_status: [:available, :pending, :not_available]
 
+  scope :available_in_marketplace, -> { where(marketplace_status: :available)}
+
   after_initialize :set_default_role, :if => :new_record?
   before_save :update_flags
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
