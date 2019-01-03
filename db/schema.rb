@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181213121509) do
+ActiveRecord::Schema.define(version: 20181226085751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1071,6 +1071,15 @@ ActiveRecord::Schema.define(version: 20181213121509) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
+  create_table "tender_collaboration_documents", force: :cascade do |t|
+    t.string "file"
+    t.string "content_type"
+    t.string "file_size"
+    t.integer "tender_id"
+    t.integer "collaboration_id"
+    t.integer "user_id"
+  end
+
   create_table "user_favourite_tenders", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "tender_id"
@@ -1106,6 +1115,7 @@ ActiveRecord::Schema.define(version: 20181213121509) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "flags", default: [], array: true
+    t.integer "marketplace_status"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

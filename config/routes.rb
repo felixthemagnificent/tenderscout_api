@@ -142,7 +142,13 @@ Rails.application.routes.draw do
     resources :assistances
     namespace :users do
       get :current
+
       resources :upgrade_requests, only: [:index, :destroy] do
+        member do
+          post :approve
+        end
+      end
+      resources :marketplace_availability_requests, only: [:index, :destroy] do
         member do
           post :approve
         end
@@ -180,6 +186,7 @@ Rails.application.routes.draw do
     resources :notes
     resources :profiles, path: 'my/profiles'
     get 'my/upgrade', to: 'users#upgrade'
+    get 'my/add_to_marketplace', to: 'users#add_to_marketplace'
     get 'bidder/monitor/all/result', to: 'search_monitors#all_monitor_result'
     get 'bidder/monitor/profile/result', to: 'search_monitors#profile_monitor_result'
     get 'bidder/monitor/favourite/result', to: 'search_monitors#favourite_monitor_result'
