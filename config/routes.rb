@@ -148,6 +148,11 @@ Rails.application.routes.draw do
           post :approve
         end
       end
+      resources :marketplace_availability_requests, only: [:index, :destroy] do
+        member do
+          post :approve
+        end
+      end
     end
     resources :users do
       collection do
