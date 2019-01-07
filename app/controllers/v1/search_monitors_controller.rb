@@ -5,7 +5,7 @@ class V1::SearchMonitorsController < ApplicationController
   respond_to :json
   # GET /search_monitors
   def index
-    @search_monitors = current_user.search_monitors
+    @search_monitors = current_user.search_monitors.personal
     authorize @search_monitors
     render json: @search_monitors
   end

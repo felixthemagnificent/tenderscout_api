@@ -7,6 +7,8 @@ class SearchMonitor < ApplicationRecord
   belongs_to :user
 
   enum monitor_type: [:profile, :personal, :common]
+
+  scope :personal, -> { where(monitor_type: :personal)}
   
   def downloadable_export_url
     self.export.url(query: {"response-content-disposition" => "attachment;"})
