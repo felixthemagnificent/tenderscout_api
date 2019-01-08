@@ -80,7 +80,7 @@ class Scrapers::BuyAndSellAwardsJob < ApplicationJob
   end
 
   def get_content(url)
-    open(url,'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
+    open(url,'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
                   "Accept"    => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                   "Accept-Language" => 'en-US,en;q=0.5') { |io| io.read }
   end
