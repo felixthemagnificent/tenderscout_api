@@ -1,5 +1,5 @@
 class Scrapers::FboGovJob < ApplicationJob
-  queue_as :default
+  queue_as :scrapers
 
 
   def perform
