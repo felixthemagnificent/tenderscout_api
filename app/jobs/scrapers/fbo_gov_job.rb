@@ -36,7 +36,7 @@ class Scrapers::FboGovJob < ApplicationJob
       tender_information = {}
       content = get_content(link)
       doc = Nokogiri::HTML(content)
-      tender_information[:spider_id] = doc.css('div.sol-num').first.text.split.third
+      tender_information[:spider_id] = doc.css('div.sol-num').first.text.split.third || ""
       tender_information[:title] = doc.css('div.agency-header').css('h2').text
       tender_information[:organization_name] = doc.css('div.agency-name').children.first.text[8..-1]
       tender_information[:location] = doc.css('div.agency-name').children[4].text[10..-1]
