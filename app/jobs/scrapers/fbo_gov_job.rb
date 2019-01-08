@@ -3,10 +3,12 @@ class Scrapers::FboGovJob < ApplicationJob
 
 
   def perform
-    fetch_links
-    ScraperLink.where(status: :pending, worker_name: 'fbo_gov').each do |link|
-      extract_tender(link.link)
-      link.done!
+    Chewy.strategy(:atomic) do
+      fetch_links
+      ScraperLink.where(status: :pending, worker_name: 'fbo_gov').each do |link|
+        extract_tender(link.link)
+        link.done!
+      end
     end
   end
 

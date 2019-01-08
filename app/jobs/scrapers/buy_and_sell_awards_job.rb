@@ -2,10 +2,12 @@ class Scrapers::BuyAndSellAwardsJob < ApplicationJob
   queue_as :scrapers
 
   def perform
-    fetch_links
-    ScraperLink.where(status: :pending, worker_name: 'buy_and_sell_awards') do |link|
-      extract_tender(link)
-      link.done!
+    Chewy.strategy(:atomic) do
+      fetch_links
+      ScraperLink.where(status: :pending, worker_name: 'buy_and_sell_awards') do |link|
+        extract_tender(link)
+        link.done!
+      end
     end
   end
 
