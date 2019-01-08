@@ -435,6 +435,7 @@ DEPENDENCIES
   logstash-event
   logstash-logger
   mini_magick
+  nokogiri
   parallel
   parser
   pg (>= 0.18, < 2.0)

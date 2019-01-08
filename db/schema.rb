@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181213121509) do
+ActiveRecord::Schema.define(version: 20190107232756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1009,6 +1009,14 @@ ActiveRecord::Schema.define(version: 20181213121509) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "scraper_links", force: :cascade do |t|
+    t.string "link"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "worker_name"
+  end
+
   create_table "search_monitors", force: :cascade do |t|
     t.string "title"
     t.string "tenderTitle"
@@ -1071,6 +1079,15 @@ ActiveRecord::Schema.define(version: 20181213121509) do
     t.index ["user_id"], name: "index_suppliers_on_user_id"
   end
 
+  create_table "tender_collaboration_documents", force: :cascade do |t|
+    t.string "file"
+    t.string "content_type"
+    t.string "file_size"
+    t.integer "tender_id"
+    t.integer "collaboration_id"
+    t.integer "user_id"
+  end
+
   create_table "user_favourite_tenders", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "tender_id"
@@ -1078,6 +1095,14 @@ ActiveRecord::Schema.define(version: 20181213121509) do
     t.datetime "updated_at", null: false
     t.index ["tender_id"], name: "index_user_favourite_tenders_on_tender_id"
     t.index ["user_id"], name: "index_user_favourite_tenders_on_user_id"
+  end
+
+  create_table "user_marketplace_availability_requests", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "upgraded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_marketplace_availability_requests_on_user_id"
   end
 
   create_table "user_upgrade_requests", force: :cascade do |t|
@@ -1106,6 +1131,7 @@ ActiveRecord::Schema.define(version: 20181213121509) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "flags", default: [], array: true
+    t.integer "marketplace_status"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -1193,5 +1219,6 @@ ActiveRecord::Schema.define(version: 20181213121509) do
   add_foreign_key "suppliers", "users"
   add_foreign_key "user_favourite_tenders", "core_tenders", column: "tender_id"
   add_foreign_key "user_favourite_tenders", "users"
+  add_foreign_key "user_marketplace_availability_requests", "users"
   add_foreign_key "user_upgrade_requests", "users"
 end
