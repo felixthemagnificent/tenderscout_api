@@ -3,7 +3,6 @@ class Scrapers::BuyAndSellJob < ApplicationJob
 
   def perform
     Chewy.strategy(:atomic) do
-      fetch_links
       ScraperLink.where(status: :pending, worker_name: 'buy_and_sell').each do |link|
         extract_tender(link.link)
         link.done!
@@ -63,25 +62,6 @@ class Scrapers::BuyAndSellJob < ApplicationJob
     end
   end
 
-  def fetch_links
-    main_urls.each { |main_url| fetch_links_from_url(main_url) }
-  end
-
-  def fetch_links_from_url(startUrl)
-    next_page_available = true
-    next_page_link = startUrl
-    while next_page_available
-      content = get_content(next_page_link)
-      doc = Nokogiri::HTML(content)
-      links = doc.xpath("//ul[@class='search-results']/li").map{ |e| e.xpath('./div/h2/a/@href').text }
-      links.each do |link|
-        a = ScraperLink.find_or_initialize_by link: link, worker_name: 'buy_and_sell'
-        a.pending! unless a.done?
-      end
-      next_page_link = doc.xpath("//a[@title='Go to next page']/@href").text
-      next_page_available = false unless content.include?('Go to next page')
-    end
-  end
 
   def get_content(url)
     open(url,'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
@@ -89,8 +69,11 @@ class Scrapers::BuyAndSellJob < ApplicationJob
                   "Accept-Language" => 'en-US,en;q=0.5') { |io| io.read }
   end
 
-  def main_urls
-    ['https://buyandsell.gc.ca/procurement-data/search/site?f%5B0%5D=sm_facet_procurement_data%3Adata_data_tender_notice&f%5B1%5D=ss_publishing_status%3ASDS-SS-005',
-                'https://buyandsell.gc.ca/procurement-data/search/site?f%5B0%5D=sm_facet_procurement_data%3Adata_data_tender_notice&f%5B1%5D=ss_publishing_status%3ASDS-SS-006']
+  def organization_keys
+    [:name, :country_name]
+  end
+
+  def tender_keys
+    [:spider_id, :title, :description, :published_on, :submission_datetime, :tender_urls]
   end
 end

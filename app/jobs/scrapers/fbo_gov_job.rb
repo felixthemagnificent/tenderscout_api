@@ -4,30 +4,10 @@ class Scrapers::FboGovJob < ApplicationJob
 
   def perform
     Chewy.strategy(:atomic) do
-      fetch_links
       ScraperLink.where(status: :pending, worker_name: 'fbo_gov').each do |link|
         extract_tender(link.link)
         link.done!
       end
-    end
-  end
-
-  def fetch_links
-    current_page = 1
-    next_page_available = true
-    while next_page_available
-      mainURL = 'https://www.fbo.gov/index.php?s=opportunity&mode=list&tab=list&tabmode=list&pp=100&pageID=' + current_page.to_s
-      content = get_content(mainURL)
-      doc = Nokogiri::HTML(content)
-      links = doc.css('table.list').children.css('tr').map { |e| "https://www.fbo.gov/index.php" + e.css('a').first.attributes['href'] }
-      links.shift
-      links.each do |link|
-        a = ScraperLink.find_or_initialize_by link: link, worker_name: 'fbo_gov'
-        a.pending! unless a.done?
-      end
-      current_page += 1
-      puts current_page
-      next_page_available = false unless content.include?('title="page ' + current_page.to_s + '"')
     end
   end
 
