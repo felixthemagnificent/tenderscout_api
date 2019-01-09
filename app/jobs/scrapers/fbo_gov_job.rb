@@ -22,7 +22,7 @@ class Scrapers::FboGovJob < ApplicationJob
       tender_information[:location] = (doc.css('div.agency-name').children[4].text[10..-1] rescue "") || ""
       tender_information[:country_name] = 'United States'
       tender_information[:created_at] = tender_information[:updated_at] = (doc.css('div#dnf_class_values_procurement_notice__original_posted_date__widget').text.strip rescue "") || ""
-      tender_information[:published_at] = (doc.css('div#dnf_class_values_procurement_notice__posted_date__widget').text.strip rescue "") || ""
+      tender_information[:published_on] = (doc.css('div#dnf_class_values_procurement_notice__posted_date__widget').text.strip rescue "") || ""
       tender_information[:cpv_codes] = (doc.css('div#dnf_class_values_procurement_notice__classification_code__widget').text.strip rescue "") || ""
       tender_information[:submission_date] = (doc.css('div#dnf_class_values_procurement_notice__response_deadline__widget').text.strip rescue "") || ""
       tender_information[:naics] = (doc.css('div#dnf_class_values_procurement_notice__naics_code__widget').text.strip rescue "") || ""
@@ -72,6 +72,6 @@ class Scrapers::FboGovJob < ApplicationJob
   end
 
   def tender_keys
-    [:spider_id, :title, :description, :published_on, :submission_datetime, :tender_urls]
+    [:spider_id, :title, :description, :published_on, :submission_datetime, :tender_urls, :created_at, :updated_at]
   end
 end
