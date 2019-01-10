@@ -36,9 +36,9 @@ namespace :summary do
             weekly_new_tenders_count: Core::Tender.where('created_at > ?', DateTime.now - 1.week).count
           }
         if %w(standart basic).include?(user.role)
-          configuration.merge! {role_standart: 1}
+          configuration[:role_standart] =  1
         elsif user.role == 'free'
-          configuration.merge! {role_free: 1}
+          configuration[:role_free] = 1
         end
 
         CustomPostmarkMailer.template_email(
@@ -59,9 +59,9 @@ namespace :summary do
             weekly_new_tenders_count: Core::Tender.where('created_at > ?', DateTime.now - 1.week).count
           }
         if %w(standart basic).include?(user.role)
-          configuration.merge! {role_standart: 1}
+          configuration[:role_standart] =  1
         elsif user.role == 'free'
-          configuration.merge! {role_free: 1}
+          configuration[:role_free] = 1
         end
         CustomPostmarkMailer.template_email(
           user.email,
