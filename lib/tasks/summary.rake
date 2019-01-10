@@ -33,7 +33,8 @@ namespace :summary do
             support_url: Rails.configuration.mailer['support'],
             company_address: Rails.configuration.mailer['company_address'],
             all_tenders_count: Core::Tender.all.count,
-            weekly_new_tenders_count: Core::Tender.where('created_at > ?', DateTime.now - 1.week).count
+            weekly_new_tenders_count: Core::Tender.where('created_at > ?', DateTime.now - 1.week).count,
+            upgrade_url: Rails.configuration.mailer['upgrade_url']
           }
         if %w(standart basic).include?(user.role)
           configuration[:role_standart] =  1
