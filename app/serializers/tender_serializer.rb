@@ -26,6 +26,7 @@ class TenderSerializer < ActiveModel::Serializer
   attribute(:is_scrapped) { object.creator.blank? }
   # attribute(:creator) { object.try(:creator)}
   has_many :naicses, serializer: Core::NaicsSerializer
+  has_many :awards, serializer: Core::AwardsSerializer
 
   attribute(:bid_status_last_answer_date) do
     dates = object.award_criteria_answers.where(user: current_user).pluck :created_at
@@ -58,6 +59,7 @@ class TenderSerializer < ActiveModel::Serializer
     end if collaboration
     {
       id: collaboration.id,
+      role: Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: object).ids, user: current_user).try(:first).try(:role),
       count: collaboration.tender_collaborators.count,
       users: collaborators
     } if collaboration

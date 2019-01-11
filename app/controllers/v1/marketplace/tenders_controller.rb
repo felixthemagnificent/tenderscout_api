@@ -135,7 +135,8 @@ class V1::Marketplace::TendersController < ApplicationController
   end
 
   def bid_result
-    render json: @tender.award_criteria_sections, each_serializer: TenderBidResultSerializer#, root: :tender_bidresult
+   collaboration = ::Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: @tender), user: current_user).try(:first).try(:collaboration)
+    render json: ::Marketplace::BidResult.where(marketplace_collaboration_id: collaboration.id), each_serializer: TenderBidResultSerializer
   end
 
   def user_awaiting_result_tender

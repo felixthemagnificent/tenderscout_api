@@ -21,8 +21,12 @@ class User < ApplicationRecord
   has_many :user_favourite_tenders
   has_many :favourite_tenders, through: :user_favourite_tenders, source: :tender, class_name: 'Core::Tender'
   has_many :user_upgrade_requests, dependent: :destroy
-  enum role: [:admin, :standart, :basic, :free]
   has_many :tender_status, class_name: 'Marketplace::UserTenderStatus'
+
+  enum role: [:admin, :standart, :basic, :free]
+  enum marketplace_status: [:available, :pending, :not_available]
+
+  scope :available_in_marketplace, -> { where(marketplace_status: :available)}
 
   after_initialize :set_default_role, :if => :new_record?
   before_save :update_flags
@@ -40,12 +44,12 @@ class User < ApplicationRecord
     result = {}
     tenders.each do |tender|
      qualification_criteria_count = tender.qualification_criterias_count
-     criteria_count = tender.award_criteries_count
+     #criteria_count = tender.award_criteries_count
      all_tender_qualification_criteria_answer_count = tender_qualification_criteria_answer_completed_count(tender)
-     all_tender_award_criteria_answer_count = tender_award_criteria_answer_completed_count(tender)
-     tender_complete_percent = calculate_tender_complete_percent(qualification_criteria_count,criteria_count,
-                                                               all_tender_qualification_criteria_answer_count,
-                                                               all_tender_award_criteria_answer_count)
+     #all_tender_award_criteria_answer_count = tender_award_criteria_answer_completed_count(tender)
+     tender_complete_percent = calculate_tender_complete_percent(qualification_criteria_count,#criteria_count,
+                                                               all_tender_qualification_criteria_answer_count)
+                                                               #all_tender_award_criteria_answer_count)
       percent_array_result<<tender_complete_percent
      result = user_tender_statuses(percent_array_result)
     end
@@ -79,12 +83,12 @@ class User < ApplicationRecord
     Marketplace::TenderAwardCriteriaAnswer.where(tender_id: tender.id, collaboration_id: collaboration.id).where(closed: true).uniq(&:tender_award_criteria_id).count
   end
 
-  def calculate_tender_complete_percent(qualification_criteria_count,criteria_count,
-                                       all_tender_qualification_criteria_answer_count,
-                                       all_tender_award_criteria_answer_count)
+  def calculate_tender_complete_percent(qualification_criteria_count,#,criteria_count,
+                                       all_tender_qualification_criteria_answer_count)
+                                       #all_tender_award_criteria_answer_count)
     tender_complete_percent = 0
-    needed_requirement = qualification_criteria_count + criteria_count
-    done_requirement = all_tender_qualification_criteria_answer_count + all_tender_award_criteria_answer_count
+    needed_requirement = qualification_criteria_count# + criteria_count
+    done_requirement = all_tender_qualification_criteria_answer_count# + all_tender_award_criteria_answer_count
     if needed_requirement == 0
       tender_complete_percent = 0
     else

@@ -16,9 +16,17 @@ class V1::UsersController < ApplicationController
 
   def available_in_marketplace
     authorize User
+    user_name = params[:name]
+    user_geography = params[:geography]
+    user_keywords = params[:keywords]
+    user_industry = params[:industry]
     unless current_user.free?
-    users = Profile.where(do_marketplace_available: true).select(:user_id).distinct.map(&:user_id)
-    users = User.where(id: users)
+    profiles = Profile.all
+    profiles = profiles.by_keywords(user_keywords) if user_keywords
+    profiles = profiles.where(country: Country.where(name: user_geography).first) if user_geography
+    profiles = profiles.where(industry: Industry.where(name: user_industry).first) if user_industry
+    users = profiles.select(:user_id).distinct.map(&:user_id)
+    users = User.where(id: users).available_in_marketplace
     users = users.my_paginate(paginate_params)
     render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(users, 
           each_serializer: UserSerializer, current_user: current_user)}
@@ -27,12 +35,23 @@ class V1::UsersController < ApplicationController
       render json: {count: 1, data: ActiveModel::Serializer::CollectionSerializer.new(users,
                                                                                                 each_serializer: UserSerializer, current_user: current_user)}
     end
-    end
+  end
 
   def upgrade
     authorize current_user
     uur = current_user.user_upgrade_requests.new
     if uur.save
+      render json: nil, status: :ok
+    else
+      render json: nil, status: :unprocessable_entity
+    end
+  end
+
+  def add_to_marketplace
+    authorize current_user
+    current_user.pending!
+    umar = current_user.user_marketplace_availability_request.new
+    if umar.save
       render json: nil, status: :ok
     else
       render json: nil, status: :unprocessable_entity

@@ -6,6 +6,8 @@ class SearchMonitor < ApplicationRecord
   mount_uploader :export, MonitorExportUploader
   belongs_to :user
 
+  default_scope { where.not(monitor_type: :profile) }
+
   enum monitor_type: [:profile, :personal, :common]
 
   scope :personal, -> { where(monitor_type: :personal)}
@@ -28,6 +30,11 @@ class SearchMonitor < ApplicationRecord
           sort_direction: sort_direction
         }
     )
+  end
+
+
+  def destroy
+    super unless self.profile?
   end
 
 

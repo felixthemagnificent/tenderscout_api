@@ -113,10 +113,11 @@ class Core::Tender < ApplicationRecord
 
   def get_bnb_data
     data = []
-    collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: self), user: Current.user).try(:first).try(:collaboration).try(:id)
+     collaboration = Marketplace::TenderCollaborator.where(collaboration: Marketplace::Collaboration.where(tender: self), user: Current.user).try(:first).try(:collaboration).try(:id)
     Marketplace::BidNoBidQuestion.all.each do |question|
       assigned_user_id = question.assignments.where(collaboration_id: collaboration).try(:first).try(:user_id)
       profile = User.where(id: assigned_user_id).try(:first).try(:profiles).try(:first)
+      deadline = Marketplace::BidNoBidDeadline.where(bid_no_bid_question_id: question.id, collaboration_id: collaboration).try(:first).try(:deadline)
       _tmp = {}
       answers = question.bid_no_bid_answers.map do |e|
         {
@@ -142,7 +143,8 @@ class Core::Tender < ApplicationRecord
         title: question.title,
         available_answers: answers,
         answered: answered,
-        assigment_profile: profile
+        assigment_profile: profile,
+        deadline: deadline
       }
       data << _tmp
     end

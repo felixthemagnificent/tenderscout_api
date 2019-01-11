@@ -27,6 +27,17 @@ class Profile < ApplicationRecord
   after_save :recalculate_bidsense
   after_save :change_profile_monitor
 
+  scope :by_keywords, ->(keywords) do
+    keyword_profile_ids = []
+    keywords.each do |e|
+      keywords_profile_ids << Keyword.where(name: e).profiles.ids
+    end 
+    keyword_profile_ids.flatten!
+    keyword_profile_ids.uniq!
+    ids = self.ids & keyword_profile_ids
+    self.where(id: ids)
+  end
+
   def owner?(current_user)
     user == current_user
   end
@@ -42,16 +53,16 @@ class Profile < ApplicationRecord
 
   def keywords_count_validation
     if self.user.free? && self.keywords.count > 5
-    errors.add(:keywords, "Free user can't add more 5 keywords")
-      end
+      errors.add(:keywords, "Free user can't add more 5 keywords")
+    end
   end
 
   def description_length_validation
     if self.description.present?
-    if self.user.free? && self.description.length > 200
-      errors.add(:description, "Free user can't add more 200 characters in description")
-    end
+      if self.user.free? && self.description.length > 200
+        errors.add(:description, "Free user can't add more 200 characters in description")
       end
+    end
   end
 
   def countries_count_validation
@@ -68,7 +79,7 @@ class Profile < ApplicationRecord
     monitor = self.user.search_monitors.find_or_initialize_by(monitor_type: :profile)
     monitor.title = 'Profile monitor'
     monitor.countryList = []
-    monitor.countryList << self.country.id if self.country
+    monitor.countryList = self.countries.ids if self.countries.count
     monitor.keywordList = self.keywords.pluck :name
     monitor.valueFrom = self.valueFrom
     monitor.valueTo = self.valueTo
