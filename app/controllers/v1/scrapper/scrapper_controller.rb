@@ -34,7 +34,7 @@ class V1::Scrapper::ScrapperController < ApplicationController
       organization = Core::Organization.find_or_initialize_by name: org_hash[:name]
       if organization.new_record?
         organization.country = Core::Country.find_by_name org_hash[:country_name]
-        raise 'Invalid country!' unless a.country
+        raise 'Invalid country!' unless organization.country
         organization.save!
       end
       tender = Core::Tender.find_or_initialize_by(spider_id: tender_hash[:spider_id])

@@ -82,6 +82,7 @@ gem 'logstash-logger'
 gem 'whenever', require: false
 gem 'whenever-web'
 gem 'haml'
+gem 'nokogiri'
 
 
 group :development do

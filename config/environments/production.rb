@@ -86,14 +86,14 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.lograge.enabled = true
-  config.lograge.base_controller_class = 'ActionController::API'
-  config.lograge.formatter = Lograge::Formatters::Logstash.new
-  config.lograge.custom_options = lambda do |event|
-    # NOTE: We must use lograge.custom_options or else lograge will only log the default info, even if extra info has been added to the notification payload
-    event.payload
-  end
-  config.lograge.logger = LogStashLogger.new(type: :udp, port: 5228)
+  # config.lograge.enabled = true
+  # config.lograge.base_controller_class = 'ActionController::API'
+  # config.lograge.formatter = Lograge::Formatters::Logstash.new
+  # config.lograge.custom_options = lambda do |event|
+  #   # NOTE: We must use lograge.custom_options or else lograge will only log the default info, even if extra info has been added to the notification payload
+  #   event.payload
+  # end
+  # config.lograge.logger = LogStashLogger.new(type: :udp, port: 5228)
 
   
   Rails.application.config.middleware.use ExceptionNotification::Rack,
