@@ -418,6 +418,7 @@ DEPENDENCIES
   capistrano3-puma!
   carrierwave (~> 1.0)
   chewy
+  chronic
   database_cleaner
   devise
   devise-doorkeeper

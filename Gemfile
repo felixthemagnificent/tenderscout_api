@@ -83,6 +83,7 @@ gem 'whenever', require: false
 gem 'whenever-web'
 gem 'haml'
 gem 'nokogiri'
+gem 'chronic'
 
 
 group :development do

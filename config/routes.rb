@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   devise_for :users,controllers: { confirmations: 'users/confirmations'}, defaults: { format: :json }
   namespace :v1 do
     post 'scrapper/input' => 'scrapper/scrapper#input'
-
+    get 'scrapper/statistics' => 'scrapper/scrapper#statistics'
     use_doorkeeper scope: 'auth' do
       controllers tokens: 'api_auth'
       skip_controllers :authorizations, :applications, :authorized_applications, :tokens
