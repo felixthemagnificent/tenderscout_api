@@ -18,7 +18,7 @@ class V1::UsersController < ApplicationController
     authorize User
     user_name = params[:name]
     user_geography = params[:geography]
-    user_keywords = params[:keywords]
+    user_keywords = params[:keywords].split(',')
     user_industry = params[:industry]
     unless current_user.free?
       profiles = Profile.all
