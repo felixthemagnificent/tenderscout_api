@@ -1,5 +1,4 @@
 class Scrapers::BuyAndSellAwards
-  queue_as :scrapers
 
   def perform
     Chewy.strategy(:atomic) do
