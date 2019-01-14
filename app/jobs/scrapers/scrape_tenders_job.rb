@@ -37,4 +37,5 @@ class Scrapers::ScrapeTenders < ApplicationJob
         run_at: ['7am', '12pm', '5pm']
       },
     ]
+  end
 end
