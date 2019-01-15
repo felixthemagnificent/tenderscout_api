@@ -99,7 +99,7 @@ class Scrapers::LinkFetcherJob < ApplicationJob
   end
 
   def contract_finder_fetch_links
-    ROOT_URL = 'https://www.contractsfinder.service.gov.uk/Search/Results'
+    root_url = 'https://www.contractsfinder.service.gov.uk/Search/Results'
     agent = Mechanize.new
     agent.user_agent_alias = 'Mac Safari'
     home = agent.get(ROOT_URL)
