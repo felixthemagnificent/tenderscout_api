@@ -30,7 +30,7 @@ class Profile < ApplicationRecord
   scope :by_keywords, ->(keywords) do
     keyword_profile_ids = []
     keywords.each do |e|
-      keywords_profile_ids << Keyword.where(name: e).profiles.ids
+      keyword_profile_ids << Keyword.where(name: e).try(:first).try(:profiles).try(:ids)
     end 
     keyword_profile_ids.flatten!
     keyword_profile_ids.uniq!

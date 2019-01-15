@@ -1,9 +1,8 @@
-class Scrapers::BuyAndSellJob < ApplicationJob
-  queue_as :scrapers
+class Scrapers::BuyAndSellAwards
 
   def perform
     Chewy.strategy(:atomic) do
-      ScraperLink.where(status: :pending, worker_name: 'buy_and_sell').each do |link|
+      ScraperLink.where(status: :pending, worker_name: 'buy_and_sell_awards').each do |link|
         extract_tender(link.link)
         link.done!
       end
@@ -24,15 +23,15 @@ class Scrapers::BuyAndSellJob < ApplicationJob
         submission_date = tmp[0]
       end
       tender_information[:spider_id] = doc.xpath('//dd[@class="data solicitation-number"]//text()').text
-      tender_information[:title] = doc.xpath('//h1[@id="cont"]/text()').text
+      tender_information[:title] = doc.xpath('//*[text()="Solicitation number"]/../following::dd[1]//text()').text
       tender_information[:organization_name] = doc.xpath('//*[text()="Procurement entity"]/../following-sibling::dd[1]//text()')
       tender_information[:location] = doc.xpath('//*[text()="Contact address"]/../following-sibling::dd[1]//text()')
-      tender_information[:country_name] = 'United States'
-      tender_information[:published_on] = doc.xpath('//dd[@class="data publication-date"]/span/text()').text.strip
+      tender_information[:country_name] = 'Canada'
+      tender_information[:published_at] = doc.xpath('//*[text()="Publication date"]/../following::dd[1]//text()').text.strip
       tender_information[:submission_date] = submission_date
       tender_information[:description] = doc.xpath('//div[@class="field-content tender_description"]//text()').text.strip
       tender_information[:buyer] = tender_information[:organization_name]
-
+      tender_information[:awarded_on] = doc.xpath('//*[text()="Contract award date"]/../following::dd[1]//text()').text
       tender_information[:contact_point] = doc.xpath('//*[text()="Contact name"]/../following-sibling::dd[1]//text()').text
       tender_information[:email] = doc.xpath('//*[text()="Contact email"]/../following-sibling::dd[1]//text()').text
       tender_information[:phone] = doc.xpath('//*[text()="Contact phone"]/../following-sibling::dd[1]//text()').text

@@ -83,6 +83,11 @@ gem 'whenever', require: false
 gem 'whenever-web'
 gem 'haml'
 gem 'nokogiri'
+gem 'chronic'
+gem 'mechanize'
+gem 'httparty'
+gem 'money'
+gem 'countries'
 
 
 group :development do
