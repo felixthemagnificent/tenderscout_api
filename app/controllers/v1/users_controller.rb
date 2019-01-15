@@ -18,11 +18,11 @@ class V1::UsersController < ApplicationController
     authorize User
     user_name = params[:name]
     user_geography = params[:geography]
-    user_keywords = params[:keywords].split(',')
+    user_keywords = params[:keywords]
     user_industry = params[:industry]
     unless current_user.free?
       profiles = Profile.all
-      profiles = profiles.by_keywords(user_keywords) if user_keywords
+      profiles = profiles.by_keywords(user_keywords.split(',')) if user_keywords
       profiles = profiles.where(country: Core::Country.find_by_id(user_geography)) if user_geography
       profiles = profiles.where(industry: Industry.where(name: user_industry).first) if user_industry
       users = profiles.select(:user_id).distinct.map(&:user_id)

@@ -28,7 +28,7 @@ class Scrapers::BuyAndSellJob < ApplicationJob
       tender_information[:organization_name] = doc.xpath('//*[text()="Procurement entity"]/../following-sibling::dd[1]//text()')
       tender_information[:location] = doc.xpath('//*[text()="Contact address"]/../following-sibling::dd[1]//text()')
       tender_information[:country_name] = 'United States'
-      tender_information[:published_at] = doc.xpath('//dd[@class="data publication-date"]/span/text()').text.strip
+      tender_information[:published_on] = doc.xpath('//dd[@class="data publication-date"]/span/text()').text.strip
       tender_information[:submission_date] = submission_date
       tender_information[:description] = doc.xpath('//div[@class="field-content tender_description"]//text()').text.strip
       tender_information[:buyer] = tender_information[:organization_name]

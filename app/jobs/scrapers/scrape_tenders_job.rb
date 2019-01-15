@@ -24,6 +24,10 @@ class Scrapers::ScrapeTenders < ApplicationJob
 
   def available_scrapers
     [
+      { 
+        klass: 'Scrapers::EbrdJob',
+        run_at:['7am', '12pm', '5pm']
+      },
       {
         klass: 'Scrapers::FboGovJob',
         run_at: ['7am', '12pm', '5pm']
