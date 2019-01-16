@@ -4,8 +4,8 @@ class V1::Scrapper::ScrapperController < ApplicationController
     data = ScraperLink.pluck(:worker_name).uniq.map do |scraper_name|
       last_scraping_date = ScraperLink.where(worker_name: scraper_name, status: :done).try(:last).try(:updated_at)
       status = :red
-      status = :yellow if last_scraping_date > DateTime.now - 48.hours
-      status = :green if last_scraping_date > DateTime.now - 24.hours
+      status = :yellow if last_scraping_date && last_scraping_date > DateTime.now - 48.hours
+      status = :green if last_scraping_date && last_scraping_date > DateTime.now - 24.hours
       {
         name: scraper_name,
         last_scraped: last_scraping_date,

@@ -3,7 +3,7 @@ class Scrapers::EbrdJob < ApplicationJob
 
   def perform
     Chewy.strategy(:atomic) do
-      ScraperLink.where(status: :pending, worker_name: 'ebtdrd').each do |link|
+      ScraperLink.where(status: :pending, worker_name: 'ebrd').each do |link|
         extract_tender(link.link)
         link.done!
       end
