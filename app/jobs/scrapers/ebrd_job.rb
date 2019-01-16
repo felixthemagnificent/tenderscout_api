@@ -23,7 +23,7 @@ class Scrapers::EbrdJob < ApplicationJob
       # tender_information[:location] = doc.xpath('//*[text()="Contact address"]/../following-sibling::dd[1]//text()')
       tender_information[:country_name] = response.xpath('//*[contains(text(),"Location:")]/following-sibling::p[1]/text()').text
       tender_information[:published_on] = response.xpath('//*[contains(text(),"Issue date:")]/following-sibling::p[1]/text()').text
-      tender_information[:submission_date] = DateTime.parse(response.xpath('//*[contains(text(),"Closing date:")]/following-sibling::p[1]/text()').text)
+      tender_information[:submission_date] = DateTime.try(:parse, response.xpath('//*[contains(text(),"Closing date:")]/following-sibling::p[1]/text()').text)
       tender_information[:description] = description.strip
       tender_information[:buyer] = tender_information[:organization_name]
 
