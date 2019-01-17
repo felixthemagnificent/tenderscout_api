@@ -15,7 +15,7 @@ class SearchMonitorPolicy
   end
 
   def create?
-    @user.standart? || @user.admin? || @user.basic?
+    @user.standard? || @user.admin? || @user.basic?
   end
 
   def update?
@@ -57,7 +57,7 @@ class SearchMonitorPolicy
 
 
   def destroy?
-    @user.standart? && !@monitor.profile?
+    @user.standard? && !@monitor.profile?
   end
 
   class Scope

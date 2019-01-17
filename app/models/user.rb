@@ -23,7 +23,7 @@ class User < ApplicationRecord
   has_many :user_upgrade_requests, dependent: :destroy
   has_many :tender_status, class_name: 'Marketplace::UserTenderStatus'
 
-  enum role: [:admin, :standart, :basic, :free]
+  enum role: [:admin, :standard, :basic, :free]
   enum marketplace_status: [:available, :pending, :not_available]
 
   scope :available_in_marketplace, -> { where(marketplace_status: :available)}
@@ -57,7 +57,7 @@ class User < ApplicationRecord
   end
 
   def paid?
-    self.standart? || self.admin? || self.basic?
+    self.standard? || self.admin? || self.basic?
   end
 
   def has_collaboration_on_tender?(tender)

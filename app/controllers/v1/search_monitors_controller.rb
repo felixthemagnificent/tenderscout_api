@@ -112,6 +112,7 @@ class V1::SearchMonitorsController < ApplicationController
   # POST /search_monitors
   def create
     @search_monitor = current_user.search_monitors.new(search_monitor_params)
+    @search_monitor.monitor_type = :personal
     authorize @search_monitor
     if @search_monitor.save
       render json: @search_monitor, status: :created

@@ -11,7 +11,7 @@ class UserPolicy
   end
 
   def upgrade?
-    @user.free? || @user.basic? || @user.standart?
+    @user.free? || @user.basic? || @user.standard?
   end
 
   def show?

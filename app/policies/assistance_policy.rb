@@ -5,7 +5,7 @@ class AssistancePolicy < Core::TenderPolicy
   end
 
   def create?
-  @user.admin? || @user.standart? || @user.basic?
+  @user.admin? || @user.standard? || @user.basic?
   end
 
   class Scope

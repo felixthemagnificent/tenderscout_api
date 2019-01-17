@@ -6,7 +6,7 @@ class Marketplace::BidNoBidAnswerPolicy
   end
 
   def index?
-  @user.admin? || @user.standart?
+  @user.admin? || @user.standard?
   end
 
   def show?

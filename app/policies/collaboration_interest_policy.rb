@@ -6,7 +6,7 @@ class CollaborationInterestPolicy# < Marketplace::TenderCompetePolicy
     @collaboration_interest = collaboration_interest
   end
   def index?
-    @user.admin? || @user.standart? || @user.basic?
+    @user.admin? || @user.standard? || @user.basic?
   end
   def show?
   index?

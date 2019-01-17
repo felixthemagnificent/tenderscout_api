@@ -28,7 +28,7 @@ class Core::TenderPolicy
   end
 
   def get_bnb_data?
-    @user.admin? || @user.standart?
+    @user.admin? || @user.standard?
   end
 
   class Scope

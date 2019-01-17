@@ -36,7 +36,7 @@ namespace :summary do
             weekly_new_tenders_count: Core::Tender.where('created_at > ?', DateTime.now - 1.week).count,
             upgrade_url: Rails.configuration.mailer['upgrade_url']
           }
-        if %w(standart basic).include?(user.role)
+        if %w(standard basic).include?(user.role)
           configuration[:role_standart] =  1
         elsif user.role == 'free'
           configuration[:role_free] = 1
@@ -60,7 +60,7 @@ namespace :summary do
             weekly_new_tenders_count: Core::Tender.where('created_at > ?', DateTime.now - 1.week).count,
             upgrade_url: Rails.configuration.mailer['upgrade_url']
           }
-        if %w(standart basic).include?(user.role)
+        if %w(standard basic).include?(user.role)
           configuration[:role_standart] =  1
         elsif user.role == 'free'
           configuration[:role_free] = 1
