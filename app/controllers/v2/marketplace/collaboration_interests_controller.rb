@@ -5,7 +5,7 @@ class V2::Marketplace::CollaborationInterestsController < ApplicationController
   before_action :set_tender
 
   def index
-    collaborations = GetCollaborations.call(params: index_params, user: current_user)
+    collaborations = GetCollaborations.call(params: params, user: current_user)
     result = []
     collaborations.results.map do |e| 
       user = e.user

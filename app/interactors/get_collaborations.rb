@@ -24,14 +24,24 @@ class GetCollaborations
     if index_params[:type] and index_params[:type] != 'all'
       profiles = profiles.where("profile_type @> ?", index_params[:type])
     end
-    profiles.each { |item| context.results.push(item) }
-    context.results = profiles
+
+    user_name = index_params[:name]
+    user_geography = index_params[:geography]
+    user_keywords = index_params[:keywords]
+    user_industry = index_params[:industry]
+
+    profiles = Profile.where(id: profiles.ids)
+    profiles = profiles.by_keywords(user_keywords.split(',')) if user_keywords
+    profiles = profiles.where(country: Core::Country.find_by_id(user_geography)) if user_geography
+    profiles = profiles.where(industry: Industry.where(name: user_industry).first) if user_industry
+
+    context.results = profiles.to_a
   end
 
   private
 
   def index_params
-    context.params.permit(:match, :interest, :type, :tender_id)
+    context.params.permit(:match, :interest, :type, :tender_id, :name, :geography, :keywords, :industry)
   end
 
 end
