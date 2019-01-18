@@ -33,7 +33,7 @@ class V1::AuthController < Doorkeeper::TokensController
     password = params[:password]
     password_confirmation = params[:password_confirmation]
     reset_token = params[:reset_password_token]
-    user = User.with_reset_password_token(reset_token)
+    user = User.find_by_reset_password_token(reset_token)
     if user
       if password == password_confirmation
         user.reset_password(password, password_confirmation)

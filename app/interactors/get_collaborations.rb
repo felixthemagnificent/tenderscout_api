@@ -25,7 +25,7 @@ class GetCollaborations
       profiles = profiles.where("profile_type @> ?", index_params[:type])
     end
 
-    profiles = profiles.where(id: profiles) if profiles.is_a?(Array)
+    profiles = Profile.where(id: profiles) if profiles.is_a?(Array)
 
     user_name = index_params[:name]
     user_geography = index_params[:geography]
