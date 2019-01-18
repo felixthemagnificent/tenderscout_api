@@ -31,7 +31,7 @@ class GetCollaborations
     user_industry = index_params[:industry]
 
     profiles = Profile.where(id: profiles.ids)
-    profiles = profiles.where("fullname LIKE '?'",user_name) if user_name
+    profiles = profiles.where("fullname LIKE ?","%#{user_name}%") if user_name
     profiles = profiles.by_keywords(user_keywords.split(',')) if user_keywords
     profiles = profiles.where(country: Core::Country.find_by_id(user_geography)) if user_geography
     profiles = profiles.where(industry: Industry.find(user_industry)) if user_industry
