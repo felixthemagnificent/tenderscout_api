@@ -2,7 +2,7 @@ class Scrapers::ScrapeTendersJob < ApplicationJob
   queue_as :scrapers
 
   def perform
-    return if is_running?('Scrapers::ScrapeTendersJob') or is_scheduled?('Scrapers::ScrapeTendersJob')
+    return if is_running?('Scrapers::ScrapeTendersJob')
     available_scrapers.each do |scraper_klass|
       scraper_klass.constantize.perform_later unless is_running?(scraper_klass) or is_scheduled?(scraper_klass)
     end
