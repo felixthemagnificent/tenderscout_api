@@ -33,7 +33,7 @@ class GetCollaborations
     profiles = Profile.where(id: profiles.ids)
     profiles = profiles.by_keywords(user_keywords.split(',')) if user_keywords
     profiles = profiles.where(country: Core::Country.find_by_id(user_geography)) if user_geography
-    profiles = profiles.where(industry: Industry.where(name: user_industry).first) if user_industry
+    profiles = profiles.where(industry: Industry.find(user_industry)) if user_industry
 
     context.results = profiles.to_a
   end
