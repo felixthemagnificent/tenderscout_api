@@ -16,9 +16,7 @@ class Scrapers::ScrapeTenders < ApplicationJob
   private
 
   def is_running?(scraper_klass)
-    queue = Sidekiq::Queue.new('scrapers')
-    jobs = queue.map{ |e| JSON.parse(e.value)['args'] }
-    job_classes = jobs.map{ |e| e[0]['job_class'] }
+    job_classes = Sidekiq::Workers.new.map { |_,_,e| p e['payload']['wrapped'] }
     job_classes.include?(scraper_klass)
   end
 
