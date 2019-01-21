@@ -28,13 +28,17 @@ class Scrapers::FboGovJob < ApplicationJob
       tender_information[:naics] = (doc.css('div#dnf_class_values_procurement_notice__naics_code__widget').text.strip rescue "") || ""
       tender_information[:description] = (doc.css('div#dnf_class_values_procurement_notice__description__widget').text.strip rescue "") || ""
       tender_information[:buyer] = tender_information[:organization_name]
-
-      if content.include?('>Primary Point of Contact.')
-        contact_info = (doc.css('div.fld_primary_poc').css('div.widget').css('div').first.text.split("\t")  rescue "") || ""
-        tender_information[:contact_point] = contact_info[2][0..-3] if contact_info
-        tender_information[:email] = contact_info[4][0..-2] if contact_info
-        tender_information[:phone] = contact_info[5][7..-1] if contact_info
+      begin
+        if content.include?('>Primary Point of Contact.')
+          contact_info = (doc.css('div.fld_primary_poc').css('div.widget').css('div').first.text.split("\t")  rescue "") || ""
+          tender_information[:contact_point] = contact_info[2][0..-3] if contact_info
+          tender_information[:email] = contact_info[4][0..-2] if contact_info
+          tender_information[:phone] = contact_info[5][7..-1] if contact_info
+        end
+      rescue Exception => e
+        
       end
+
 
 
       tender_hash = tender_information.slice(*tender_keys)
