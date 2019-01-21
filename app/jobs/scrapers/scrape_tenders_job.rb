@@ -2,9 +2,16 @@ class Scrapers::ScrapeTendersJob < ApplicationJob
   queue_as :scrapers
 
   def perform
-    return if is_running?('Scrapers::ScrapeTendersJob')
+    is_wait = true
     available_scrapers.each do |scraper_klass|
-      scraper_klass.constantize.perform_later unless is_running?(scraper_klass) or is_scheduled?(scraper_klass)
+      scraper_klass.constantize.perform_later
+    end 
+
+    while is_wait
+      is_wait = false
+      available_scrapers.each do |scraper_klass|
+        is_wait ||= true if is_running?(scraper_klass)
+      end 
     end
     Scrapers::ScrapeTendersJob.perform_later
   end
@@ -21,6 +28,6 @@ class Scrapers::ScrapeTendersJob < ApplicationJob
   end
 
   def available_scrapers
-    ['Scrapers::EbrdJob', 'Scrapers::FboGovJob', 'Scrapers::BuyAndSellJob', 'Scrapers::BuyAndSellAwards']
+    ['Scrapers::EbrdJob', 'Scrapers::FboGovJob', 'Scrapers::BuyAndSellJob', 'Scrapers::BuyAndSellAwardsJob']
   end
 end

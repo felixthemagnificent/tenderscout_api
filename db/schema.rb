@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190107232756) do
+ActiveRecord::Schema.define(version: 20190121071505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -710,6 +710,12 @@ ActiveRecord::Schema.define(version: 20190107232756) do
     t.index ["bid_no_bid_question_id"], name: "index_marketplace_bid_no_bid_answers_on_bid_no_bid_question_id"
   end
 
+  create_table "marketplace_bid_no_bid_deadlines", force: :cascade do |t|
+    t.datetime "deadline"
+    t.integer "collaboration_id"
+    t.integer "bid_no_bid_question_id"
+  end
+
   create_table "marketplace_bid_no_bid_questions", force: :cascade do |t|
     t.text "question_text"
     t.integer "order"
@@ -1015,6 +1021,13 @@ ActiveRecord::Schema.define(version: 20190107232756) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "worker_name"
+  end
+
+  create_table "scraper_statistics", force: :cascade do |t|
+    t.string "worker_name"
+    t.integer "scrapped"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "search_monitors", force: :cascade do |t|

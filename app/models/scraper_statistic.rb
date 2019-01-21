@@ -1,0 +1,2 @@
+class ScraperStatistic < ApplicationRecord
+end
