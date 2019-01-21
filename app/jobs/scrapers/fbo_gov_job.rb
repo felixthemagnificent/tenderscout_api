@@ -31,9 +31,9 @@ class Scrapers::FboGovJob < ApplicationJob
 
       if content.include?('>Primary Point of Contact.')
         contact_info = (doc.css('div.fld_primary_poc').css('div.widget').css('div').first.text.split("\t")  rescue "") || ""
-        tender_information[:contact_point] = contact_info[2][0..-3]
-        tender_information[:email] = contact_info[4][0..-2]
-        tender_information[:phone] = contact_info[5][7..-1]
+        tender_information[:contact_point] = contact_info[2][0..-3] if contact_info
+        tender_information[:email] = contact_info[4][0..-2] if contact_info
+        tender_information[:phone] = contact_info[5][7..-1] if contact_info
       end
 
 
