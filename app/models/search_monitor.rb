@@ -6,7 +6,7 @@ class SearchMonitor < ApplicationRecord
   mount_uploader :export, MonitorExportUploader
   belongs_to :user
 
-  default_scope { where.not(monitor_type: :profile) }
+  # default_scope { where.not(monitor_type: :profile) }
 
   enum monitor_type: [:profile, :personal, :common]
 
