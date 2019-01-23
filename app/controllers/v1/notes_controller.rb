@@ -11,6 +11,13 @@ class V1::NotesController < ApplicationController
     @note = Note.new(note_params)
     @note.notable_type = notes_model
     @note.profile_id = current_user.profiles.first.id
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @note.attachments << attachment
+      end
+    end
     if @note.save
       render json: @note, status: :created
     else

@@ -11,6 +11,13 @@ class V1::CommentsController < ApplicationController
     @comment = Comment.new(comment_params)
     @comment.commentable_type = comment_model
     @comment.profile_id = current_user.profiles.first.id
+    if params[:attachments]
+      params[:attachments].each do |k,v|
+        attachment = Attachment.new(file: v)
+        attachment.save
+        @comment.attachments << attachment
+      end
+    end
     if @comment.save
       render json: @comment, status: :created
     else

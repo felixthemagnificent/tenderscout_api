@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190121071505) do
+ActiveRecord::Schema.define(version: 20190123124016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,13 @@ ActiveRecord::Schema.define(version: 20190121071505) do
     t.string "file_size"
   end
 
+  create_table "attachments_comment", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "comment_id"
+    t.index ["attachment_id"], name: "index_attachments_comment_on_attachment_id"
+    t.index ["comment_id"], name: "index_attachments_comment_on_comment_id"
+  end
+
   create_table "attachments_core_tenders", id: false, force: :cascade do |t|
     t.bigint "attachment_id"
     t.bigint "tender_id"
@@ -63,6 +70,13 @@ ActiveRecord::Schema.define(version: 20190121071505) do
     t.bigint "tender_qualification_criteria_id"
     t.index ["attachment_id"], name: "index_attachments_tender_q_criteria_on_attachment_id"
     t.index ["tender_qualification_criteria_id"], name: "index_attachments_tender_q_criteria_on_award_criteria_id"
+  end
+
+  create_table "attachments_note", id: false, force: :cascade do |t|
+    t.bigint "attachment_id"
+    t.bigint "note_id"
+    t.index ["attachment_id"], name: "index_attachments_note_on_attachment_id"
+    t.index ["note_id"], name: "index_attachments_note_on_note_id"
   end
 
   create_table "bidsense_results", force: :cascade do |t|
@@ -1157,8 +1171,12 @@ ActiveRecord::Schema.define(version: 20190121071505) do
 
   add_foreign_key "assistances", "core_tenders", column: "tender_id"
   add_foreign_key "assistances", "users"
+  add_foreign_key "attachments_comment", "attachments"
+  add_foreign_key "attachments_comment", "comments"
   add_foreign_key "attachments_core_tenders", "attachments"
   add_foreign_key "attachments_core_tenders", "core_tenders", column: "tender_id"
+  add_foreign_key "attachments_note", "attachments"
+  add_foreign_key "attachments_note", "notes"
   add_foreign_key "bidsense_results", "core_tenders", column: "tender_id"
   add_foreign_key "bidsense_results", "profiles"
   add_foreign_key "case_studies", "profiles"
