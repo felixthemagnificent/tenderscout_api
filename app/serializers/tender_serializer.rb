@@ -46,16 +46,17 @@ class TenderSerializer < ActiveModel::Serializer
     collaborators = []
     collaboration.tender_collaborators.each do |tc|
       is_owner = (tc.try(:role) == 'owner') ? true : false
-
-      collaborators << 
-      {
-        id: tc.user.id,
-        email: tc.user.email,
-        collaboration_role: tc.role,
-        is_owner: is_owner,
-        profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
-                                                                 each_serializer: ProfileSerializer)
-      }
+      if tc.user
+        collaborators << 
+        {
+          id: tc.user.id,
+          email: tc.user.email,
+          collaboration_role: tc.role,
+          is_owner: is_owner,
+          profiles: ActiveModel::Serializer::CollectionSerializer.new(tc.user.profiles,
+                                                                   each_serializer: ProfileSerializer)
+        }
+      end
     end if collaboration
     {
       id: collaboration.id,
