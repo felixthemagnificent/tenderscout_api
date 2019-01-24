@@ -7,7 +7,7 @@ class ProfileSerializer < ActiveModel::Serializer
   belongs_to :industry, serializer: IndustrySerializer
 
   attributes :id, :fullname, :display_name, :avatar, :cover_img, :city,
-             :do_marketplace_available, :profile_type, :company, :company_size,
+             :profile_type, :company, :company_size,
              :valueFrom, :valueTo, :turnover, :timezone, :tender_level,
              :industry, :industries, :country, :description,
              :number_public_contracts, :contacts, :keywords, :countries, 
@@ -15,6 +15,7 @@ class ProfileSerializer < ActiveModel::Serializer
 
   attribute(:values) { [object.try(:valueFrom), object.try(:valueTo)] }
   attribute(:user_id) { object.try(:user).try(:id) }
+  attribute(:do_marketplace_available) { object.try(:user).try(:available?) }
   attribute(:role) { object.try(:user).try(:role) }
   attribute(:email) { object.try(:user).try(:email) }
 end
