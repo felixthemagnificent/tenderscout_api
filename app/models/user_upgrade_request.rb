@@ -12,7 +12,7 @@ class UserUpgradeRequest < ApplicationRecord
         Rails.configuration.mailer['templates']['user_upgrade_request'],
         {
           user_name: self.user.try(:profiles).try(:first).try(:fullname),
-          action_url: 'TODO',
+          action_url: Rails.configuration.mailer['upgrade_requests_url'],
           product_url: Rails.configuration.mailer['product_url'],
           support_url: Rails.configuration.mailer['support'],
           company_name: Rails.configuration.mailer['company_name'],

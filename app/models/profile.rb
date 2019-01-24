@@ -38,7 +38,7 @@ class Profile < ApplicationRecord
     self.where(id: ids)
   end
 
-  scope :by_name, ->(user_name) { where("fullname LIKE ?","%#{user_name}%" }
+  scope :by_name, ->(user_name) { where("fullname LIKE ?","%#{user_name}%") }
 
   def owner?(current_user)
     user == current_user

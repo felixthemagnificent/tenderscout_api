@@ -49,6 +49,7 @@ production:
   reset_password_link: 'https://hub.tenderscout.com/auth/reset?reset_password_token=%{token}'
   tender_management_url: 'http://tender_management_url'
   api_url: 'http://hub.tenderscout.com/api/'
+  upgrade_requests_url: 'https://adminhub.tenderscout.com/#/users/upgrade-requests'
   profiles_url: 'http://hub.tenderscout.com/profile/%{id}'
   all_results_url: 'https://hub.tenderscout.com/search/monitor/all'
   tender_details_url: 'http://hub.tenderscout.com/tenders/%{id}'
