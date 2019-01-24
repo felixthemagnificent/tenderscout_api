@@ -38,16 +38,7 @@ class Profile < ApplicationRecord
     self.where(id: ids)
   end
 
-  scope :by_name, ->(user_name) { where("fullname LIKE ?","%#{user_name}%"}
-    keyword_profile_ids = []
-    keywords.each do |e|
-      keyword_profile_ids << Keyword.where(name: e).try(:first).try(:profiles).try(:ids)
-    end 
-    keyword_profile_ids.flatten!
-    keyword_profile_ids.uniq!
-    ids = self.ids & keyword_profile_ids
-    self.where(id: ids)
-  end
+  scope :by_name, ->(user_name) { where("fullname LIKE ?","%#{user_name}%" }
 
   def owner?(current_user)
     user == current_user
