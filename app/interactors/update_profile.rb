@@ -22,7 +22,7 @@ class UpdateProfile
       }
     end
     context.profile.user.available! if context.params[:do_marketplace_available] && context.params[:do_marketplace_available] == true
-    context.profile.user.not_available! if context.params[:do_marketplace_available] && context.params[:do_marketplace_available] == false
+    context.profile.user.not_available! if context.params[:do_marketplace_available] == false
 
 
     if value_params
