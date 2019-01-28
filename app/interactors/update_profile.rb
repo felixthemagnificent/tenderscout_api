@@ -7,13 +7,13 @@ class UpdateProfile
                     code: :unauthorized
     end
 
+
     if contact_params
       context.profile.contacts.destroy_all
       contact_params.each { |e| context.profile.contacts.create(contact_type: e[:contact_type], value: e[:value])}
     end
     ActiveRecord::Base.transaction do
       begin
-
     if keyword_params
       context.profile.keywords.destroy_all
       keyword_params.each { |e|
@@ -21,15 +21,14 @@ class UpdateProfile
         context.profile.keywords << keyword
       }
     end
+    context.profile.user.available! if context.params[:do_marketplace_available] && context.params[:do_marketplace_available] == true
+    context.profile.user.not_available! if context.params[:do_marketplace_available] && context.params[:do_marketplace_available] == false
+
 
     if value_params
       context.profile.valueFrom = value_params.first
       context.profile.valueTo = value_params.second
     end
-
-    context.profile.user.marketplace_status = :available if params[:do_marketplace_available] && params[:do_marketplace_available] == true
-    context.profile.user.marketplace_status = :not_available if params[:do_marketplace_available] && params[:do_marketplace_available] == false
-
 
     if country_params
       context.profile.countries.destroy_all
