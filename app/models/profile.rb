@@ -23,7 +23,6 @@ class Profile < ApplicationRecord
   validate :countries_count_validation
   #:display_name, :timezone, :profile_type, :user_id
   #validates_presence_of :company_size, :turnover unless :profile_type != :consultant
-
   after_save :recalculate_bidsense
   after_save :change_profile_monitor
 

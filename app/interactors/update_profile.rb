@@ -27,6 +27,10 @@ class UpdateProfile
       context.profile.valueTo = value_params.second
     end
 
+    context.profile.user.marketplace_status = :available if params[:do_marketplace_available] && params[:do_marketplace_available] == true
+    context.profile.user.marketplace_status = :not_available if params[:do_marketplace_available] && params[:do_marketplace_available] == false
+
+
     if country_params
       context.profile.countries.destroy_all
       country_params.each { |e|

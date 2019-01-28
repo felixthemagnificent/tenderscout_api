@@ -152,6 +152,7 @@ class V1::UsersController < ApplicationController
   def create
     result = true
     @user = User.new(user_params)
+
     authorize @user
     if @user.save
       @user.confirm
