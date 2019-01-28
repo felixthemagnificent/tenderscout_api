@@ -237,11 +237,7 @@ class Core::Tender < ApplicationRecord
                       }, { 
                         terms:
                         {
-                          title: 
-                          {
-                            value: tender_title.split(' '),
-                            boost: 5
-                          }
+                          title: tender_title.split(' '),
                         }
                       },{
                         match_phrase:
@@ -264,11 +260,7 @@ class Core::Tender < ApplicationRecord
                       }, { 
                         terms:
                         {
-                          description: 
-                          {
-                            value: tender_title.split(' '),
-                            boost: 2.0
-                          }
+                          description: tender_title.split(' '),
                         }
                       }, {
                         match_phrase:
