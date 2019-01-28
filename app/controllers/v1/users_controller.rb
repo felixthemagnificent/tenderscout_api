@@ -22,7 +22,7 @@ class V1::UsersController < ApplicationController
     user_industry = params[:industry]
     unless current_user.free?
       profiles = Profile.all
-      profiles = profiles.by_name(user_name.downcase) if user_name
+      profiles = profiles.by_name(user_name) if user_name
       profiles = profiles.by_keywords(user_keywords.split(',')) if user_keywords
       profiles = profiles.where(country: Core::Country.find_by_id(user_geography)) if user_geography
       profiles = profiles.where(industry: Industry.where(name: user_industry).first) if user_industry
