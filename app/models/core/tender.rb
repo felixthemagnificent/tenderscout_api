@@ -234,7 +234,16 @@ class Core::Tender < ApplicationRecord
                             boost: 5
                           }
                         }
-                      }, {
+                      }, { 
+                        terms:
+                        {
+                          title: 
+                          {
+                            value: tender_title.split(' '),
+                            boost: 5
+                          }
+                        }
+                      },{
                         match_phrase:
                         {
                           title: {
@@ -249,6 +258,15 @@ class Core::Tender < ApplicationRecord
                           description: 
                           {
                             value: tender_title,
+                            boost: 4.0
+                          }
+                        }
+                      }, { 
+                        terms:
+                        {
+                          description: 
+                          {
+                            value: tender_title.split(' '),
                             boost: 2.0
                           }
                         }
