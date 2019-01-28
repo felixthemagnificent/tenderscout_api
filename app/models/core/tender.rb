@@ -231,7 +231,7 @@ class Core::Tender < ApplicationRecord
                           title: 
                           {
                             value: tender_title,
-                            boost: 2.5
+                            boost: 5
                           }
                         }
                       }, {
