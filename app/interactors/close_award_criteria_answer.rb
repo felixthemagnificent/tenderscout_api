@@ -18,13 +18,13 @@ class CloseAwardCriteriaAnswer
                     code: :unprocessable_entity
     end
 
-    if award_criteria_answer.closed
-      context.fail! errors: { error: :unprocessable_entity, error_description: 'Award Criteria is closed'},
-                    code: :unprocessable_entity
-    end
+    # if award_criteria_answer.closed
+    #   context.fail! errors: { error: :unprocessable_entity, error_description: 'Award Criteria is closed'},
+    #                 code: :unprocessable_entity
+    # end
 
     context.answer = award_criteria_answer
-    context.answer.closed = true
+    context.answer.closed = params[:closed] #true
 
     unless context.answer.save
       context.fail! errors: context.answer.errors,

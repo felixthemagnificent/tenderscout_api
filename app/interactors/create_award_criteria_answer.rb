@@ -22,10 +22,10 @@ class CreateAwardCriteriaAnswer
                     code: :unprocessable_entity
     end
 
-    if award_criteria.answers.exists?(closed: true)
-      context.fail! errors: { error: :unprocessable_entity, error_description: 'Answer is already closed'},
-                    code: :unprocessable_entity
-    end
+    # if award_criteria.answers.exists?(closed: true)
+    #   context.fail! errors: { error: :unprocessable_entity, error_description: 'Answer is already closed'},
+    #                 code: :unprocessable_entity
+    # end
 
     context.answer = award_criteria.answers.find_or_initialize_by(collaboration_id: answer_params[:collaboration_id],tender_id: answer_params[:tender_id],tender_award_criteria_id: award_criteria_params[:tender_award_criterium_id])
     context.answer.attributes = answer_params
