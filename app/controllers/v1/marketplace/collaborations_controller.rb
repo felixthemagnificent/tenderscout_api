@@ -52,7 +52,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_name: Rails.configuration.mailer['company_name'],
           company_address: Rails.configuration.mailer['company_address']
         }
-      ).deliver_later
+      ).deliver_now
       render json: @marketplace_collaboration
     else
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity

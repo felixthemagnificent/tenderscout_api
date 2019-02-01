@@ -7,7 +7,9 @@ class V1::UsersController < ApplicationController
   # GET /users
   def index
     authorize User
+    email = params[:filter][:email] rescue nil
     users = User.all
+    users = users.where("email ILIKE ?","%#{email}%")
     @users = users.my_paginate(paginate_params)
 
     render json: {count: users.count, data: ActiveModel::Serializer::CollectionSerializer.new(@users,
