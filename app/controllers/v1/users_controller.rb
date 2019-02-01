@@ -117,15 +117,17 @@ class V1::UsersController < ApplicationController
     status = params[:status] 
     collaborations = collaborations.where(status: status) if %w(active pending ignore).include?(status)
     user_as_collaborator.each do |tc|
-      result << {
-        collaboration: tc.collaboration,
-        collaboration_role: tc.role,
-        tender: tc.collaboration.tender,
-        role: current_user.role,
-        status: tc.status,
-        user: UserSerializer.new(tc.user),
-        invited_at: tc.created_at
-      }
+      if tc.user
+        result << {
+          collaboration: tc.collaboration,
+          collaboration_role: tc.role,
+          tender: tc.collaboration.tender,
+          role: current_user.role,
+          status: tc.status,
+          user: UserSerializer.new(tc.user),
+          invited_at: tc.created_at
+        }
+      end
     end
     render json: result
   end
@@ -223,7 +225,13 @@ class V1::UsersController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def profile_params
-    params.permit(:fullname, :display_name, :timezone)
+    params.permit(
+      :fullname, :display_name, :profile_type, :city, :timezone,
+      :do_marketplace_available, :company_size, :turnover, :email,
+      :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
+      :tender_level, :number_public_contracts, :company, :description,
+      keywords: [], countries: [], industries: [], profile_type: []
+    )
   end
 
   def user_params
