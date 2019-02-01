@@ -30,7 +30,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
 
     collaboration_status = (role == 'owner') ? :active : :pending
     @marketplace_collaboration.tender_collaborators.create(
-      user: @user,
+      user: user,
       role: role,
       status: collaboration_status,
       invited_by_user: current_user
