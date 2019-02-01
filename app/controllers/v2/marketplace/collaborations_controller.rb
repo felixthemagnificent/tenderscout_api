@@ -28,10 +28,11 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
     authorize @marketplace_collaboration
 
+    collaboration_status = (role == 'owner') ? :active : :pending
     @marketplace_collaboration.tender_collaborators.create(
-      user: user, 
-      role: role, 
-      status: :pending,
+      user: @user,
+      role: role,
+      status: collaboration_status,
       invited_by_user: current_user
     )
 

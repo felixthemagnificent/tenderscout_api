@@ -57,7 +57,7 @@ class SearchMonitorPolicy
 
 
   def destroy?
-    @user.standard? && !@monitor.profile?
+    @user.standard?
   end
 
   class Scope
