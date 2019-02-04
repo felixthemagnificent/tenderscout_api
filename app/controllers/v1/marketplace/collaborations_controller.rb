@@ -38,21 +38,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           invited_by_user: current_user
         )
         @marketplace_collaboration.save!
-        CustomPostmarkMailer.template_email(
-          @user.email,
-          Rails.configuration.mailer['templates']['collaboration_invite'],
-          {
-            user_name: current_user.profiles.first.fullname,
-            tender_name: @tender.title,
-            tender_id: @tender.id,
-            tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
-            invite_link_url: '',
-            product_url: Rails.configuration.mailer['product_url'],
-            support_url: Rails.configuration.mailer['support'],
-            company_name: Rails.configuration.mailer['company_name'],
-            company_address: Rails.configuration.mailer['company_address']
-          }
-        ).deliver_now
+        
         add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
         render json: @marketplace_collaboration
       rescue
