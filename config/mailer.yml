@@ -18,6 +18,7 @@ default: &default
     tender_publish: '8923196'
     assignment_invite: '8922900'
     user_confirmation: '8923193'
+    collaboration_invite: '8922901'
     admin_assistance_notifier: '9178405'
     user_upgrade_request: '9274146'
     empty_summary_tenders: '9428393'
