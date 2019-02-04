@@ -55,4 +55,5 @@ production:
   all_results_url: 'https://hub.tenderscout.com/search/monitor/all'
   tender_details_url: 'http://hub.tenderscout.com/tenders/%{id}'
   upgrade_url: 'https://hub.tenderscout.com/profile/account-type'
+  invite_link_url: 'https://hub.tenderscout.com/marketplace/collaborations'
   admin_url: 'http://adminhub.tenderscout.com'

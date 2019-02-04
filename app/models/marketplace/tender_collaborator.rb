@@ -27,7 +27,7 @@ class Marketplace::TenderCollaborator < ApplicationRecord
         tender_name: self.collaboration.tender.title,
         tender_id: self.collaboration.tender.id,
         tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
-        invite_link_url: '',
+        invite_link_url: Rails.configuration.mailer['invite_link_url'],
         product_url: Rails.configuration.mailer['product_url'],
         support_url: Rails.configuration.mailer['support'],
         company_name: Rails.configuration.mailer['company_name'],
