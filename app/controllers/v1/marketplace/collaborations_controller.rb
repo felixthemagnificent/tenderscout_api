@@ -55,8 +55,9 @@ class V1::Marketplace::CollaborationsController < ApplicationController
         ).deliver_now
         add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
         render json: @marketplace_collaboration
-    rescue
-      render json: @marketplace_collaboration.errors, status: :unprocessable_entity
+      rescue
+        render json: @marketplace_collaboration.errors, status: :unprocessable_entity
+      end
     end
   end
 
