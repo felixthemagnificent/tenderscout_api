@@ -37,7 +37,6 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     )
 
     if @marketplace_collaboration.save
-      add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
       CustomPostmarkMailer.template_email(
         @user.email,
         Rails.configuration.mailer['templates']['collaboration_invite'],
@@ -53,6 +52,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
           company_address: Rails.configuration.mailer['company_address']
         }
       ).deliver_now
+      add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
       render json: @marketplace_collaboration
     else
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
