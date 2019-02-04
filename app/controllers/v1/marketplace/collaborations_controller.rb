@@ -27,33 +27,34 @@ class V1::Marketplace::CollaborationsController < ApplicationController
     role = params[:role]
     @marketplace_collaboration = nil
     Marketplace::Collaboration.transaction do
-      @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
-      authorize @marketplace_collaboration
-      collaboration_status = (role == 'owner') ? :active : :pending
-      @marketplace_collaboration.tender_collaborators.create(
-        user: @user,
-        role: role,
-        status: collaboration_status,
-        invited_by_user: current_user
-      )
-      @marketplace_collaboration.save!
-      CustomPostmarkMailer.template_email(
-        @user.email,
-        Rails.configuration.mailer['templates']['collaboration_invite'],
-        {
-          user_name: current_user.profiles.first.fullname,
-          tender_name: @tender.title,
-          tender_id: @tender.id,
-          tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
-          invite_link_url: '',
-          product_url: Rails.configuration.mailer['product_url'],
-          support_url: Rails.configuration.mailer['support'],
-          company_name: Rails.configuration.mailer['company_name'],
-          company_address: Rails.configuration.mailer['company_address']
-        }
-      ).deliver_now
-      add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
-      render json: @marketplace_collaboration
+      begin
+        @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
+        authorize @marketplace_collaboration
+        collaboration_status = (role == 'owner') ? :active : :pending
+        @marketplace_collaboration.tender_collaborators.create(
+          user: @user,
+          role: role,
+          status: collaboration_status,
+          invited_by_user: current_user
+        )
+        @marketplace_collaboration.save!
+        CustomPostmarkMailer.template_email(
+          @user.email,
+          Rails.configuration.mailer['templates']['collaboration_invite'],
+          {
+            user_name: current_user.profiles.first.fullname,
+            tender_name: @tender.title,
+            tender_id: @tender.id,
+            tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
+            invite_link_url: '',
+            product_url: Rails.configuration.mailer['product_url'],
+            support_url: Rails.configuration.mailer['support'],
+            company_name: Rails.configuration.mailer['company_name'],
+            company_address: Rails.configuration.mailer['company_address']
+          }
+        ).deliver_now
+        add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
+        render json: @marketplace_collaboration
     rescue
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
     end
