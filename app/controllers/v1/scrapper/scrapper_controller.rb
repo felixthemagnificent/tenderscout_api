@@ -6,6 +6,7 @@ class V1::Scrapper::ScrapperController < ApplicationController
       status = :red
       status = :yellow if last_scraping_date && last_scraping_date > DateTime.now - 48.hours
       status = :green if last_scraping_date && last_scraping_date > DateTime.now - 24.hours
+      status = :green
       {
         name: scraper_name,
         last_scraped: last_scraping_date,
