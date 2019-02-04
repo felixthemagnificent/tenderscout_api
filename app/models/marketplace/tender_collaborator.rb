@@ -23,7 +23,7 @@ class Marketplace::TenderCollaborator < ApplicationRecord
       self.user.email,
       Rails.configuration.mailer['templates']['collaboration_invite'],
       {
-        user_name: current_user.profiles.first.fullname,
+        user_name: self.invited_by_user.profiles.first.fullname,
         tender_name: self.collaboration.tender.title,
         tender_id: self.collaboration.tender.id,
         tender_details_url: Rails.configuration.mailer['uri']['tender_details'],
