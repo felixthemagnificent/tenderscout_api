@@ -25,18 +25,18 @@ class V1::Marketplace::CollaborationsController < ApplicationController
   def apply
     @user = User.find_by_id params[:user_id]
     role = params[:role]
-
-    @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
-    authorize @marketplace_collaboration
-    collaboration_status = (role == 'owner') ? :active : :pending
-    @marketplace_collaboration.tender_collaborators.create(
-      user: @user,
-      role: role,
-      status: collaboration_status,
-      invited_by_user: current_user
-    )
-
-    if @marketplace_collaboration.save
+    @marketplace_collaboration = nil
+    Marketplace::Collaboration.transaction do
+      @marketplace_collaboration = ::Marketplace::Collaboration.find_by_id(params[:collaboration_id]) || @tender.collaborations.create
+      authorize @marketplace_collaboration
+      collaboration_status = (role == 'owner') ? :active : :pending
+      @marketplace_collaboration.tender_collaborators.create(
+        user: @user,
+        role: role,
+        status: collaboration_status,
+        invited_by_user: current_user
+      )
+      @marketplace_collaboration.save!
       CustomPostmarkMailer.template_email(
         @user.email,
         Rails.configuration.mailer['templates']['collaboration_invite'],
@@ -54,7 +54,7 @@ class V1::Marketplace::CollaborationsController < ApplicationController
       ).deliver_now
       add_collaboration_to_user_status(@user, @tender, @marketplace_collaboration)
       render json: @marketplace_collaboration
-    else
+    rescue
       render json: @marketplace_collaboration.errors, status: :unprocessable_entity
     end
   end
