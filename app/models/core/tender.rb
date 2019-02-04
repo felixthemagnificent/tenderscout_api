@@ -373,7 +373,7 @@ class Core::Tender < ApplicationRecord
         }
       )
     else
-      results = results.order(created_at: { order: :desc })
+      results = results.order({submission_date: { order: :desc }, awarded_on: { order: :desc }})
     end
     results
   end
