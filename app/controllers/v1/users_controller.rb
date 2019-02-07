@@ -157,20 +157,21 @@ class V1::UsersController < ApplicationController
   def create
     result = true
     @user = User.new(user_params)
-
+    profile = @user.profiles.new(profile_params)
     authorize @user
-    if @user.save
-      @user.confirm
-      profile = @user.profiles.new(profile_params)
-      if profile.save
+    @user.transaction do
+      begin
+        @user.save!
+        @user.confirm
+        profile.save!
         render json: @user, status: :created
-      else
-        @user.destroy
-        render json: profile.errors.full_messages, status: :unprocessable_entity
+      rescue Exception => e
+        if !profile.valid?
+          render json: profile.errors.full_messages, status: :unprocessable_entity
+        elsif !user.valid?
+          render json: @user.errors.full_messages, status: :unprocessable_entity
+        end
       end
-    else
-      render json: @user.errors.full_messages, status: :unprocessable_entity
-    end
   end
 
   # PATCH/PUT /users/1
