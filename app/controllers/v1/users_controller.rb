@@ -230,7 +230,7 @@ class V1::UsersController < ApplicationController
   def profile_params
     params.permit(
       :fullname, :display_name, :profile_type, :city, :timezone,
-      :do_marketplace_available, :company_size, :turnover, :email,
+      :do_marketplace_available, :company_size, :turnover,
       :industry_id, :country_id, :contacts, :valueFrom, :valueTo,
       :tender_level, :number_public_contracts, :company, :description,
       keywords: [], countries: [], industries: [], profile_type: []
