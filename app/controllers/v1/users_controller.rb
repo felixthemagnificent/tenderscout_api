@@ -172,6 +172,7 @@ class V1::UsersController < ApplicationController
           render json: @user.errors.full_messages, status: :unprocessable_entity
         end
       end
+    end
   end
 
   # PATCH/PUT /users/1
