@@ -20,7 +20,7 @@ namespace :summary do
           tenders << { 
             title: e.title, 
             url: Rails.configuration.mailer['tender_details_url'] % {id: e.id},
-            buyer_name: e.try(:creator).try(:profiles).try(:first).try(:fullname) | e.try(:organization).try(:name),
+            buyer_name: e.try(:creator).try(:profiles).try(:first).try(:fullname) || e.try(:organization).try(:name),
             submission_date: e.try(:submission_date).try(:strftime,'%m.%d.%Y'),
             tender_description: ((e.description[0..200] + '...') rescue '')
           }  

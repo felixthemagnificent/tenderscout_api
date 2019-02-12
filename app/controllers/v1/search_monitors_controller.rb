@@ -76,7 +76,7 @@ class V1::SearchMonitorsController < ApplicationController
   end
 
   def archive
-    authorize SearchMonitor
+    authorize @search_monitor
     if @search_monitor.update(is_archived: true)
       render json: nil, status: :ok
     else
