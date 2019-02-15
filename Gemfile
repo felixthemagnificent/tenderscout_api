@@ -88,6 +88,7 @@ gem 'mechanize'
 gem 'httparty'
 gem 'money'
 gem 'countries'
+gem "sentry-raven"
 
 
 group :development do

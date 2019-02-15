@@ -24,6 +24,10 @@ module TenderscoutApi
     config.autoload_paths << Rails.root.join("lib")
     config.eager_load_paths << Rails.root.join("lib")
 
+    Raven.configure do |config|
+      config.dsn = 'https://2e61bed98bf14809873acc3368269d0b:28165e816340403c87bef40ca4ce851f@sentry.io/1394750'
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
