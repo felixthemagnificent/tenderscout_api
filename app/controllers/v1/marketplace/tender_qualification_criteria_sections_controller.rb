@@ -2,7 +2,7 @@ class V1::Marketplace::TenderQualificationCriteriaSectionsController < Applicati
   include UserTenderStatusChanger
   before_action :set_marketplace_tender_qualification_criteria_section, only: [:show, :update, :destroy]
   before_action :set_tender
-  after_action :verify_authorized
+  # after_action :verify_authorized
 
   # GET /marketplace/tender_qualification_criteria_sections
   def index

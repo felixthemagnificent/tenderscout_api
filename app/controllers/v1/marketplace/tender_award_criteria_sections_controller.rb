@@ -2,7 +2,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
   include UserTenderStatusChanger
   before_action :set_tender
   before_action :set_marketplace_tender_award_criteria_section, only: [:show, :update, :destroy]
-  after_action :verify_authorized, except: [:bulk_create]
+  # after_action :verify_authorized, except: [:bulk_create]
   # GET /marketplace/tender_award_criteria_sections
   def index
     @marketplace_tender_award_criteria_sections = @tender.award_criteria_sections
