@@ -6,20 +6,20 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
   # GET /marketplace/tender_award_criteria_sections
   def index
     @marketplace_tender_award_criteria_sections = @tender.award_criteria_sections
-    authorize @marketplace_tender_award_criteria_sections
+    # authorize @marketplace_tender_award_criteria_sections
     render json: @marketplace_tender_award_criteria_sections
   end
 
   # GET /marketplace/tender_award_criteria_sections/1
   def show
-    authorize @marketplace_tender_award_criteria_section
+    # authorize @marketplace_tender_award_criteria_section
     render json: @marketplace_tender_award_criteria_section
   end
 
   # POST /marketplace/tender_award_criteria_sections
   def create
     @marketplace_tender_award_criteria_section = @tender.award_criteria_sections.new(marketplace_tender_award_criteria_section_params)
-    authorize @marketplace_tender_award_criteria_section
+    # authorize @marketplace_tender_award_criteria_section
     if @marketplace_tender_award_criteria_section.save
       user_competing_tender(marketplace_tender_award_criteria_section_params[:tender_id],
                             marketplace_tender_award_criteria_section_params[:collaboration_id])
@@ -40,7 +40,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
 
   # PATCH/PUT /marketplace/tender_award_criteria_sections/1
   def update
-    authorize @marketplace_tender_award_criteria_section
+    # authorize @marketplace_tender_award_criteria_section
     if @marketplace_tender_award_criteria_section.update(marketplace_tender_award_criteria_section_params)
       render json: @marketplace_tender_award_criteria_section
     else
@@ -50,7 +50,7 @@ class V1::Marketplace::TenderAwardCriteriaSectionsController < ApplicationContro
 
   # DELETE /marketplace/tender_award_criteria_sections/1
   def destroy
-    authorize @marketplace_tender_award_criteria_section
+    # authorize @marketplace_tender_award_criteria_section
     @marketplace_tender_award_criteria_section.destroy
   end
 
