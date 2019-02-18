@@ -4,24 +4,24 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
                                                      :tender_qualification_criteria_notes, :update_deadline, :create_assign, :update_assign,
                                                      :delete_assign, :delete_files]
   before_action :set_tender
-  after_action :verify_authorized, except: [:tender_qualification_criteria_comments, :tender_qualification_criteria_notes, :update_deadline,
-                                            :create_assign, :update_assign, :delete_assign, :delete_files]
+  # after_action :verify_authorized, except: [:tender_qualification_criteria_comments, :tender_qualification_criteria_notes, :update_deadline,
+  #                                           :create_assign, :update_assign, :delete_assign, :delete_files]
   # GET /marketplace/tender_qualification_criterias
   def index
     @marketplace_tender_qualification_criterias = @tender.qualification_criterias.all
-    authorize @marketplace_tender_qualification_criterias
+    # authorize @marketplace_tender_qualification_criterias
     render json: @marketplace_tender_qualification_criterias
   end
 
   # GET /marketplace/tender_qualification_criterias/1
   def show
-    authorize @marketplace_tender_qualification_criteria
+    # authorize @marketplace_tender_qualification_criteria
     render json: @marketplace_tender_qualification_criteria
   end
 
   # POST /marketplace/tender_qualification_criterias
   def create
-    authorize ::Marketplace::TenderQualificationCriteria
+    # authorize ::Marketplace::TenderQualificationCriteria
     @marketplace_tender_qualification_criteria = @tender.qualification_criterias.new(marketplace_tender_qualification_criteria_params)
 
     if params[:attachments]
@@ -41,7 +41,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
 
   # PATCH/PUT /marketplace/tender_qualification_criterias/1
   def update
-    authorize @marketplace_tender_qualification_criteria
+    # authorize @marketplace_tender_qualification_criteria
     if params[:attachments]
       params[:attachments].each do |k,v|
         attachment = Attachment.new(file: v)
@@ -58,7 +58,7 @@ class V1::Marketplace::TenderQualificationCriteriasController < ApplicationContr
 
   # DELETE /marketplace/tender_qualification_criterias/1
   def destroy
-    authorize @marketplace_tender_qualification_criteria
+    # authorize @marketplace_tender_qualification_criteria
     @marketplace_tender_qualification_criteria.destroy
   end
 
