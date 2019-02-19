@@ -1,10 +1,10 @@
 class V1::Marketplace::BidNoBidAnswersController < ApplicationController
   before_action :set_marketplace_bid_no_bid_answer, only: [:show, :update, :destroy]
-  after_action :verify_authorized
+  # after_action :verify_authorized
   # GET /marketplace/bid_no_bid_answers
   def index
     @marketplace_bid_no_bid_answers = ::Marketplace::BidNoBidAnswer.all
-    authorize @marketplace_bid_no_bid_answers
+    # authorize @marketplace_bid_no_bid_answers
     render json: @marketplace_bid_no_bid_answers
   end
 
@@ -16,7 +16,7 @@ class V1::Marketplace::BidNoBidAnswersController < ApplicationController
 
   # POST /marketplace/bid_no_bid_answers
   def create
-    authorize ::Marketplace::BidNoBidAnswer
+    # authorize ::Marketplace::BidNoBidAnswer
     @marketplace_bid_no_bid_answer = Marketplace::BidNoBidAnswer.new(marketplace_bid_no_bid_answer_params)
 
     if @marketplace_bid_no_bid_answer.save
@@ -28,7 +28,7 @@ class V1::Marketplace::BidNoBidAnswersController < ApplicationController
 
   # PATCH/PUT /marketplace/bid_no_bid_answers/1
   def update
-    authorize @marketplace_bid_no_bid_answer
+    # authorize @marketplace_bid_no_bid_answer
     if @marketplace_bid_no_bid_answer.update(marketplace_bid_no_bid_answer_params)
       render json: @marketplace_bid_no_bid_answer
     else
