@@ -1,7 +1,7 @@
 class V1::Marketplace::Compete::BidNoBidAnswersController < ApplicationController
   before_action :set_marketplace_compete_bid_no_bid_answer, only: [:show, :update, :destroy]
   before_action :set_tender
-  after_action :verify_authorized
+  # after_action :verify_authorized
   # GET /marketplace/compete/bid_no_bid_answers
   def index
     @marketplace_compete_bid_no_bid_answers = @tender.bid_no_bid_answers
